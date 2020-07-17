@@ -143,7 +143,7 @@ Flags:
 Use "nali [command] --help" for more information about a command.
 ```
 
-### 纯真 Update chunzhen IP database
+### Update chunzhen IP database
 
 ```
 $ nali update
