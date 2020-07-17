@@ -5,12 +5,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/zu1k/nali/internal/iptools"
-
 	"github.com/zu1k/nali/constant"
-
 	"github.com/zu1k/nali/internal/ipdb"
-
+	"github.com/zu1k/nali/internal/iptools"
 	geoip2 "github.com/zu1k/nali/pkg/geoip"
 	"github.com/zu1k/nali/pkg/qqwry"
 )

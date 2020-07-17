@@ -6,9 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/zu1k/nali/pkg/qqwry"
-
 	"github.com/zu1k/nali/constant"
+	"github.com/zu1k/nali/pkg/qqwry"
 
 	"github.com/spf13/cobra"
 )
