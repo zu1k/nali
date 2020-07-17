@@ -48,21 +48,21 @@ docker pull docker.pkg.github.com//zu1k/nali/nali:v0.0.2
 
 ## Usage
 
-#### Query a simple IP address
+### Query a simple IP address
 
 ```
 $ nali 1.2.3.4
 1.2.3.4 [澳大利亚 APNIC Debogon-prefix网络]
 ```
 
-##### or use `pipe`
+#### or use `pipe`
 
 ```
 $ echo IP 6.6.6.6 | nali
 IP 6.6.6.6 [美国 亚利桑那州华楚卡堡市美国国防部网络中心]
 ```
 
-#### Query multiple IP addresses
+### Query multiple IP addresses
 
 ```
 $ nali 1.2.3.4 4.3.2.1 123.23.3.0
@@ -71,7 +71,7 @@ $ nali 1.2.3.4 4.3.2.1 123.23.3.0
 123.23.3.0 [越南 越南邮电集团公司]
 ```
 
-#### Interactive query
+### Interactive query
 
 use `exit` or  `quit` to quit
 
@@ -86,7 +86,7 @@ $ nali
 quit
 ```
 
-#### Use with dig
+### Use with dig
 
 ```
 $ dig nali.lgf.im +short | nali
@@ -95,7 +95,7 @@ $ dig nali.lgf.im +short | nali
 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-#### Use with nslookup
+### Use with nslookup
 
 ```
 $ nslookup nali.lgf.im 8.8.8.8 | nali
@@ -111,7 +111,7 @@ Name:   nali.lgf.im
 Address: 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-#### Use with any other program
+### Use with any other program
 
 Because nali can read the contents of the `stdin` pipeline, it can be used with any program
 
@@ -123,7 +123,7 @@ Nali will insert ip information after ip
 
 ## Interface
 
-#### Help
+### Help
 
 ```
 $ nali --help
@@ -143,7 +143,7 @@ Flags:
 Use "nali [command] --help" for more information about a command.
 ```
 
-#### Update chunzhen IP database
+### 纯真 Update chunzhen IP database
 
 ```
 $ nali update
@@ -151,7 +151,16 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
+## Thanks
+
+- [纯真QQIP离线数据库](http://www.cz88.net/fox/ipdat.shtml)
+- [qqwry mirror](https://qqwry.mirror.noc.one/)
+- [qqwry纯真数据库解析](https://github.com/yinheli/qqwry)
+- [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
+- [geoip2-golang解析器](github.com/oschwald/geoip2-golang)
+- [Cobra CLI库](https://github.com/spf13/cobra)
+- [Nali-cli](https://github.com/SukkaW/nali-cli)
+
 ## License
 
 MIT
-
