@@ -178,7 +178,7 @@ export NALI_DB=geoip
 - [qqwry mirror](https://qqwry.mirror.noc.one/)
 - [qqwry纯真数据库解析](https://github.com/yinheli/qqwry)
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
-- [geoip2-golang解析器](github.com/oschwald/geoip2-golang)
+- [geoip2-golang解析器](https://github.com/oschwald/geoip2-golang)
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
