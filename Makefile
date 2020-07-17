@@ -1,10 +1,10 @@
 NAME=nali
 BINDIR=bin
 VERSION=$(hell git describe --tags || echo "unknown version")
-BUILDTIME=$(hell date -u)
-GOBUILD=CGO_ENABLED=0 go build -ldflags '-X "github.com/zu1k/nali/constant.Version=$(VERSION)" \
+BUILDTIME=$(shell date -u)
+GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/zu1k/nali/constant.Version=$(VERSION)" \
 		-X "github.com/zu1k/nali/constant.BuildTime=$(BUILDTIME)" \
-		-w -s' -trimpath
+		-w -s'
 
 PLATFORM_LIST = \
 	darwin-amd64 \
@@ -26,6 +26,8 @@ PLATFORM_LIST = \
 WINDOWS_ARCH_LIST = \
 	windows-386 \
 	windows-amd64
+
+all: linux-amd64 darwin-amd64 windows-amd64 # Most used
 
 docker:
 	$(GOBUILD) -o $(BINDIR)/$(NAME)-$@
@@ -80,6 +82,7 @@ windows-386:
 
 windows-amd64:
 	GOARCH=amd64 GOOS=windows $(GOBUILD) -o $(BINDIR)/$(NAME)-$@.exe
+
 gz_releases=$(addsuffix .gz, $(PLATFORM_LIST))
 zip_releases=$(addsuffix .zip, $(WINDOWS_ARCH_LIST))
 
