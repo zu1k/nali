@@ -3,6 +3,9 @@ package app
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
+
+	"github.com/zu1k/nali/internal/iptools"
 
 	"github.com/zu1k/nali/constant"
 
@@ -39,14 +42,23 @@ func SetDB(dbName ipdb.IPDBType) {
 // parse several ips
 func ParseIPs(ips []string) {
 	for _, ip := range ips {
-		ParseIP(ip)
+		if iptools.ValidIP4(ip) {
+			result := db.Find(ip)
+			fmt.Println(formatResult(ip, result))
+		} else {
+			fmt.Println(ReplaceInString(ip))
+		}
 	}
 }
 
-// parse one ip
-func ParseIP(ip string) {
-	result := db.Find(ip)
-	fmt.Println(formatResult(ip, result))
+func ReplaceInString(str string) (result string) {
+	result = str
+	ips := iptools.GetIP4FromString(str)
+	for _, ip := range ips {
+		info := db.Find(ip)
+		result = strings.ReplaceAll(result, ip, formatResult(ip, info))
+	}
+	return
 }
 
 func formatResult(ip string, result string) string {

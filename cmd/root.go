@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -14,13 +15,20 @@ var rootCmd = &cobra.Command{
 	Use:   "nali",
 	Short: "",
 	Long:  ``,
-	Args:  cobra.MinimumNArgs(1),
+	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			fmt.Println("Usage: balabala")
-			return
+			stdin := bufio.NewScanner(os.Stdin)
+			for stdin.Scan() {
+				line := stdin.Text()
+				if line == "quit" || line == "exit" {
+					return
+				}
+				fmt.Println(app.ReplaceInString(line))
+			}
+		} else {
+			app.ParseIPs(args)
 		}
-		app.ParseIPs(args)
 	},
 }
 
