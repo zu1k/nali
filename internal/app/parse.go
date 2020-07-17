@@ -22,20 +22,12 @@ var (
 )
 
 // init ip db content
-func InitIPDB() {
-	qqip = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
-	//geoip = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
-
-	db = qqip
-}
-
-// set db to use
-func SetDB(dbName ipdb.IPDBType) {
-	switch dbName {
+func InitIPDB(ipdbtype ipdb.IPDBType) {
+	switch ipdbtype {
 	case ipdb.GEOIP2:
-		db = geoip
+		db = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
 	case ipdb.QQIP:
-		db = qqip
+		db = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
 	}
 }
 
