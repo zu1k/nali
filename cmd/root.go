@@ -6,17 +6,16 @@ import (
 	"log"
 	"os"
 
-	"github.com/zu1k/nali/internal/ipdb"
-
 	"github.com/zu1k/nali/internal/app"
+	"github.com/zu1k/nali/internal/ipdb"
 
 	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "nali",
-	Short: "",
-	Long:  ``,
+	Short: "An offline tool for querying IP geographic information",
+	Long:  `An offline tool for querying IP geographic information.`,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		app.InitIPDB(ipdb.GetIPDBType())
