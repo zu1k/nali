@@ -6,6 +6,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/zu1k/nali/internal/ipdb"
+
 	"github.com/zu1k/nali/internal/app"
 
 	"github.com/spf13/cobra"
@@ -17,6 +19,7 @@ var rootCmd = &cobra.Command{
 	Long:  ``,
 	Args:  cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
+		app.InitIPDB(ipdb.GetIPDBType())
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
 			for stdin.Scan() {
