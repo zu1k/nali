@@ -12,6 +12,7 @@ import (
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
+// db file info with data
 type FileInfo struct {
 	Data     []byte
 	FilePath string
@@ -19,17 +20,19 @@ type FileInfo struct {
 	IPNum    int64
 }
 
+// qq ip db
 type QQwry struct {
 	data   *FileInfo
 	offset int64
 }
 
 const (
-	IndexLen      = 7
-	RedirectMode1 = 0x01
-	RedirectMode2 = 0x02
+	IndexLen      = 7    // index length
+	RedirectMode1 = 0x01 // one mode
+	RedirectMode2 = 0x02 //another mode
 )
 
+// new db from path
 func NewQQwry(filePath string) QQwry {
 	var tmpData []byte
 	var fileInfo FileInfo

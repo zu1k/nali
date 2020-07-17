@@ -1,5 +1,5 @@
 package constant
 
 var (
-	HomePath string
+	HomePath string // db home path
 )

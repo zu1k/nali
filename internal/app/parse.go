@@ -18,6 +18,7 @@ var (
 	geoip geoip2.GeoIP
 )
 
+// init ip db content
 func InitIPDB() {
 	qqip = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
 	//geoip = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
@@ -25,6 +26,7 @@ func InitIPDB() {
 	db = qqip
 }
 
+// set db to use
 func SetDB(dbName ipdb.IPDBType) {
 	switch dbName {
 	case ipdb.GEOIP2:
@@ -34,12 +36,14 @@ func SetDB(dbName ipdb.IPDBType) {
 	}
 }
 
+// parse several ips
 func ParseIPs(ips []string) {
 	for _, ip := range ips {
 		ParseIP(ip)
 	}
 }
 
+// parse one ip
 func ParseIP(ip string) {
 	result := db.Find(ip)
 	fmt.Println(formatResult(ip, result))

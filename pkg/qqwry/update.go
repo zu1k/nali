@@ -22,6 +22,7 @@ func getKey() (uint32, error) {
 	}
 }
 
+// get db content from mirror
 func GetOnline() ([]byte, error) {
 	resp, err := http.Get("https://qqwry.mirror.noc.one/qqwry.rar")
 	if err != nil {

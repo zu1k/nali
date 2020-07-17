@@ -1,8 +1,8 @@
 package constant
 
-const Name = "Nali"
+const Name = "Nali" // bin name
 
 var (
-	Version   = "unknown version"
-	BuildTime = "unknown time"
+	Version   = "unknown version" // version
+	BuildTime = "unknown time"    //build time
 )

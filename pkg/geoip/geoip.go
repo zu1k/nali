@@ -8,10 +8,12 @@ import (
 	"github.com/oschwald/geoip2-golang"
 )
 
+// GeoIP2
 type GeoIP struct {
 	db *geoip2.Reader
 }
 
+// new geoip from db file
 func NewGeoIP(filePath string) GeoIP {
 	db, err := geoip2.Open(filePath)
 	if err != nil {
@@ -20,6 +22,7 @@ func NewGeoIP(filePath string) GeoIP {
 	return GeoIP{db: db}
 }
 
+// find ip info
 func (g GeoIP) Find(ip string) string {
 	ipData := net.ParseIP(ip)
 	record, err := g.db.City(ipData)
