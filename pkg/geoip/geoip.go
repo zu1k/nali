@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"github.com/oschwald/geoip2-golang"
 )
@@ -14,12 +15,20 @@ type GeoIP struct {
 }
 
 // new geoip from db file
-func NewGeoIP(filePath string) GeoIP {
-	db, err := geoip2.Open(filePath)
-	if err != nil {
-		log.Fatal(err)
+func NewGeoIP(filePath string) (geoip GeoIP) {
+	// 判断文件是否存在
+	_, err := os.Stat(filePath)
+	if err != nil && os.IsNotExist(err) {
+		log.Println("文件不存在，请自行下载 Geoip2 City库，并保存在", filePath)
+		os.Exit(1)
+	} else {
+		db, err := geoip2.Open(filePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		geoip = GeoIP{db: db}
 	}
-	return GeoIP{db: db}
+	return
 }
 
 // find ip info
