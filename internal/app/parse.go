@@ -2,6 +2,9 @@ package app
 
 import (
 	"fmt"
+	"path/filepath"
+
+	"github.com/zu1k/nali/constant"
 
 	"github.com/zu1k/nali/internal/ipdb"
 
@@ -15,9 +18,9 @@ var (
 	geoip geoip2.GeoIP
 )
 
-func init() {
-	qqip = qqwry.NewQQwry("db/qqwry.dat")
-	geoip = geoip2.NewGeoIP("db/GeoLite2-City.mmdb")
+func InitIPDB() {
+	qqip = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
+	//geoip = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
 	db = qqip
 }
 

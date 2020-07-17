@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/zu1k/nali/internal/app"
 
@@ -27,7 +29,8 @@ var rootCmd = &cobra.Command{
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
-		panic(err)
+		log.Fatal(err.Error())
+		os.Exit(1)
 	}
 }
 

@@ -2,16 +2,14 @@ package qqwry
 
 import (
 	"bytes"
-"compress/zlib"
-"encoding/binary"
-"io/ioutil"
-"net/http"
+	"compress/zlib"
+	"encoding/binary"
+	"io/ioutil"
+	"net/http"
 )
 
-// @ref https://zhangzifan.com/update-qqwry-dat.html
-
 func getKey() (uint32, error) {
-	resp, err := http.Get("http://update.cz88.net/ip/copywrite.rar")
+	resp, err := http.Get("https://qqwry.mirror.noc.one/copywrite.rar")
 	if err != nil {
 		return 0, err
 	}
@@ -20,13 +18,12 @@ func getKey() (uint32, error) {
 	if body, err := ioutil.ReadAll(resp.Body); err != nil {
 		return 0, err
 	} else {
-		// @see https://stackoverflow.com/questions/34078427/how-to-read-packed-binary-data-in-go
 		return binary.LittleEndian.Uint32(body[5*4:]), nil
 	}
 }
 
 func GetOnline() ([]byte, error) {
-	resp, err := http.Get("http://update.cz88.net/ip/qqwry.rar")
+	resp, err := http.Get("https://qqwry.mirror.noc.one/qqwry.rar")
 	if err != nil {
 		return nil, err
 	}
