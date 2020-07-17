@@ -8,10 +8,23 @@ GOBUILD=CGO_ENABLED=0 go build -ldflags '-X "github.com/zu1k/nali/constant.Versi
 
 PLATFORM_LIST = \
 	darwin-amd64 \
+	linux-386 \
 	linux-amd64 \
+	linux-armv5 \
+	linux-armv6 \
+	linux-armv7 \
+	linux-armv8 \
+	linux-mips-softfloat \
+	linux-mips-hardfloat \
+	linux-mipsle-softfloat \
+	linux-mipsle-hardfloat \
+	linux-mips64 \
+	linux-mips64le \
+	freebsd-386 \
 	freebsd-amd64
 
 WINDOWS_ARCH_LIST = \
+	windows-386 \
 	windows-amd64
 
 all: linux-amd64 darwin-amd64 windows-amd64 # Most used
