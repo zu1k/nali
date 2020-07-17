@@ -151,6 +151,27 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
+### Use Geoip2 database
+
+Set environment variables `NALI_DB`
+
+supported database:
+
+- Geoip2 `['geoip', 'geoip2', 'geo']`
+- Chunzhen `['chunzhen', 'qqip', 'qqwry']`
+
+#### Windows
+
+```
+set NALI_DB=geoip
+```
+
+#### Linux
+
+```
+export NALI_DB=geoip
+```
+
 ## Thanks
 
 - [纯真QQIP离线数据库](http://www.cz88.net/fox/ipdat.shtml)
