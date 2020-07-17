@@ -24,7 +24,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// parse subcommand and run
+// Execute parse subcommand and run
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err.Error())

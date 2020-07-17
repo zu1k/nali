@@ -1,8 +1,11 @@
 package constant
 
-const Name = "Nali" // bin name
+// Name is the program name
+const Name = "Nali"
 
 var (
-	Version   = "unknown version" // version
-	BuildTime = "unknown time"    //build time
+	// Version like 1.0.1
+	Version = "unknown version"
+	// BuildTime like 2020-01-01
+	BuildTime = "unknown time"
 )
