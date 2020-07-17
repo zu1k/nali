@@ -23,5 +23,3 @@ jobs:
           registry: docker.pkg.github.com
           repository: zu1k/nali/nali
           tag_with_ref: true
-        
-        

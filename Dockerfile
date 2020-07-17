@@ -4,8 +4,8 @@ RUN apk add --no-cache make git
 WORKDIR /nali-src
 COPY . /nali-src
 RUN go mod download && \
-    make linux-amd64 && \
-    mv ./bin/nali-linux-amd64 /nali
+    make docker && \
+    mv ./bin/nali-docker /nali
 
 FROM alpine:latest
 
