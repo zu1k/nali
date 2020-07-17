@@ -21,6 +21,7 @@ var (
 func InitIPDB() {
 	qqip = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
 	//geoip = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
+
 	db = qqip
 }
 

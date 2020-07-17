@@ -21,7 +21,6 @@ func NewGeoIP(filePath string) GeoIP {
 }
 
 func (g GeoIP) Find(ip string) string {
-	// If you are using strings that may be invalid, check that ip is not nil
 	ipData := net.ParseIP(ip)
 	record, err := g.db.City(ipData)
 	if err != nil {
