@@ -47,12 +47,18 @@ func find(cname string) string {
 }
 
 func ReplaceCDNInString(str string) (result string) {
+	done := make(map[string]bool)
+
 	cnames := domainRe.FindAllString(str, -1)
 	result = str
 	for _, cname := range cnames {
 		name := find(cname)
 		if name != "未找到" && name != "无法解析" {
+			if _, found := done[cname]; found {
+				continue
+			}
 			result = strings.ReplaceAll(result, cname, fmt.Sprintf("%s [%s]", cname, name))
+			done[cname] = true
 		}
 	}
 	return
