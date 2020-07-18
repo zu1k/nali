@@ -18,7 +18,7 @@ type ZXwry struct {
 
 func NewZXwry(filePath string) ZXwry {
 	var tmpData []byte
-	var fileInfo common.FileInfo
+	var fileInfo common.FileData
 
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
