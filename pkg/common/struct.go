@@ -39,12 +39,12 @@ func (db *IPDB) ReadString(offset uint32) []byte {
 }
 
 // readData 从文件中读取数据
-func (db *IPDB) ReadData(length int, offset ...uint32) (rs []byte) {
+func (db *IPDB) ReadData(length uint32, offset ...uint32) (rs []byte) {
 	if len(offset) > 0 {
 		db.SetOffset(offset[0])
 	}
-	readLength := uint32(length)
-	end := db.Offset + readLength
+
+	end := db.Offset + length
 	dataNum := uint32(len(db.Data.Data))
 	if db.Offset > dataNum {
 		return nil
@@ -81,4 +81,9 @@ func (db *IPDB) ReadArea(offset uint32) []byte {
 		return db.ReadString(areaOffset)
 	}
 	return db.ReadString(offset)
+}
+
+func (db *IPDB) GetMiddleOffset(start uint32, end uint32) uint32 {
+	records := ((end - start) / db.IndexLen) >> 1
+	return start + records*db.IndexLen
 }
