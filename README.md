@@ -25,6 +25,7 @@
 - Interactive query
 - Offline query
 - Both ipv4 and ipv6 supported
+- CDN provider query
 
 ## Install
 
@@ -139,6 +140,36 @@ Name:   google.com
 Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
 ```
 
+### Query CDN provider
+
+#### Use with other program
+
+```
+$ nslookup www.gov.cn | nali cdn
+Server:         127.0.0.53
+Address:        127.0.0.53#53
+
+Non-authoritative answer:
+www.gov.cn      canonical name = www.gov.cn.bsgslb.cn [白山云 CDN].
+www.gov.cn.bsgslb.cn [白山云 CDN]       canonical name = zgovweb.v.bsgslb.cn [白山云 CDN].
+Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
+Address: 185.232.56.148
+Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
+Address: 185.232.56.147
+Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
+Address: 2001:428:6402:21b::6
+Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
+Address: 2001:428:6402:21b::5
+```
+
+#### Use standalone
+
+You should parse cname by yourself
+
+```
+$ nali cdn cdn.somecdncname.com
+```
+
 ## Interface
 
 ### Help
@@ -150,6 +181,7 @@ Usage:
   nali [command]
 
 Available Commands:
+  cdn         Query cdn service provider
   help        Help about any command
   parse       Query IP information
   update      update chunzhen ip database
@@ -198,6 +230,7 @@ export NALI_DB=geoip
 - [ZX公网ipv6数据库](https://ip.zxinc.org/ipquery/)
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
 - [geoip2-golang解析器](https://github.com/oschwald/geoip2-golang)
+- [CDN provider数据库](https://github.com/SukkaLab/cdn)
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
