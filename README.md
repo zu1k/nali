@@ -128,7 +128,7 @@ Nali will insert ip information after ip
 Use like ipv4
 
 ```
-➜  ~ nslookup google.com | nali
+$ nslookup google.com | nali
 Server:         127.0.0.53 [局域网 IP]
 Address:        127.0.0.53 [局域网 IP]#53
 
