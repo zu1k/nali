@@ -2,8 +2,8 @@ package common
 
 import "os"
 
-// FileInfo: info of db file
-type FileInfo struct {
+// FileData: info of db file
+type FileData struct {
 	Data     []byte
 	FilePath string
 	FileBase *os.File
@@ -11,7 +11,7 @@ type FileInfo struct {
 
 // IPDB common ip database
 type IPDB struct {
-	Data     *FileInfo
+	Data     *FileData
 	Offset   uint32
 	ItemLen  uint32
 	IndexLen uint32

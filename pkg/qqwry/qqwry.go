@@ -20,7 +20,7 @@ type QQwry struct {
 // NewQQwry new db from path
 func NewQQwry(filePath string) QQwry {
 	var fileData []byte
-	var fileInfo common.FileInfo
+	var fileInfo common.FileData
 
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
