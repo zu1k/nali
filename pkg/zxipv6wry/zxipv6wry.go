@@ -8,6 +8,7 @@ import (
 	"math/big"
 	"net"
 	"os"
+	"strings"
 
 	"github.com/zu1k/nali/pkg/common"
 )
@@ -63,6 +64,10 @@ func (db ZXwry) Find(ip string) (result string) {
 	ipv6 := op.Uint64()
 	offset := db.searchIndex(ipv6)
 	country, area := db.getAddr(offset)
+
+	country = strings.ReplaceAll(country, " CZ88.NET", "")
+	area = strings.ReplaceAll(area, " CZ88.NET", "")
+
 	return fmt.Sprintf("%s %s", country, area)
 }
 
