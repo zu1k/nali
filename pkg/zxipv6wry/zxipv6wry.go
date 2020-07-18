@@ -49,8 +49,8 @@ func NewZXwry(filePath string) ZXwry {
 	}
 }
 
-func (q ZXwry) Find(ip string) (result string) {
-	q.Offset = 0
+func (db ZXwry) Find(ip string) (result string) {
+	db.Offset = 0
 
 	tp := big.NewInt(0)
 	op := big.NewInt(0)
@@ -60,58 +60,50 @@ func (q ZXwry) Find(ip string) (result string) {
 	tp.SetString("FFFFFFFFFFFFFFFF", 16)
 	op.And(op, tp)
 
-	v6ip := op.Uint64()
-	offset := q.searchIndex(v6ip)
-
-	country, area := q.getAddr(offset)
-
-	if area == "ZX" {
-		area = ""
-	}
-
+	ipv6 := op.Uint64()
+	offset := db.searchIndex(ipv6)
+	country, area := db.getAddr(offset)
 	return fmt.Sprintf("%s %s", country, area)
 }
 
-func (q *ZXwry) getAddr(offset uint32) (string, string) {
-	mode := q.ReadMode(offset)
+func (db *ZXwry) getAddr(offset uint32) (string, string) {
+	mode := db.ReadMode(offset)
 	if mode == common.RedirectMode1 {
-		// [IP][0x01][国家和地区信息的绝对偏移地址]
-		offset = q.ReadUInt24()
-		return q.getAddr(offset)
+		offset = db.ReadUInt24()
+		return db.getAddr(offset)
 	}
-	// [IP][0x02][信息的绝对偏移][...] or [IP][国家][...]
-	_offset := q.Offset - 1
-	c1 := q.ReadArea(_offset)
+	_offset := db.Offset - 1
+	c1 := db.ReadArea(_offset)
 	if mode == common.RedirectMode2 {
-		q.Offset = 4 + _offset
+		db.Offset = 4 + _offset
 	} else {
-		q.Offset = _offset + uint32(1+len(c1))
+		db.Offset = _offset + uint32(1+len(c1))
 	}
-	c2 := q.ReadArea(q.Offset)
+	c2 := db.ReadArea(db.Offset)
 	return string(c1), string(c2)
 }
 
-func (q *ZXwry) searchIndex(ip uint64) uint32 {
-	q.ItemLen = 8
-	q.IndexLen = 11
+func (db *ZXwry) searchIndex(ip uint64) uint32 {
+	db.ItemLen = 8
+	db.IndexLen = 11
 
-	header := q.Data.Data[8:24]
+	header := db.Data.Data[8:24]
 	start := binary.LittleEndian.Uint32(header[8:])
 	counts := binary.LittleEndian.Uint32(header[:8])
-	end := start + counts*q.IndexLen
+	end := start + counts*db.IndexLen
 
-	buf := make([]byte, q.IndexLen)
+	buf := make([]byte, db.IndexLen)
 
 	for {
-		mid := q.GetMiddleOffset(start, end)
-		buf = q.Data.Data[mid : mid+q.IndexLen]
-		_ip := binary.LittleEndian.Uint64(buf[:q.ItemLen])
+		mid := db.GetMiddleOffset(start, end)
+		buf = db.Data.Data[mid : mid+db.IndexLen]
+		_ip := binary.LittleEndian.Uint64(buf[:db.ItemLen])
 
-		if end-start == q.IndexLen {
-			if ip >= binary.LittleEndian.Uint64(q.Data.Data[end:end+q.ItemLen]) {
-				buf = q.Data.Data[end : end+q.IndexLen]
+		if end-start == db.IndexLen {
+			if ip >= binary.LittleEndian.Uint64(db.Data.Data[end:end+db.ItemLen]) {
+				buf = db.Data.Data[end : end+db.IndexLen]
 			}
-			return common.ByteToUInt32(buf[q.ItemLen:])
+			return common.ByteToUInt32(buf[db.ItemLen:])
 		}
 
 		if _ip > ip {
@@ -119,7 +111,7 @@ func (q *ZXwry) searchIndex(ip uint64) uint32 {
 		} else if _ip < ip {
 			start = mid
 		} else if _ip == ip {
-			return common.ByteToUInt32(buf[q.ItemLen:])
+			return common.ByteToUInt32(buf[db.ItemLen:])
 		}
 	}
 }
