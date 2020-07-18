@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/zu1k/nali/pkg/zxipv6wry"
+
 	"github.com/zu1k/nali/constant"
 	"github.com/zu1k/nali/internal/ipdb"
 	"github.com/zu1k/nali/internal/iptools"
@@ -13,26 +15,38 @@ import (
 )
 
 var (
-	db    ipdb.IPDB
+	db    []ipdb.IPDB
 	qqip  qqwry.QQwry
 	geoip geoip2.GeoIP
 )
 
 // init ip db content
 func InitIPDB(ipdbtype ipdb.IPDBType) {
+	db = make([]ipdb.IPDB, 1)
 	switch ipdbtype {
 	case ipdb.GEOIP2:
-		db = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
+		db[0] = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
 	case ipdb.QQIP:
-		db = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
+		db[0] = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
+		db = append(db, zxipv6wry.NewZXwry(filepath.Join(constant.HomePath, "ipv6wry.db")))
 	}
 }
 
 // parse several ips
 func ParseIPs(ips []string) {
+	db0 := db[0]
+	var db1 ipdb.IPDB
+	if len(db) > 1 {
+		db1 = db[1]
+	} else {
+		db1 = nil
+	}
 	for _, ip := range ips {
 		if iptools.ValidIP4(ip) {
-			result := db.Find(ip)
+			result := db0.Find(ip)
+			fmt.Println(formatResult(ip, result))
+		} else if iptools.ValidIP6(ip) && db1 != nil {
+			result := db1.Find(ip)
 			fmt.Println(formatResult(ip, result))
 		} else {
 			fmt.Println(ReplaceInString(ip))
@@ -41,10 +55,24 @@ func ParseIPs(ips []string) {
 }
 
 func ReplaceInString(str string) (result string) {
+	db0 := db[0]
+	var db1 ipdb.IPDB
+	if len(db) > 1 {
+		db1 = db[1]
+	} else {
+		db1 = nil
+	}
+
 	result = str
-	ips := iptools.GetIP4FromString(str)
-	for _, ip := range ips {
-		info := db.Find(ip)
+	ip4s := iptools.GetIP4FromString(str)
+	for _, ip := range ip4s {
+		info := db0.Find(ip)
+		result = strings.ReplaceAll(result, ip, formatResult(ip, info))
+	}
+
+	ip6s := iptools.GetIP6FromString(str)
+	for _, ip := range ip6s {
+		info := db1.Find(ip)
 		result = strings.ReplaceAll(result, ip, formatResult(ip, info))
 	}
 	return

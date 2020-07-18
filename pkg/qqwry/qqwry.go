@@ -13,16 +13,12 @@ import (
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
-const (
-	IndexLen = 7 // index length
-)
-
 type QQwry struct {
 	common.IPDB
 }
 
-// new db from path
-func NewQQwry(filePath string) common.IPDB {
+// NewQQwry new db from path
+func NewQQwry(filePath string) QQwry {
 	var tmpData []byte
 	var fileInfo common.FileInfo
 
@@ -58,9 +54,12 @@ func NewQQwry(filePath string) common.IPDB {
 	start := binary.LittleEndian.Uint32(buf[:4])
 	end := binary.LittleEndian.Uint32(buf[4:])
 
-	return common.IPDB{
-		Data:  &fileInfo,
-		IPNum: uint32((end-start)/IndexLen + 1),
+	return QQwry{
+		IPDB: common.IPDB{
+			Data:     &fileInfo,
+			IndexLen: 7,
+			IPNum:    (end-start)/7 + 1,
+		},
 	}
 }
 
@@ -81,6 +80,7 @@ func (q QQwry) Find(ip string) (res string) {
 	var gbkArea []byte
 
 	mode := q.ReadMode(offset + 4)
+	// [IP][0x01][国家和地区信息的绝对偏移地址]
 	if mode == common.RedirectMode1 {
 		countryOffset := q.ReadUInt24()
 		mode = q.ReadMode(countryOffset)
@@ -116,18 +116,18 @@ func (q *QQwry) searchIndex(ip uint32) uint32 {
 	start := binary.LittleEndian.Uint32(header[:4])
 	end := binary.LittleEndian.Uint32(header[4:])
 
-	buf := make([]byte, IndexLen)
+	buf := make([]byte, q.IndexLen)
 	mid := uint32(0)
 	_ip := uint32(0)
 
 	for {
-		mid = q.getMiddleOffset(start, end)
-		buf = q.ReadData(IndexLen, mid)
+		mid = q.GetMiddleOffset(start, end)
+		buf = q.ReadData(q.IndexLen, mid)
 		_ip = binary.LittleEndian.Uint32(buf[:4])
 
-		if end-start == IndexLen {
+		if end-start == q.IndexLen {
 			offset := common.ByteToUInt32(buf[4:])
-			buf = q.ReadData(IndexLen)
+			buf = q.ReadData(q.IndexLen)
 			if ip < binary.LittleEndian.Uint32(buf[:4]) {
 				return offset
 			}
@@ -143,10 +143,4 @@ func (q *QQwry) searchIndex(ip uint32) uint32 {
 			return common.ByteToUInt32(buf[4:])
 		}
 	}
-}
-
-// getMiddleOffset
-func (q *QQwry) getMiddleOffset(start uint32, end uint32) uint32 {
-	records := ((end - start) / IndexLen) >> 1
-	return start + records*IndexLen
 }
