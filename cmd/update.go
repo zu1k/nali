@@ -21,7 +21,7 @@ var updateCmd = &cobra.Command{
 		filePath := filepath.Join(constant.HomePath, "qqwry.dat")
 
 		log.Println("正在下载最新纯真 IP 库...")
-		tmpData, err := qqwry.GetOnline()
+		tmpData, err := qqwry.Download()
 		if err != nil {
 			log.Fatalln("下载失败", err.Error())
 			return
