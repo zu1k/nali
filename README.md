@@ -142,7 +142,7 @@ Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
 
 ### Query CDN provider
 
-#### Use with other program
+#### Query CDN provider only
 
 ```
 $ nslookup www.gov.cn | nali cdn
@@ -162,11 +162,10 @@ Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::5
 ```
 
-#### Also parse IP geo
+#### Also query IP geo
 
 ```
-
-➜  nali git:(master) ✗ nslookup www.gov.cn | nali
+$ nslookup www.gov.cn | nali
 Server:         127.0.0.53 [局域网 IP]
 Address:        127.0.0.53 [局域网 IP]#53
 
@@ -174,7 +173,7 @@ Non-authoritative answer:
 www.gov.cn      canonical name = www.gov.cn.bsgslb.cn [白山云 CDN].
 www.gov.cn.bsgslb.cn [白山云 CDN]       canonical name = zgovweb.v.bsgslb.cn [白山云 CDN].
 Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 103.104.170.25 [新加坡  CZ88.NET]
+Address: 103.104.170.25 [新加坡 ]
 Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::5 [美国Louisiana州Monroe Qwest Communications Company, LLC (CenturyLink)]
 Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
