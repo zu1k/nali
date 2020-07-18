@@ -57,6 +57,8 @@ Find document on: https://github.com/zu1k/nali
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		app.InitIPDB(ipdb.GetIPDBType())
+		app.InitCDNDB()
+
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
 			for stdin.Scan() {
