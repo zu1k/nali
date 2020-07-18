@@ -9,33 +9,22 @@ import (
 	"os"
 	"strings"
 
+	"github.com/zu1k/nali/pkg/common"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
-// db file info with data
-type FileInfo struct {
-	Data     []byte
-	FilePath string
-	FileBase *os.File
-	IPNum    int64
-}
-
-// qq ip db
-type QQwry struct {
-	data   *FileInfo
-	offset int64
-}
-
 const (
-	IndexLen      = 7    // index length
-	RedirectMode1 = 0x01 // one mode
-	RedirectMode2 = 0x02 //another mode
+	IndexLen = 7 // index length
 )
 
+type QQwry struct {
+	common.IPDB
+}
+
 // new db from path
-func NewQQwry(filePath string) QQwry {
+func NewQQwry(filePath string) common.IPDB {
 	var tmpData []byte
-	var fileInfo FileInfo
+	var fileInfo common.FileInfo
 
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
@@ -69,16 +58,10 @@ func NewQQwry(filePath string) QQwry {
 	start := binary.LittleEndian.Uint32(buf[:4])
 	end := binary.LittleEndian.Uint32(buf[4:])
 
-	fileInfo.IPNum = int64((end-start)/IndexLen + 1)
-
-	return QQwry{
-		data: &fileInfo,
+	return common.IPDB{
+		Data:  &fileInfo,
+		IPNum: uint32((end-start)/IndexLen + 1),
 	}
-}
-
-// setOffset 设置偏移量
-func (q *QQwry) setOffset(offset int64) {
-	q.offset = offset
 }
 
 // Find ip地址查询对应归属地信息
@@ -86,7 +69,10 @@ func (q QQwry) Find(ip string) (res string) {
 	if strings.Count(ip, ".") != 3 {
 		return
 	}
-	offset := q.searchIndex(binary.BigEndian.Uint32(net.ParseIP(ip).To4()))
+
+	ip4 := binary.BigEndian.Uint32(net.ParseIP(ip).To4())
+
+	offset := q.searchIndex(ip4)
 	if offset <= 0 {
 		return
 	}
@@ -94,26 +80,26 @@ func (q QQwry) Find(ip string) (res string) {
 	var gbkCountry []byte
 	var gbkArea []byte
 
-	mode := q.readMode(offset + 4)
-	if mode == RedirectMode1 {
-		countryOffset := q.readUInt24()
-		mode = q.readMode(countryOffset)
-		if mode == RedirectMode2 {
-			c := q.readUInt24()
-			gbkCountry = q.readString(c)
+	mode := q.ReadMode(offset + 4)
+	if mode == common.RedirectMode1 {
+		countryOffset := q.ReadUInt24()
+		mode = q.ReadMode(countryOffset)
+		if mode == common.RedirectMode2 {
+			c := q.ReadUInt24()
+			gbkCountry = q.ReadString(c)
 			countryOffset += 4
 		} else {
-			gbkCountry = q.readString(countryOffset)
+			gbkCountry = q.ReadString(countryOffset)
 			countryOffset += uint32(len(gbkCountry) + 1)
 		}
-		gbkArea = q.readArea(countryOffset)
-	} else if mode == RedirectMode2 {
-		countryOffset := q.readUInt24()
-		gbkCountry = q.readString(countryOffset)
-		gbkArea = q.readArea(offset + 8)
+		gbkArea = q.ReadArea(countryOffset)
+	} else if mode == common.RedirectMode2 {
+		countryOffset := q.ReadUInt24()
+		gbkCountry = q.ReadString(countryOffset)
+		gbkArea = q.ReadArea(offset + 8)
 	} else {
-		gbkCountry = q.readString(offset + 4)
-		gbkArea = q.readArea(offset + uint32(5+len(gbkCountry)))
+		gbkCountry = q.ReadString(offset + 4)
+		gbkArea = q.ReadArea(offset + uint32(5+len(gbkCountry)))
 	}
 
 	enc := simplifiedchinese.GBK.NewDecoder()
@@ -123,43 +109,9 @@ func (q QQwry) Find(ip string) (res string) {
 	return fmt.Sprintf("%s %s", country, area)
 }
 
-// readMode 获取偏移值类型
-func (q *QQwry) readMode(offset uint32) byte {
-	mode := q.readData(1, int64(offset))
-	return mode[0]
-}
-
-// readArea 读取区域
-func (q *QQwry) readArea(offset uint32) []byte {
-	mode := q.readMode(offset)
-	if mode == RedirectMode1 || mode == RedirectMode2 {
-		areaOffset := q.readUInt24()
-		if areaOffset == 0 {
-			return []byte("")
-		}
-		return q.readString(areaOffset)
-	}
-	return q.readString(offset)
-}
-
-// readString 获取字符串
-func (q *QQwry) readString(offset uint32) []byte {
-	q.setOffset(int64(offset))
-	data := make([]byte, 0, 30)
-	buf := make([]byte, 1)
-	for {
-		buf = q.readData(1)
-		if buf[0] == 0 {
-			break
-		}
-		data = append(data, buf[0])
-	}
-	return data
-}
-
 // searchIndex 查找索引位置
 func (q *QQwry) searchIndex(ip uint32) uint32 {
-	header := q.readData(8, 0)
+	header := q.ReadData(8, 0)
 
 	start := binary.LittleEndian.Uint32(header[:4])
 	end := binary.LittleEndian.Uint32(header[4:])
@@ -170,12 +122,12 @@ func (q *QQwry) searchIndex(ip uint32) uint32 {
 
 	for {
 		mid = q.getMiddleOffset(start, end)
-		buf = q.readData(IndexLen, int64(mid))
+		buf = q.ReadData(IndexLen, mid)
 		_ip = binary.LittleEndian.Uint32(buf[:4])
 
 		if end-start == IndexLen {
-			offset := byteToUInt32(buf[4:])
-			buf = q.readData(IndexLen)
+			offset := common.ByteToUInt32(buf[4:])
+			buf = q.ReadData(IndexLen)
 			if ip < binary.LittleEndian.Uint32(buf[:4]) {
 				return offset
 			}
@@ -188,47 +140,13 @@ func (q *QQwry) searchIndex(ip uint32) uint32 {
 		} else if _ip < ip { // 找到的比较小，向后移
 			start = mid
 		} else if _ip == ip {
-			return byteToUInt32(buf[4:])
+			return common.ByteToUInt32(buf[4:])
 		}
 	}
-}
-
-// readUInt24
-func (q *QQwry) readUInt24() uint32 {
-	buf := q.readData(3)
-	return byteToUInt32(buf)
 }
 
 // getMiddleOffset
 func (q *QQwry) getMiddleOffset(start uint32, end uint32) uint32 {
 	records := ((end - start) / IndexLen) >> 1
 	return start + records*IndexLen
-}
-
-// byteToUInt32 将 byte 转换为uint32
-func byteToUInt32(data []byte) uint32 {
-	i := uint32(data[0]) & 0xff
-	i |= (uint32(data[1]) << 8) & 0xff00
-	i |= (uint32(data[2]) << 16) & 0xff0000
-	return i
-}
-
-// readData 从文件中读取数据
-func (q *QQwry) readData(num int, offset ...int64) (rs []byte) {
-	if len(offset) > 0 {
-		q.setOffset(offset[0])
-	}
-	nums := int64(num)
-	end := q.offset + nums
-	dataNum := int64(len(q.data.Data))
-	if q.offset > dataNum {
-		return nil
-	}
-
-	if end > dataNum {
-		end = dataNum
-	}
-	rs = q.data.Data[q.offset:end]
-	q.offset = end
-	return
 }
