@@ -49,12 +49,12 @@ func ParseIPs(ips []string) {
 			result := db1.Find(ip)
 			fmt.Println(formatResult(ip, result))
 		} else {
-			fmt.Println(ReplaceInString(ip))
+			fmt.Println(ReplaceIPInString(ip))
 		}
 	}
 }
 
-func ReplaceInString(str string) (result string) {
+func ReplaceIPInString(str string) (result string) {
 	db0 := db[0]
 	var db1 ipdb.IPDB
 	if len(db) > 1 {
