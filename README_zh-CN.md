@@ -2,7 +2,7 @@
   <br>Nali<br>
 </h1>
 
-<h4 align="center">An offline tool for querying IP geographic information and CDN provider.</h4>
+<h4 align="center">一个查询IP地理信息和CDN提供商的离线终端工具.</h4>
 
 <p align="center">
   <a href="https://github.com/zu1k/nali/actions">
@@ -16,58 +16,56 @@
   </a>
 </p>
 
-#### [中文文档](https://github.com/zu1k/nali/blob/master/README_sh-CN.md)
+## 功能
 
-## Feature
+- 纯真 IPv4 离线数据库
+- ZX IPv6 离线数据库
+- Geoip2 城市数据库 (可选)
+- CDN 服务提供商查询
+- 支持管道处理
+- 支持交互式查询
+- 同时支持IPv4和IPv6
+- 查询完全离线
 
-- Chunzhen qqip database
-- ZX ipv6 database
-- Geoip2 city database
-- Pipeline support
-- Interactive query
-- Offline query
-- Both ipv4 and ipv6 supported
-- CDN provider query
+## 安装
 
-## Install
+### 从源码安装
 
-### Install from source
-
-Nali Requires Go >= 1.14. You can build it from source:
+Nali 需要预先安装 Go. 安装后可以从源码安装软件:
 
 ```sh
 $ go get -u -v github.com/zu1k/nali
 ```
 
-### Install pre-build binariy
+### 下载预编译的可执行程序
 
-Pre-built binaries are available here: [release](https://github.com/zu1k/nali/releases)
+可以从Release页面下载预编译好的可执行程序: [Release](https://github.com/zu1k/nali/releases)
 
-Download the binary compatible with your platform, unpack and copy to the directory in path
+你需要选择适合你系统和硬件架构的版本下载，解压后可直接运行
 
-### Install from docker
+### 使用 Docker 版本
 
 ```
 docker pull docker.pkg.github.com//zu1k/nali/nali:latest
 ```
 
-## Usage
+## 使用说明
 
-### Query a simple IP address
+### 查询一个IP的地理信息
 
 ```
 $ nali 1.2.3.4
 1.2.3.4 [澳大利亚 APNIC Debogon-prefix网络]
 ```
 
-#### or use `pipe`
+#### 或者 使用 `管道`
 
 ```
 $ echo IP 6.6.6.6 | nali
 IP 6.6.6.6 [美国 亚利桑那州华楚卡堡市美国国防部网络中心]
 ```
 
-### Query multiple IP addresses
+### 同时查询多个IP的地理信息
 
 ```
 $ nali 1.2.3.4 4.3.2.1 123.23.3.0
@@ -76,9 +74,9 @@ $ nali 1.2.3.4 4.3.2.1 123.23.3.0
 123.23.3.0 [越南 越南邮电集团公司]
 ```
 
-### Interactive query
+### 交互式查询
 
-use `exit` or  `quit` to quit
+使用 `exit` 或  `quit` 退出查询
 
 ```
 $ nali
@@ -91,7 +89,9 @@ $ nali
 quit
 ```
 
-### Use with dig
+### 与 `dig` 命令配合使用
+
+需要你系统中已经安装好 dig 程序
 
 ```
 $ dig nali.lgf.im +short | nali
@@ -100,7 +100,9 @@ $ dig nali.lgf.im +short | nali
 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-### Use with nslookup
+### 与 `nslookup` 命令配合使用
+
+需要你系统中已经安装好 nslookup 程序
 
 ```
 $ nslookup nali.lgf.im 8.8.8.8 | nali
@@ -116,19 +118,19 @@ Name:   nali.lgf.im
 Address: 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-### Use with any other program
+### 与任意程序配合使用
 
-Because nali can read the contents of the `stdin` pipeline, it can be used with any program
+因为 nali 支持管道处理，所以可以和任意程序配合使用
 
 ```
 bash abc.sh | nali
 ```
 
-Nali will insert ip information after ip
+Nali 将在 IP后面插入IP地理信息，CDN域名后面插入CDN服务提供商信息
 
-### IPV6 support
+### 支持IPv6
 
-Use like ipv4
+和 IPv4 用法完全相同
 
 ```
 $ nslookup google.com | nali
@@ -142,9 +144,11 @@ Name:   google.com
 Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
 ```
 
-### Query CDN provider
+### 查询 CDN 服务提供商
 
-#### Query CDN provider only
+因为 CDN 服务通常使用 CNAME 的域名解析方式，所以推荐与 `nslookup` 或者 `dig` 配合使用，在已经知道 CNAME 后可单独使用
+
+#### 只查询 CDN 服务提供商
 
 ```
 $ nslookup www.gov.cn | nali cdn
@@ -164,7 +168,7 @@ Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::5
 ```
 
-#### Also query IP geo
+#### 查询所有信息
 
 ```
 $ nslookup www.gov.cn | nali
@@ -182,17 +186,17 @@ Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Company, LLC (CenturyLink)]
 ```
 
-#### Use standalone
+#### 单独使用
 
-You should parse cname by yourself
+需要提前查询到 CNAME 域名
 
 ```
 $ nali cdn cdn.somecdncname.com
 ```
 
-## Interface
+## 用户交互
 
-### Help
+### 查看帮助
 
 ```
 $ nali --help
@@ -213,7 +217,7 @@ Flags:
 Use "nali [command] --help" for more information about a command.
 ```
 
-### Update chunzhen IP database
+### 更新纯真数据库
 
 ```
 $ nali update
@@ -221,28 +225,28 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-### Use Geoip2 database
+### 使用 Geoip2 数据库
 
-Set environment variables `NALI_DB`
+需要设置环境变量： `NALI_DB`
 
-supported database:
+支持的变量内容:
 
 - Geoip2 `['geoip', 'geoip2', 'geo']`
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
 
-#### Windows
+#### Windows平台
 
 ```
 set NALI_DB=geoip
 ```
 
-#### Linux
+#### Linux平台
 
 ```
 export NALI_DB=geoip
 ```
 
-## Thanks
+## 感谢列表
 
 - [纯真QQIP离线数据库](http://www.cz88.net/fox/ipdat.shtml)
 - [qqwry mirror](https://qqwry.mirror.noc.one/)
@@ -254,6 +258,6 @@ export NALI_DB=geoip
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
-## License
+## 开源证书
 
 MIT
