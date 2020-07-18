@@ -23,15 +23,8 @@ func NewZXwry(filePath string) ZXwry {
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
-		log.Println("文件不存在，尝试从网络获取最新ZX IPv6 库")
-		tmpData, err = GetOnline()
-		if err != nil {
-			panic(err)
-		} else {
-			if err := ioutil.WriteFile(filePath, tmpData, 0644); err == nil {
-				log.Printf("已将最新的ZX IPv6 库保存到本地 %s ", filePath)
-			}
-		}
+		log.Println("文件不存在，请自行下载 ZX IPV6库，并保存在", filePath)
+		os.Exit(1)
 	} else {
 		// 打开文件句柄
 		fileInfo.FileBase, err = os.OpenFile(filePath, os.O_RDONLY, 0400)
