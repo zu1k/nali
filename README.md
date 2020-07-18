@@ -2,7 +2,7 @@
   <br>Nali<br>
 </h1>
 
-<h4 align="center">An offline tool for querying IP geographic information.</h4>
+<h4 align="center">An offline tool for querying IP geographic information and CDN provider.</h4>
 
 <p align="center">
   <a href="https://github.com/zu1k/nali/actions">
