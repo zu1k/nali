@@ -24,7 +24,7 @@
 - Pipeline support
 - Interactive query
 - Offline query
-- Both ipv4 and ipv6 support
+- Both ipv4 and ipv6 supported
 
 ## Install
 
