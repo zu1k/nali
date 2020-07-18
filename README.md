@@ -123,6 +123,22 @@ bash abc.sh | nali
 
 Nali will insert ip information after ip
 
+### IPV6 support
+
+Use like ipv4
+
+```
+➜  ~ nslookup google.com | nali
+Server:         127.0.0.53 [局域网 IP]
+Address:        127.0.0.53 [局域网 IP]#53
+
+Non-authoritative answer:
+Name:   google.com
+Address: 216.58.211.110 [美国 Google全球边缘网络]
+Name:   google.com
+Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
+```
+
 ## Interface
 
 ### Help
