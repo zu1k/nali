@@ -46,7 +46,7 @@ Download the binary compatible with your platform, unpack and copy to the direct
 ### Install from docker
 
 ```
-docker pull docker.pkg.github.com//zu1k/nali/nali:v0.0.2
+docker pull docker.pkg.github.com//zu1k/nali/nali:latest
 ```
 
 ## Usage
