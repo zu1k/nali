@@ -62,7 +62,7 @@ docker pull docker.pkg.github.com//zu1k/nali/nali:latest
 
 ## Usage
 
-[![Nali](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD.svg)](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD)
+<a href="https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD" target="_blank"><img width="520" src="https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD.svg" /></a>
 
 ### Query a simple IP address
 
