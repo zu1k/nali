@@ -36,6 +36,7 @@ However the C version has too few functions, and the js version of Sukka is too 
 - Offline query
 - Both ipv4 and ipv6 supported
 - CDN provider query
+- Full platform support
 
 ## Install
 
