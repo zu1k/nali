@@ -45,7 +45,7 @@ func NewZXwry(filePath string) ZXwry {
 	return ZXwry{
 		IPDB: common.IPDB{
 			Data:     &fileInfo,
-			IndexLen: 7,
+			IndexLen: 11,
 		},
 	}
 }
@@ -77,22 +77,19 @@ func (db *ZXwry) getAddr(offset uint32) (string, string) {
 		offset = db.ReadUInt24()
 		return db.getAddr(offset)
 	}
-	_offset := db.Offset - 1
-	c1 := db.ReadArea(_offset)
+	realOffset := db.Offset - 1
+	c1 := db.ReadArea(realOffset)
 	if mode == common.RedirectMode2 {
-		db.Offset = 4 + _offset
+		db.Offset = 4 + realOffset
 	} else {
-		db.Offset = _offset + uint32(1+len(c1))
+		db.Offset = realOffset + uint32(1+len(c1))
 	}
 	c2 := db.ReadArea(db.Offset)
 	return string(c1), string(c2)
 }
 
 func (db *ZXwry) searchIndex(ip uint64) uint32 {
-	db.ItemLen = 8
-	db.IndexLen = 11
-
-	header := db.Data.Data[8:24]
+	header := db.ReadData(16, 8)
 	start := binary.LittleEndian.Uint32(header[8:])
 	counts := binary.LittleEndian.Uint32(header[:8])
 	end := start + counts*db.IndexLen
@@ -101,22 +98,22 @@ func (db *ZXwry) searchIndex(ip uint64) uint32 {
 
 	for {
 		mid := db.GetMiddleOffset(start, end)
-		buf = db.Data.Data[mid : mid+db.IndexLen]
-		_ip := binary.LittleEndian.Uint64(buf[:db.ItemLen])
+		buf = db.ReadData(11, mid)
+		ipBytes := binary.LittleEndian.Uint64(buf[:8])
 
 		if end-start == db.IndexLen {
-			if ip >= binary.LittleEndian.Uint64(db.Data.Data[end:end+db.ItemLen]) {
-				buf = db.Data.Data[end : end+db.IndexLen]
+			if ip >= binary.LittleEndian.Uint64(db.ReadData(8, end)) {
+				buf = db.ReadData(11, end)
 			}
-			return common.ByteToUInt32(buf[db.ItemLen:])
+			return common.ByteToUInt32(buf[8:])
 		}
 
-		if _ip > ip {
+		if ipBytes > ip {
 			end = mid
-		} else if _ip < ip {
+		} else if ipBytes < ip {
 			start = mid
-		} else if _ip == ip {
-			return common.ByteToUInt32(buf[db.ItemLen:])
+		} else if ipBytes == ip {
+			return common.ByteToUInt32(buf[8:])
 		}
 	}
 }
