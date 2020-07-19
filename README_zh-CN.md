@@ -1,5 +1,3 @@
-[![Nali](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD.svg)](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD)
-
 <h1 align="center">
   <br>Nali<br>
 </h1>
@@ -62,6 +60,8 @@ docker pull docker.pkg.github.com//zu1k/nali/nali:latest
 ```
 
 ## 使用说明
+
+[![Nali](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD.svg)](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD)
 
 ### 查询一个IP的地理信息
 
