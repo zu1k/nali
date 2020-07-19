@@ -16,7 +16,7 @@
   </a>
 </p>
 
-#### [中文文档](https://github.com/zu1k/nali/blob/master/README_sh-CN.md)
+#### [中文文档](https://github.com/zu1k/nali/blob/master/README_zh-CN.md)
 
 ## Feature
 
