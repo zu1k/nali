@@ -1,3 +1,5 @@
+[![Nali](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD.svg)](https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD)
+
 <h1 align="center">
   <br>Nali<br>
 </h1>
