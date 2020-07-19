@@ -254,6 +254,10 @@ export NALI_DB=geoip
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
+## Origin
+
+Inspired by [](https://github.com/meteoral/Nali) and [nali-cli](https://github.com/SukkaW/nali-cli)
+
 ## License
 
 MIT

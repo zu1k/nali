@@ -13,7 +13,6 @@ type FileData struct {
 type IPDB struct {
 	Data     *FileData
 	Offset   uint32
-	ItemLen  uint32
 	IndexLen uint32
 	IPNum    uint32
 }
