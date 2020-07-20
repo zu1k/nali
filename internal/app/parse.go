@@ -5,13 +5,13 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/zu1k/nali/pkg/zxipv6wry"
-
 	"github.com/zu1k/nali/constant"
 	"github.com/zu1k/nali/internal/ipdb"
 	"github.com/zu1k/nali/internal/iptools"
 	geoip2 "github.com/zu1k/nali/pkg/geoip"
+	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
+	"github.com/zu1k/nali/pkg/zxipv6wry"
 )
 
 var (
@@ -28,6 +28,9 @@ func InitIPDB(ipdbtype ipdb.IPDBType) {
 		db[0] = geoip2.NewGeoIP(filepath.Join(constant.HomePath, "GeoLite2-City.mmdb"))
 	case ipdb.QQIP:
 		db[0] = qqwry.NewQQwry(filepath.Join(constant.HomePath, "qqwry.dat"))
+		db = append(db, zxipv6wry.NewZXwry(filepath.Join(constant.HomePath, "ipv6wry.db")))
+	case ipdb.IPIP:
+		db[0] = ipip.NewIPIPFree(filepath.Join(constant.HomePath, "ipipfree.ipdb"))
 		db = append(db, zxipv6wry.NewZXwry(filepath.Join(constant.HomePath, "ipv6wry.db")))
 	}
 }

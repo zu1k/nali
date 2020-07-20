@@ -18,6 +18,8 @@ func GetIPDBType() IPDBType {
 		return GEOIP2
 	case "chunzhen", "qqip", "qqwry":
 		return QQIP
+	case "ipip", "ipipfree", "ipip.net":
+		return IPIP
 	default:
 		return QQIP
 	}
