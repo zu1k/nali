@@ -28,7 +28,8 @@ func NewQQwry(filePath string) QQwry {
 		log.Println("文件不存在，尝试从网络获取最新纯真 IP 库")
 		fileData, err = Download()
 		if err != nil {
-			panic(err)
+			log.Printf("纯真IP库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
+			log.Println("下载链接： https://qqwry.mirror.noc.one/qqwry.rar")
 		} else {
 			if err := ioutil.WriteFile(filePath, fileData, 0644); err == nil {
 				log.Printf("已将最新的 纯真IP库 保存到本地: %s ", filePath)

@@ -24,7 +24,8 @@ func NewZXwry(filePath string) ZXwry {
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
-		log.Println("文件不存在，请自行下载 ZX IPV6库，并保存在", filePath)
+		log.Println("文件不存在，请自行下载 ZX IPV6库，解压并保存在", filePath)
+		log.Println("下载链接： https://www.zxinc.org/ip.7z")
 		os.Exit(1)
 	} else {
 		// 打开文件句柄
