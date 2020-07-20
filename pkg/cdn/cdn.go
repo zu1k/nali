@@ -30,6 +30,7 @@ func NewCDN(filePath string) CDN {
 		if err != nil {
 			log.Printf("CDN数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
 			log.Println("下载链接： https://cdn.jsdelivr.net/gh/SukkaLab/cdn/dist/cdn.json")
+			os.Exit(1)
 		} else {
 			if err := ioutil.WriteFile(filePath, cdnData, 0644); err == nil {
 				log.Printf("已将最新的 CDN数据库 保存到本地: %s \n", filePath)
