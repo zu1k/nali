@@ -31,6 +31,7 @@ However the C version has too few functions, and the js version of Sukka is too 
 - Chunzhen qqip database
 - ZX ipv6 database
 - Geoip2 city database
+- IPIP free database
 - Pipeline support
 - Interactive query
 - Offline query
@@ -232,7 +233,7 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-### Use Geoip2 database
+### Use other database
 
 Set environment variables `NALI_DB`
 
@@ -240,17 +241,34 @@ supported database:
 
 - Geoip2 `['geoip', 'geoip2', 'geo']`
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
+- IPIP `['ipip', 'ipipfree', 'ipip.net']`
 
 #### Windows
+
+##### Use geoip db
 
 ```
 set NALI_DB=geoip
 ```
 
+##### Use ipip db
+
+```
+set NALI_DB=ipip
+```
+
 #### Linux
+
+##### Use geoip db
 
 ```
 export NALI_DB=geoip
+```
+
+##### Use ipip db
+
+```
+export NALI_DB=ipip
 ```
 
 ## Thanks
@@ -262,6 +280,8 @@ export NALI_DB=geoip
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
 - [geoip2-golang解析器](https://github.com/oschwald/geoip2-golang)
 - [CDN provider数据库](https://github.com/SukkaLab/cdn)
+- [IPIP数据库](https://www.ipip.net/product/ip.html)
+- [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
