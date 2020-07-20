@@ -18,15 +18,23 @@ type ZXwry struct {
 }
 
 func NewZXwry(filePath string) ZXwry {
-	var tmpData []byte
+	var fileData []byte
 	var fileInfo common.FileData
 
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
-		log.Println("文件不存在，请自行下载 ZX IPV6库，解压并保存在", filePath)
-		log.Println("下载链接： https://www.zxinc.org/ip.7z")
-		os.Exit(1)
+		log.Println("文件不存在，尝试从网络获取最新ZX IPv6数据库")
+		fileData, err = Download(filePath)
+		if err != nil {
+			log.Printf("ZX IPv6数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
+			log.Println("下载链接： https://www.zxinc.org/ip.7z")
+			os.Exit(1)
+		} else {
+			if err := ioutil.WriteFile(filePath, fileData, 0644); err == nil {
+				log.Printf("已将最新的 ZX IPv6数据库 保存到本地: %s ", filePath)
+			}
+		}
 	} else {
 		// 打开文件句柄
 		fileInfo.FileBase, err = os.OpenFile(filePath, os.O_RDONLY, 0400)
@@ -35,13 +43,13 @@ func NewZXwry(filePath string) ZXwry {
 		}
 		defer fileInfo.FileBase.Close()
 
-		tmpData, err = ioutil.ReadAll(fileInfo.FileBase)
+		fileData, err = ioutil.ReadAll(fileInfo.FileBase)
 		if err != nil {
 			panic(err)
 		}
 	}
 
-	fileInfo.Data = tmpData
+	fileInfo.Data = fileData
 
 	return ZXwry{
 		IPDB: common.IPDB{
