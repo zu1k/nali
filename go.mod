@@ -3,6 +3,7 @@ module github.com/zu1k/nali
 go 1.14
 
 require (
+	github.com/ipipdotnet/ipdb-go v1.3.0
 	github.com/oschwald/geoip2-golang v1.4.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect

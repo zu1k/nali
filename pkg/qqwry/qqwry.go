@@ -22,7 +22,6 @@ func NewQQwry(filePath string) QQwry {
 	var fileData []byte
 	var fileInfo common.FileData
 
-	// 判断文件是否存在
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，尝试从网络获取最新纯真 IP 库")
