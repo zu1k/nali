@@ -30,6 +30,7 @@
 - 纯真 IPv4 离线数据库
 - ZX IPv6 离线数据库
 - Geoip2 城市数据库 (可选)
+- IPIP 数据库 (可选)
 - CDN 服务提供商查询
 - 支持管道处理
 - 支持交互式查询
@@ -248,14 +249,30 @@ $ nali update
 
 #### Windows平台
 
+##### 使用geoip数据库
+
 ```
 set NALI_DB=geoip
 ```
 
+##### 使用ipip数据库
+
+```
+set NALI_DB=ipip
+```
+
 #### Linux平台
+
+##### 使用geoip数据库
 
 ```
 export NALI_DB=geoip
+```
+
+##### 使用ipip数据库
+
+```
+export NALI_DB=ipip
 ```
 
 ## 感谢列表
@@ -267,6 +284,8 @@ export NALI_DB=geoip
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
 - [geoip2-golang解析器](https://github.com/oschwald/geoip2-golang)
 - [CDN provider数据库](https://github.com/SukkaLab/cdn)
+- [IPIP数据库](https://www.ipip.net/product/ip.html)
+- [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
