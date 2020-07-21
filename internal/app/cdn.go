@@ -9,6 +9,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/zu1k/nali/internal/tools"
+
 	"github.com/zu1k/nali/constant"
 
 	"github.com/zu1k/nali/pkg/cdn"
@@ -57,7 +59,7 @@ func ReplaceCDNInString(str string) (result string) {
 			if _, found := done[cname]; found {
 				continue
 			}
-			result = strings.ReplaceAll(result, cname, fmt.Sprintf("%s [%s]", cname, name))
+			result = tools.ReplaceAdd(result, cname, fmt.Sprintf("%s [%s]", cname, name))
 			done[cname] = true
 		}
 	}

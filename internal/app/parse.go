@@ -3,11 +3,10 @@ package app
 import (
 	"fmt"
 	"path/filepath"
-	"strings"
 
 	"github.com/zu1k/nali/constant"
 	"github.com/zu1k/nali/internal/ipdb"
-	"github.com/zu1k/nali/internal/iptools"
+	"github.com/zu1k/nali/internal/tools"
 	geoip2 "github.com/zu1k/nali/pkg/geoip"
 	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
@@ -45,10 +44,10 @@ func ParseIPs(ips []string) {
 		db1 = nil
 	}
 	for _, ip := range ips {
-		if iptools.ValidIP4(ip) {
+		if tools.ValidIP4(ip) {
 			result := db0.Find(ip)
 			fmt.Println(formatResult(ip, result))
-		} else if iptools.ValidIP6(ip) && db1 != nil {
+		} else if tools.ValidIP6(ip) && db1 != nil {
 			result := db1.Find(ip)
 			fmt.Println(formatResult(ip, result))
 		} else {
@@ -67,16 +66,16 @@ func ReplaceIPInString(str string) (result string) {
 	}
 
 	result = str
-	ip4s := iptools.GetIP4FromString(str)
+	ip4s := tools.GetIP4FromString(str)
 	for _, ip := range ip4s {
 		info := db0.Find(ip)
-		result = strings.ReplaceAll(result, ip, formatResult(ip, info))
+		result = tools.ReplaceAdd(result, ip, formatResult(ip, info))
 	}
 
-	ip6s := iptools.GetIP6FromString(str)
+	ip6s := tools.GetIP6FromString(str)
 	for _, ip := range ip6s {
 		info := db1.Find(ip)
-		result = strings.ReplaceAll(result, ip, formatResult(ip, info))
+		result = tools.ReplaceAdd(result, ip, formatResult(ip, info))
 	}
 	return
 }
