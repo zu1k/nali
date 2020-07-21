@@ -6,14 +6,26 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
-
-	"github.com/zu1k/nali/constant"
 
 	"github.com/saracen/go7z"
 )
 
 func Download(filePath string) (data []byte, err error) {
+	data, err = getData()
+	if err != nil {
+		log.Printf("ZX IPv6数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
+		log.Println("下载链接： https://www.zxinc.org/ip.7z")
+		return
+	}
+
+	if err = ioutil.WriteFile(filePath, data, 0644); err == nil {
+		log.Printf("已将最新的 ZX IPv6数据库 保存到本地: %s ", filePath)
+	}
+	return
+
+}
+
+func getData() (data []byte, err error) {
 	resp, err := http.Get("https://www.zxinc.org/ip.7z")
 	if err != nil {
 		return nil, err
@@ -25,29 +37,34 @@ func Download(filePath string) (data []byte, err error) {
 		return nil, err
 	}
 
-	file7z := filepath.Join(constant.HomePath, "ip.7z")
-	_, err = os.Stat(file7z)
-	if err != nil && os.IsNotExist(err) {
-		if err := ioutil.WriteFile(file7z, body, 0644); err == nil {
-			Un7z(file7z)
-			err = os.Remove(file7z)
-		}
-	} else {
-		Un7z(file7z)
-		err = os.Remove(file7z)
+	file7z, err := ioutil.TempFile("", "*")
+	if err != nil {
+		panic(err)
 	}
+	defer os.Remove(file7z.Name())
 
-	return ioutil.ReadFile(filePath)
+	if err := ioutil.WriteFile(file7z.Name(), body, 0644); err == nil {
+		return Un7z(file7z.Name())
+	}
+	return
 }
 
-func Un7z(filePath string) {
+func Un7z(filePath string) (data []byte, err error) {
 	sz, err := go7z.OpenReader(filePath)
 	if err != nil {
 		panic(err)
 	}
 	defer sz.Close()
 
-	f, err := os.Create("tmp")
+	fileNoNeed, err := ioutil.TempFile("", "*")
+	if err != nil {
+		panic(err)
+	}
+	fileNeed, err := ioutil.TempFile("", "*")
+	if err != nil {
+		panic(err)
+	}
+
 	if err != nil {
 		panic(err)
 	}
@@ -61,24 +78,20 @@ func Un7z(filePath string) {
 		}
 
 		if hdr.Name == "ipv6wry.db" {
-			f, err := os.Create(filepath.Join(constant.HomePath, "ipv6wry.db"))
-			if err != nil {
-				panic(err)
-			}
-			defer f.Close()
-
-			if _, err := io.Copy(f, sz); err != nil {
+			if _, err := io.Copy(fileNeed, sz); err != nil {
 				log.Fatalln("ZX ipv6数据库解压出错：", err.Error())
 			}
 		} else {
-			if _, err := io.Copy(f, sz); err != nil {
+			if _, err := io.Copy(fileNoNeed, sz); err != nil {
 				log.Fatalln("ZX ipv6数据库解压出错：", err.Error())
 			}
 		}
 	}
-	err = f.Close()
+	err = fileNoNeed.Close()
 	if err != nil {
 		panic(err)
 	}
-	_ = os.Remove("tmp")
+	defer os.Remove(fileNoNeed.Name())
+	defer os.Remove(fileNeed.Name())
+	return ioutil.ReadFile(fileNeed.Name())
 }
