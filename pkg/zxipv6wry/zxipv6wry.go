@@ -53,15 +53,12 @@ func NewZXwry(filePath string) ZXwry {
 
 	return ZXwry{
 		IPDB: common.IPDB{
-			Data:     &fileInfo,
-			IndexLen: 11,
+			Data: &fileInfo,
 		},
 	}
 }
 
 func (db ZXwry) Find(ip string) (result string) {
-	db.Offset = 0
-
 	tp := big.NewInt(0)
 	op := big.NewInt(0)
 	tp.SetBytes(net.ParseIP(ip).To16())
@@ -101,16 +98,16 @@ func (db *ZXwry) searchIndex(ip uint64) uint32 {
 	header := db.ReadData(16, 8)
 	start := binary.LittleEndian.Uint32(header[8:])
 	counts := binary.LittleEndian.Uint32(header[:8])
-	end := start + counts*db.IndexLen
+	end := start + counts*11
 
-	buf := make([]byte, db.IndexLen)
+	buf := make([]byte, 11)
 
 	for {
-		mid := db.GetMiddleOffset(start, end)
+		mid := common.GetMiddleOffset(start, end, 11)
 		buf = db.ReadData(11, mid)
 		ipBytes := binary.LittleEndian.Uint64(buf[:8])
 
-		if end-start == db.IndexLen {
+		if end-start == 11 {
 			if ip >= binary.LittleEndian.Uint64(db.ReadData(8, end)) {
 				buf = db.ReadData(11, end)
 			}
