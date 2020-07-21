@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/zu1k/nali/pkg/common"
+
 	"github.com/saracen/go7z"
 )
 
@@ -17,7 +19,7 @@ func Download(filePath string) (data []byte, err error) {
 		log.Println("下载链接： https://www.zxinc.org/ip.7z")
 		return
 	}
-
+	common.ExistThenRemove(filePath)
 	if err = ioutil.WriteFile(filePath, data, 0644); err == nil {
 		log.Printf("已将最新的 ZX IPv6数据库 保存到本地: %s ", filePath)
 	}

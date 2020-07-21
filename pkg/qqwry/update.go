@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/zu1k/nali/pkg/common"
 )
 
 func Download(filePath string) (data []byte, err error) {
@@ -16,7 +18,7 @@ func Download(filePath string) (data []byte, err error) {
 		log.Println("下载链接： https://qqwry.mirror.noc.one/qqwry.rar")
 		return
 	}
-
+	common.ExistThenRemove(filePath)
 	if err = ioutil.WriteFile(filePath, data, 0644); err == nil {
 		log.Printf("已将最新的 纯真IP库 保存到本地: %s ", filePath)
 	}

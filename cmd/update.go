@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
+
+	"github.com/zu1k/nali/pkg/cdn"
+	"github.com/zu1k/nali/pkg/zxipv6wry"
 
 	"github.com/zu1k/nali/constant"
 	"github.com/zu1k/nali/pkg/qqwry"
@@ -18,27 +19,31 @@ var updateCmd = &cobra.Command{
 	Short: "update chunzhen ip database",
 	Long:  `update chunzhen ip database`,
 	Run: func(cmd *cobra.Command, args []string) {
+		// Chunzhen ipv4
 		filePath := filepath.Join(constant.HomePath, "qqwry.dat")
-
-		log.Println("正在下载最新纯真 IP 库...")
-		tmpData, err := qqwry.Download(filePath)
+		log.Println("正在下载最新 纯真 IPv4数据库...")
+		_, err := qqwry.Download(filePath)
 		if err != nil {
 			log.Fatalln("下载失败", err.Error())
 			return
 		}
 
-		// 文件存在就删除
-		_, err = os.Stat(filePath)
-		if err == nil {
-			err = os.Remove(filePath)
-			if err != nil {
-				log.Fatalln("旧文件删除失败", err.Error())
-				os.Exit(1)
-			}
+		// ZX ipv6
+		filePath = filepath.Join(constant.HomePath, "ipv6wry.db")
+		log.Println("正在下载最新 ZX IPv6数据库...")
+		_, err = zxipv6wry.Download(filePath)
+		if err != nil {
+			log.Fatalln("下载失败", err.Error())
+			return
 		}
 
-		if err := ioutil.WriteFile(filePath, tmpData, 0644); err == nil {
-			log.Printf("已将最新的纯真 IP 库保存到本地 %s ", filePath)
+		// cdn
+		filePath = filepath.Join(constant.HomePath, "cdn.json")
+		log.Println("正在下载最新 CDN服务提供商数据库...")
+		_, err = cdn.Download(filePath)
+		if err != nil {
+			log.Fatalln("下载失败", err.Error())
+			return
 		}
 	},
 }

@@ -2,9 +2,7 @@ package app
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -79,23 +77,9 @@ func UpdateDB() {
 	filePath := filepath.Join(constant.HomePath, "cdn.json")
 
 	log.Println("正在下载最新 CDN数据库...")
-	tmpData, err := cdn.Download()
+	_, err := cdn.Download(filePath)
 	if err != nil {
 		log.Fatalln("下载失败", err.Error())
 		return
-	}
-
-	// 文件存在就删除
-	_, err = os.Stat(filePath)
-	if err == nil {
-		err = os.Remove(filePath)
-		if err != nil {
-			log.Fatalln("旧文件删除失败", err.Error())
-			os.Exit(1)
-		}
-	}
-
-	if err := ioutil.WriteFile(filePath, tmpData, 0644); err == nil {
-		log.Printf("已将最新的CDN数据库保存到本地 %s ", filePath)
 	}
 }
