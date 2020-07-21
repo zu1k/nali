@@ -275,6 +275,20 @@ export NALI_DB=geoip
 export NALI_DB=ipip
 ```
 
+### 更换数据库目录
+
+如果未指定数据库存放目录，数据库默认将存放在 `~/.nali`
+
+设置环境变量 `NALI_DB_HOME` 来指定数据库目录
+
+```
+set NALI_DB_HOME=D:\nalidb
+
+or
+
+export NALI_DB_HOME=/home/nali
+```
+
 ## 感谢列表
 
 - [纯真QQIP离线数据库](http://www.cz88.net/fox/ipdat.shtml)
