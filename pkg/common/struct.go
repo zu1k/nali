@@ -11,10 +11,9 @@ type FileData struct {
 
 // IPDB common ip database
 type IPDB struct {
-	Data     *FileData
-	Offset   uint32
-	IndexLen uint32
-	IPNum    uint32
+	Data   *FileData
+	Offset uint32
+	IPNum  uint32
 }
 
 // setOffset 设置偏移量
@@ -82,7 +81,7 @@ func (db *IPDB) ReadArea(offset uint32) []byte {
 	return db.ReadString(offset)
 }
 
-func (db *IPDB) GetMiddleOffset(start uint32, end uint32) uint32 {
-	records := ((end - start) / db.IndexLen) >> 1
-	return start + records*db.IndexLen
+func GetMiddleOffset(start uint32, end uint32, indexLen uint32) uint32 {
+	records := ((end - start) / indexLen) >> 1
+	return start + records*indexLen
 }

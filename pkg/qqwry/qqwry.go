@@ -51,9 +51,8 @@ func NewQQwry(filePath string) QQwry {
 
 	return QQwry{
 		IPDB: common.IPDB{
-			Data:     &fileInfo,
-			IndexLen: 7,
-			IPNum:    (end-start)/7 + 1,
+			Data:  &fileInfo,
+			IPNum: (end-start)/7 + 1,
 		},
 	}
 }
@@ -117,18 +116,18 @@ func (db *QQwry) searchIndex(ip uint32) uint32 {
 	start := binary.LittleEndian.Uint32(header[:4])
 	end := binary.LittleEndian.Uint32(header[4:])
 
-	buf := make([]byte, db.IndexLen)
+	buf := make([]byte, 7)
 	mid := uint32(0)
 	_ip := uint32(0)
 
 	for {
-		mid = db.GetMiddleOffset(start, end)
-		buf = db.ReadData(db.IndexLen, mid)
+		mid = common.GetMiddleOffset(start, end, 7)
+		buf = db.ReadData(7, mid)
 		_ip = binary.LittleEndian.Uint32(buf[:4])
 
-		if end-start == db.IndexLen {
+		if end-start == 7 {
 			offset := common.ByteToUInt32(buf[4:])
-			buf = db.ReadData(db.IndexLen)
+			buf = db.ReadData(7)
 			if ip < binary.LittleEndian.Uint32(buf[:4]) {
 				return offset
 			}
