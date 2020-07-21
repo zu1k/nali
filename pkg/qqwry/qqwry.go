@@ -109,6 +109,9 @@ func (db QQwry) Find(ip string) (res string) {
 	country = strings.ReplaceAll(country, " CZ88.NET", "")
 	area = strings.ReplaceAll(area, " CZ88.NET", "")
 
+	if area == "" {
+		return country
+	}
 	return fmt.Sprintf("%s %s", country, area)
 }
 
