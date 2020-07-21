@@ -5,23 +5,38 @@ import (
 	"compress/zlib"
 	"encoding/binary"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
-func Download() (data []byte, err error) {
+func Download(filePath string) (data []byte, err error) {
+	data, err = getData()
+	if err != nil {
+		log.Printf("纯真IP库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
+		log.Println("下载链接： https://qqwry.mirror.noc.one/qqwry.rar")
+		return
+	}
+
+	if err = ioutil.WriteFile(filePath, data, 0644); err == nil {
+		log.Printf("已将最新的 纯真IP库 保存到本地: %s ", filePath)
+	}
+	return
+}
+
+func getData() (data []byte, err error) {
 	resp, err := http.Get("https://qqwry.mirror.noc.one/qqwry.rar")
 	if err != nil {
-		return nil, err
+		return
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return
 	}
 	key, err := getCopyWriteKey()
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	return unRar(body, key)
