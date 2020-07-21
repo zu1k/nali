@@ -66,7 +66,7 @@ Find document on: https://github.com/zu1k/nali
 				if line == "quit" || line == "exit" {
 					return
 				}
-				fmt.Println(app.ReplaceIPInString(app.ReplaceCDNInString(line)))
+				fmt.Printf("%s\n", app.ReplaceIPInString(app.ReplaceCDNInString(line)))
 			}
 		} else {
 			app.ParseIPs(args)
