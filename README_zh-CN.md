@@ -62,8 +62,6 @@ docker pull docker.pkg.github.com//zu1k/nali/nali:latest
 
 ## 使用说明
 
-<a href="https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD" target="_blank"><img width="520" src="https://asciinema.org/a/RFVaZ3Pwy0Qbr27msFcDYhwcD.svg" /></a>
-
 ### 查询一个IP的地理信息
 
 ```
