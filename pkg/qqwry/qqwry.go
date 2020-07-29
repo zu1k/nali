@@ -116,12 +116,12 @@ func (db *QQwry) searchIndex(ip uint32) uint32 {
 
 	buf := make([]byte, 7)
 	mid := uint32(0)
-	_ip := uint32(0)
+	ipUint := uint32(0)
 
 	for {
 		mid = common.GetMiddleOffset(start, end, 7)
 		buf = db.ReadData(7, mid)
-		_ip = binary.LittleEndian.Uint32(buf[:4])
+		ipUint = binary.LittleEndian.Uint32(buf[:4])
 
 		if end-start == 7 {
 			offset := common.ByteToUInt32(buf[4:])
@@ -132,12 +132,11 @@ func (db *QQwry) searchIndex(ip uint32) uint32 {
 			return 0
 		}
 
-		// 找到的比较大，向前移
-		if _ip > ip {
+		if ipUint > ip {
 			end = mid
-		} else if _ip < ip { // 找到的比较小，向后移
+		} else if ipUint < ip {
 			start = mid
-		} else if _ip == ip {
+		} else if ipUint == ip {
 			return common.ByteToUInt32(buf[4:])
 		}
 	}
