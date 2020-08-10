@@ -1,22 +1,20 @@
-// +build windows
-
 package app
 
 import (
 	"bufio"
 	"fmt"
 	"os"
-	"syscall"
+	"runtime"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 )
 
-var pipeline = false
+var needTransform = false
 
 func init() {
-	ftype, _ := syscall.GetFileType(syscall.Handle(os.Stdin.Fd()))
-	pipeline = ftype == 3
+	stat, _ := os.Stdin.Stat()
+	needTransform = ((stat.Mode() & os.ModeNamedPipe) != 0) && runtime.GOOS == "windows"
 }
 
 func Root(args []string) {
@@ -24,7 +22,7 @@ func Root(args []string) {
 		stdin := bufio.NewScanner(os.Stdin)
 		for stdin.Scan() {
 			line := stdin.Text()
-			if pipeline {
+			if needTransform {
 				line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
 			}
 			if line == "quit" || line == "exit" {
@@ -42,7 +40,7 @@ func CDN(args []string) {
 		stdin := bufio.NewScanner(os.Stdin)
 		for stdin.Scan() {
 			line := stdin.Text()
-			if pipeline {
+			if needTransform {
 				line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
 			}
 			if line == "quit" || line == "exit" {
