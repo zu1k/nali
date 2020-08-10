@@ -1,10 +1,6 @@
 package cmd
 
 import (
-	"bufio"
-	"fmt"
-	"os"
-
 	"github.com/zu1k/nali/internal/app"
 
 	"github.com/spf13/cobra"
@@ -21,19 +17,7 @@ var cdnCmd = &cobra.Command{
 		}
 
 		app.InitCDNDB()
-
-		if len(args) == 0 {
-			stdin := bufio.NewScanner(os.Stdin)
-			for stdin.Scan() {
-				line := stdin.Text()
-				if line == "quit" || line == "exit" {
-					return
-				}
-				fmt.Println(app.ReplaceCDNInString(line))
-			}
-		} else {
-			app.ParseCDNs(args)
-		}
+		app.CDN(args)
 	},
 }
 

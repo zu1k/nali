@@ -1,18 +1,12 @@
 package cmd
 
 import (
-	"bufio"
-	"fmt"
 	"log"
 	"os"
-	"runtime"
-	"syscall"
 
 	"github.com/spf13/cobra"
 	"github.com/zu1k/nali/internal/app"
 	"github.com/zu1k/nali/internal/ipdb"
-	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/transform"
 )
 
 var rootCmd = &cobra.Command{
@@ -61,25 +55,7 @@ Find document on: https://github.com/zu1k/nali
 	Run: func(cmd *cobra.Command, args []string) {
 		app.InitIPDB(ipdb.GetIPDBType())
 		app.InitCDNDB()
-
-		if len(args) == 0 {
-			stdin := bufio.NewScanner(os.Stdin)
-			for stdin.Scan() {
-				line := stdin.Text()
-				if runtime.GOOS == "windows" {
-					ftype, _ := syscall.GetFileType(syscall.Handle(os.Stdin.Fd()))
-					if ftype == 3 {
-						line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
-					}
-				}
-				if line == "quit" || line == "exit" {
-					return
-				}
-				fmt.Printf("%s\n", app.ReplaceIPInString(app.ReplaceCDNInString(line)))
-			}
-		} else {
-			app.ParseIPs(args)
-		}
+		app.Root(args)
 	},
 }
 
