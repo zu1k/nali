@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/zu1k/nali/internal/app"
-	"github.com/zu1k/nali/internal/ipdb"
+	"runtime"
+	"syscall"
 
 	"github.com/spf13/cobra"
+	"github.com/zu1k/nali/internal/app"
+	"github.com/zu1k/nali/internal/ipdb"
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 )
 
 var rootCmd = &cobra.Command{
@@ -63,6 +66,12 @@ Find document on: https://github.com/zu1k/nali
 			stdin := bufio.NewScanner(os.Stdin)
 			for stdin.Scan() {
 				line := stdin.Text()
+				if runtime.GOOS == "windows" {
+					ftype, _ := syscall.GetFileType(syscall.Handle(os.Stdin.Fd()))
+					if ftype == 3 {
+						line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
+					}
+				}
 				if line == "quit" || line == "exit" {
 					return
 				}
