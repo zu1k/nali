@@ -20,11 +20,11 @@
 
 ## Origin
 
-Inspired by [Nali C version](https://github.com/meteoral/Nali) and [nali-cli js version](https://github.com/SukkaW/nali-cli).
+Inspired by Nali C version and nali-cli js version.
 
 I want to query the IP geographic information and CDN service provider on the terminal, then found the Nali tool. Nali mean 'where' in Chinese, good name for this kind of tools.
 
-However the C version has too few functions, and the js version of Sukka is too big and the supported platforms are not complete, so I rewrite it in golang, add IPv6 support and Geoip2 database.
+However the C version has too few functions, and the js version is too big and the supported platforms are not complete, so I rewrite it in golang, add IPv6 support and Geoip2 database.
 
 ## Feature
 
