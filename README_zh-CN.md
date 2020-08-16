@@ -18,11 +18,11 @@
 
 ## 来源
 
-该工具受 [Nali C版本](https://github.com/meteoral/Nali) 和 [nali-cli js版本](https://github.com/SukkaW/nali-cli) 的启发.
+该工具受 Nali C版本 和 nali-cli js版本的启发.
 
 我想要在终端对IP地理信息和CDN服务提供商进行查询，发现了Nali这个工具，Nali与哪里谐音，非常适合这类工具
 
-经过简单的使用，我发现最初的C语言版本功能缺失，而苏卡卡大佬的js版本包实在大的恐怖、而支持的平台非常有限，所以我用golang重写了这个工具，在原有功能的基础上增加了对IPv6的支持，并且增加了Geoip2数据库
+经过简单的使用，我发现最初的C语言版本功能缺失，而js版本包实在大的恐怖、而支持的平台非常有限，所以我用golang重写了这个工具，在原有功能的基础上增加了对IPv6的支持，并且增加了Geoip2数据库
 
 
 ## 功能
