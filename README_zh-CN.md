@@ -251,12 +251,20 @@ $ nali update
 
 ```
 set NALI_DB=geoip
+
+或者使用 powershell
+
+$env:NALI_DB="geoip"
 ```
 
 ##### 使用ipip数据库
 
 ```
 set NALI_DB=ipip
+
+或者使用 powershell
+
+$env:NALI_DB="ipip"
 ```
 
 #### Linux平台
