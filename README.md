@@ -247,12 +247,20 @@ supported database:
 
 ```
 set NALI_DB=geoip
+
+or use powershell
+
+$env:NALI_DB="geoip"
 ```
 
 ##### Use ipip db
 
 ```
 set NALI_DB=ipip
+
+or use powershell
+
+$env:NALI_DB="ipip"
 ```
 
 #### Linux
