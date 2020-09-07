@@ -46,7 +46,7 @@ func ValidIP4(IP string) bool {
 	return true
 }
 
-func ValidIP6(str string) bool {
+func ValidIP6Re(str string) bool {
 	str = strings.Trim(str, " ")
 	return ipv6re0.MatchString(str)
 
@@ -67,24 +67,70 @@ func GetIP6FromString(str string) []string {
 //1. 用“：”分割字符串，若长度不等于8，则return Neither
 //2. 遍历每一个数组的每一个元素，若元素的长度大于4，则return Neither
 //3. 判断每一个元素的字符，若出现非0-9，A-F的字符，则return Neither
-func isIPV6(IP string) bool {
+func ValidIP6(IP string) bool {
 	IP = strings.ToUpper(IP)
-	arr := strings.Split(IP, ":")
-	if len(arr) != 8 {
+	n := len(IP)
+	if n > 39 || n == 0 {
 		return false
 	}
-	for _, elem := range arr {
-		if elem == "" || len(elem) > 4 {
-			return false
-		}
 
-		for _, c := range elem {
-			if (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') {
+	// 以 ":" 结尾 但是只有一个
+	if strings.HasSuffix(IP, ":") && !strings.HasSuffix(IP, "::") {
+		return false
+	}
+	// 如果"::" 有两个以上
+	if strings.Count(IP, "::") > 1 {
+		return false
+	}
+	// 如果 ":" 有8个以上
+	if strings.Count(IP, ":") > 8 {
+		return false
+	}
+	tmp := strings.Split(IP, ":")
+	// 如果有ipv4， 则返回真， 前面的部分未校验。
+	if ValidIP4(tmp[len(tmp)-1]) {
+		return true
+	}
+	if strings.Contains(IP,"::") {
+		var count int
+		for _, v := range tmp {
+			if v != "" {
+				count++
 				continue
-			} else {
-				return false
 			}
 		}
+		if count == 8 {
+			return false
+		}
 	}
+
+	// 对每个元素进行遍历
+	for k := 0; k < n-1; {
+		if IP[k] == ':' {
+			k++
+			continue
+		} else if valid(IP[k]) {
+			var bits int
+			for valid(IP[k]) {
+				k++
+				bits++
+				if bits > 4 {
+					return false
+				}
+				if k == n {
+					break
+				}
+			}
+
+		} else {
+			return false
+		}
+	}
+
+	// 到了这一步， 可以确定是ipv6
 	return true
+}
+
+func valid(i uint8) bool {
+	return (i >= 'A' && i <= 'F') || (i >= '0' && i <= '9')
 }
