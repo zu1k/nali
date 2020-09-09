@@ -43,6 +43,10 @@ func find(cname string) string {
 	if found {
 		return cdnResult.Name
 	}
+
+	if strings.Contains(baseCname, "kunlun") {
+		return "阿里云 CDN"
+	}
 	return "未找到"
 }
 
