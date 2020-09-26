@@ -56,6 +56,23 @@ func ParseIPs(ips []string) {
 	}
 }
 
+func RemoveRepeatedElement(arr []string) (newArr []string) {
+    newArr = make([]string, 0)
+    for i := 0; i < len(arr); i++ {
+        repeat := false
+        for j := i + 1; j < len(arr); j++ {
+            if arr[i] == arr[j] {
+                repeat = true
+                break
+            }
+        }
+        if !repeat {
+            newArr = append(newArr, arr[i])
+        }
+    }
+    return
+}
+
 func ReplaceIPInString(str string) (result string) {
 	db0 := db[0]
 	var db1 ipdb.IPDB
@@ -67,15 +84,17 @@ func ReplaceIPInString(str string) (result string) {
 
 	result = str
 	ip4s := tools.GetIP4FromString(str)
+	ip4s = RemoveRepeatedElement(ip4s)
 	for _, ip := range ip4s {
 		info := db0.Find(ip)
-		result = tools.ReplaceAdd(result, ip, formatResult(ip, info))
+		result = tools.AddInfoIp4(result, ip, info)
 	}
 
 	ip6s := tools.GetIP6FromString(str)
+	ip6s = RemoveRepeatedElement(ip6s)
 	for _, ip := range ip6s {
 		info := db1.Find(ip)
-		result = tools.ReplaceAdd(result, ip, formatResult(ip, info))
+		result = tools.AddInfoIp6(result, ip, info)
 	}
 	return
 }
