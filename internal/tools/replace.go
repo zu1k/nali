@@ -2,14 +2,23 @@ package tools
 
 import (
 	"strings"
+	"regexp"
 )
 
-func ReplaceAdd(origin string, old string, new string) (result string) {
-	subLen := len(new) - len(old)
-	wanted := old + strings.Repeat(" ", subLen)
-	if strings.Contains(origin, wanted) {
-		result = strings.ReplaceAll(origin, wanted, new)
-	}
-	result = strings.ReplaceAll(origin, old, new)
+func AddInfoIp4(origin string, ip string, info string) (result string) {
+	re := regexp.MustCompile("(^|[^0-9.])(" + strings.ReplaceAll(ip, ".", "\\.") + ")($|[^0-9.])")
+	result = re.ReplaceAllString(origin, "$1$2"+" ["+info+"]$3")
+	return strings.TrimRight(result, " \t")
+}
+
+func AddInfoIp6(origin string, ip string, info string) (result string) {
+	re := regexp.MustCompile("(^|[^0-9a-fA-F:])(" + strings.ReplaceAll(ip, ".", "\\.") + ")($|[^0-9a-fA-F:])")
+	result = re.ReplaceAllString(origin, "$1$2"+" ["+info+"]$3")
+	return strings.TrimRight(result, " \t")
+}
+
+func AddInfoDomain(origin string, domain string, info string) (result string) {
+	re := regexp.MustCompile("(^|[^0-9a-zA-Z-])(" + strings.ReplaceAll(domain, ".", "\\.") + ")($|[^0-9a-zA-Z-\\.])")
+	result = re.ReplaceAllString(origin, "$1$2"+" ["+info+"]$3")
 	return strings.TrimRight(result, " \t")
 }
