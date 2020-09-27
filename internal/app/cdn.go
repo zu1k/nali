@@ -52,7 +52,6 @@ func find(cname string) string {
 
 func ReplaceCDNInString(str string) (result string) {
 	done := make(map[string]bool)
-
 	cnames := domainRe.FindAllString(str, -1)
 	result = str
 	for _, cname := range cnames {
@@ -61,7 +60,7 @@ func ReplaceCDNInString(str string) (result string) {
 			if _, found := done[cname]; found {
 				continue
 			}
-			result = tools.ReplaceAdd(result, cname, fmt.Sprintf("%s [%s]", cname, name))
+			result = tools.AddInfoDomain(result, cname, name)
 			done[cname] = true
 		}
 	}
