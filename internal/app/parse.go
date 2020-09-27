@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"strings"
 	"path/filepath"
 
 	"github.com/zu1k/nali/constant"
@@ -86,7 +87,10 @@ func ReplaceIPInString(str string) (result string) {
 	ip4s := tools.GetIP4FromString(str)
 	ip4s = RemoveRepeatedElement(ip4s)
 	for _, ip := range ip4s {
-		info := db0.Find(ip)
+		// remove ipv6 head for ipv4-compatible address
+		ip_split := strings.Split(ip, ":")
+		ip4 := ip_split[len(ip_split)-1]
+		info := db0.Find(ip4)
 		result = tools.AddInfoIp4(result, ip, info)
 	}
 
