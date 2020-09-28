@@ -8,7 +8,7 @@ import (
 func TestIP4Re(t *testing.T) {
 	str := "aaa1.1.11.23a36.36.32.200"
 	fmt.Println(GetIP4FromString(str))
-	fmt.Println(ValidIP4(str))
+	ValidIP(str)
 }
 
 func TestValidIP6(t *testing.T) {
@@ -58,31 +58,23 @@ func TestValidIP6(t *testing.T) {
 	}
 
 	for _, i := range ipv6Valid {
-		if !ValidIP6(i) {
+		if v := ValidIP(i); v == InvalidIP {
 			t.Log("valid:", i)
 		}
 	}
 
 	for _, i := range ipv6Invalid {
-		if ValidIP6(i) {
+		if v := ValidIP(i); v != InvalidIP {
 			t.Log("invalid:", i)
 		}
 	}
 }
 
-func BenchmarkValidIP6Re(b *testing.B) {
+func BenchmarkValidIP6STD(b *testing.B) {
 	b.ResetTimer()
 	origin := "::ffff:135.75.43.52"
-	for i:=0; i<b.N;i++ {
-		ValidIP6Re(origin)
-	}
-}
-
-func BenchmarkValidIP6(b *testing.B) {
-	b.ResetTimer()
-	origin := "::ffff:135.75.43.52"
-	for i:=0; i<b.N;i++ {
-		ValidIP6(origin)
+	for i := 0; i < b.N; i++ {
+		ValidIP(origin)
 	}
 }
 
