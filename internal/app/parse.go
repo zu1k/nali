@@ -44,33 +44,37 @@ func ParseIPs(ips []string) {
 		db1 = nil
 	}
 	for _, ip := range ips {
-		if tools.ValidIP4(ip) {
+		v := tools.ValidIP(ip)
+		switch v {
+		case tools.ValidIPv4:
 			result := db0.Find(ip)
 			fmt.Println(formatResult(ip, result))
-		} else if tools.ValidIP6(ip) && db1 != nil {
-			result := db1.Find(ip)
-			fmt.Println(formatResult(ip, result))
-		} else {
+		case tools.ValidIPv6:
+			if db1 != nil {
+				result := db1.Find(ip)
+				fmt.Println(formatResult(ip, result))
+			}
+		default:
 			fmt.Println(ReplaceIPInString(ip))
 		}
 	}
 }
 
 func RemoveRepeatedElement(arr []string) (newArr []string) {
-    newArr = make([]string, 0)
-    for i := 0; i < len(arr); i++ {
-        repeat := false
-        for j := i + 1; j < len(arr); j++ {
-            if arr[i] == arr[j] {
-                repeat = true
-                break
-            }
-        }
-        if !repeat {
-            newArr = append(newArr, arr[i])
-        }
-    }
-    return
+	newArr = make([]string, 0)
+	for i := 0; i < len(arr); i++ {
+		repeat := false
+		for j := i + 1; j < len(arr); j++ {
+			if arr[i] == arr[j] {
+				repeat = true
+				break
+			}
+		}
+		if !repeat {
+			newArr = append(newArr, arr[i])
+		}
+	}
+	return
 }
 
 func ReplaceIPInString(str string) (result string) {
