@@ -7,10 +7,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/zu1k/nali/internal/tools"
-
 	"github.com/zu1k/nali/constant"
-
+	"github.com/zu1k/nali/internal/tools"
 	"github.com/zu1k/nali/pkg/cdn"
 )
 
@@ -20,7 +18,7 @@ var (
 )
 
 func init() {
-	domainRe = regexp.MustCompile(`[0-9A-Za-z]{2,}\.[0-9A-Za-z]{2,3}\.[0-9A-Za-z]{2,3}|[0-9A-Za-z]{2,}\.[0-9A-Za-z]{2,3}`)
+	domainRe = regexp.MustCompile(`[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+`)
 }
 
 func InitCDNDB() {
