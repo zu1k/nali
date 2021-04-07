@@ -43,7 +43,7 @@ jobs:
           draft: true
           prerelease: true
 
-      - uses: actions/upload-artifact@v2.2.2
+      - uses: actions/upload-artifact@v2.2.3
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: build
