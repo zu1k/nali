@@ -11,5 +11,5 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/ulikunitz/xz v0.5.7 // indirect
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
-	golang.org/x/text v0.3.5
+	golang.org/x/text v0.3.6
 )
