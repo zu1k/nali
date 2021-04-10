@@ -19,7 +19,7 @@ var (
 	geoip geoip2.GeoIP
 )
 
-// init ip db content
+// InitIPDB init ip db content
 func InitIPDB(ipdbtype ipdb.IPDBType) {
 	db = make([]ipdb.IPDB, 1)
 	switch ipdbtype {
@@ -41,7 +41,7 @@ func ParseIPs(ips []string) {
 	if len(db) > 1 {
 		db1 = db[1]
 	} else {
-		db1 = nil
+		db1 = db[0]
 	}
 	for _, ip := range ips {
 		v := tools.ValidIP(ip)
@@ -83,7 +83,7 @@ func ReplaceIPInString(str string) (result string) {
 	if len(db) > 1 {
 		db1 = db[1]
 	} else {
-		db1 = nil
+		db1 = db[0]
 	}
 
 	result = str
