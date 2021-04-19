@@ -16,7 +16,7 @@ func Download(filePath string) (data []byte, err error) {
 	data, err = getData()
 	if err != nil {
 		log.Printf("ZX IPv6数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
-		log.Println("下载链接： https://www.zxinc.org/ip.7z")
+		log.Println("下载链接： https://ip.zxinc.org/ip.7z")
 		return
 	}
 	common.ExistThenRemove(filePath)
@@ -28,7 +28,7 @@ func Download(filePath string) (data []byte, err error) {
 }
 
 func getData() (data []byte, err error) {
-	resp, err := http.Get("https://www.zxinc.org/ip.7z")
+	resp, err := http.Get("https://ip.zxinc.org/ip.7z")
 	if err != nil {
 		return nil, err
 	}
