@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"sort"
 	"strings"
 )
 
@@ -15,8 +14,7 @@ const (
 )
 
 type Entity struct {
-	Index uint
-	Length uint
+	Loc  []int // s[Loc[0]:Loc[1]]
 	Type EntityType
 
 	Text string
@@ -34,23 +32,20 @@ func (es Entities) Len() int {
 }
 
 func (es Entities) Less(i, j int) bool {
-	return es[i].Index < es[j].Index
+	return es[i].Loc[0] < es[j].Loc[0]
 }
 
 func (es Entities) Swap(i, j int) {
-	es[i],es[j] = es[j],es[i]
+	es[i], es[j] = es[j], es[i]
 }
 
 func (es Entities) String() string {
-	sort.Sort(es)
-
 	var result strings.Builder
 	for _, entity := range es {
 		result.WriteString(entity.Text)
-		if entity.Type!=TypePlain && len(entity.Info)>0 {
+		if entity.Type != TypePlain && len(entity.Info) > 0 {
 			result.WriteString("[" + entity.Info + "] ")
 		}
 	}
-
 	return result.String()
 }

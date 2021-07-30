@@ -4,22 +4,17 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
-	"regexp"
 	"strings"
 
 	"github.com/zu1k/nali/constant"
+	"github.com/zu1k/nali/internal/re"
 	"github.com/zu1k/nali/internal/tools"
 	"github.com/zu1k/nali/pkg/cdn"
 )
 
 var (
-	cdnDB    cdn.CDN
-	domainRe *regexp.Regexp
+	cdnDB cdn.CDN
 )
-
-func init() {
-	domainRe = regexp.MustCompile(`[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+`)
-}
 
 func InitCDNDB() {
 	cdnDB = cdn.NewCDN(filepath.Join(constant.HomePath, "cdn.json"))
@@ -50,7 +45,7 @@ func find(cname string) string {
 
 func ReplaceCDNInString(str string) (result string) {
 	done := make(map[string]bool)
-	cnames := domainRe.FindAllString(str, -1)
+	cnames := re.DomainRe.FindAllString(str, -1)
 	result = str
 	for _, cname := range cnames {
 		name := find(cname)
