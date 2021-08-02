@@ -30,15 +30,30 @@ func NewIPIPFree(filePath string) IPIPFree {
 	}
 }
 
-func (db IPIPFree) Find(ip string) string {
-	info, err := db.FindInfo(ip, "CN")
-	if err != nil {
-		log.Fatalln("IPIP 查询失败：", err.Error())
-		return ""
+type Result struct {
+	Country string
+	Region  string
+	City    string
+}
+
+func (r Result) String() string {
+	if r.City == "" {
+		return fmt.Sprintf("%s %s", r.Country, r.Region)
+	}
+	return fmt.Sprintf("%s %s %s", r.Country, r.Region, r.City)
+}
+
+func (db IPIPFree) Find(query string, params ...string) (result fmt.Stringer, err error) {
+	info, err := db.FindInfo(query, "CN")
+	if err != nil || info == nil {
+		return nil, err
 	} else {
-		if info.CityName == "" {
-			return fmt.Sprintf("%s %s", info.CountryName, info.RegionName)
+		// info contains more info
+		result = Result{
+			Country: info.CountryName,
+			Region:  info.RegionName,
+			City:    info.CityName,
 		}
-		return fmt.Sprintf("%s %s %s", info.CountryName, info.RegionName, info.CityName)
+		return
 	}
 }

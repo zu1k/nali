@@ -6,7 +6,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/zu1k/nali/internal/app"
-	"github.com/zu1k/nali/internal/ipdb"
 )
 
 var rootCmd = &cobra.Command{
@@ -53,8 +52,6 @@ Find document on: https://github.com/zu1k/nali
 `,
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		app.InitIPDB(ipdb.GetIPDBType())
-		app.InitCDNDB()
 		app.Root(args)
 	},
 }

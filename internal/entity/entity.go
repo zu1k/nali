@@ -2,15 +2,18 @@ package entity
 
 import (
 	"strings"
+
+	"github.com/zu1k/nali/pkg/dbif"
 )
 
 type EntityType uint
 
 const (
-	TypePlain = iota
-	TypeIPv4
-	TypeIPv6
-	TypeDomain
+	TypeIPv4   = dbif.TypeIPv4
+	TypeIPv6   = dbif.TypeIPv6
+	TypeDomain = dbif.TypeDomain
+
+	TypePlain = 100
 )
 
 type Entity struct {

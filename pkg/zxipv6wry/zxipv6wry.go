@@ -2,6 +2,7 @@ package zxipv6wry
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -50,10 +51,19 @@ func NewZXwry(filePath string) ZXwry {
 	}
 }
 
-func (db ZXwry) Find(ip string) (result string) {
+func (db ZXwry) Find(query string, params ...string) (result fmt.Stringer, err error) {
+	ip := net.ParseIP(query)
+	if ip == nil {
+		return nil, errors.New("Query should be IPv6")
+	}
+	ip6 := ip.To16()
+	if ip6 == nil {
+		return nil, errors.New("Query should be IPv6")
+	}
+
 	tp := big.NewInt(0)
 	op := big.NewInt(0)
-	tp.SetBytes(net.ParseIP(ip).To16())
+	tp.SetBytes(ip6)
 	op.SetString("18446744073709551616", 10)
 	op.Div(tp, op)
 	tp.SetString("FFFFFFFFFFFFFFFF", 16)
@@ -63,10 +73,11 @@ func (db ZXwry) Find(ip string) (result string) {
 	offset := db.searchIndex(ipv6)
 	country, area := db.getAddr(offset)
 
-	country = strings.ReplaceAll(country, " CZ88.NET", "")
-	area = strings.ReplaceAll(area, " CZ88.NET", "")
-
-	return fmt.Sprintf("%s %s", country, area)
+	result = common.Result{
+		Country: strings.ReplaceAll(country, " CZ88.NET", ""),
+		Area:    strings.ReplaceAll(area, " CZ88.NET", ""),
+	}
+	return result, nil
 }
 
 func (db *ZXwry) getAddr(offset uint32) (string, string) {
