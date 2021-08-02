@@ -3,11 +3,9 @@ package entity
 import (
 	"sort"
 
-	"github.com/zu1k/nali/pkg/dbif"
-
 	"github.com/zu1k/nali/internal/db"
-
 	"github.com/zu1k/nali/internal/re"
+	"github.com/zu1k/nali/pkg/dbif"
 )
 
 // ParseLine parse a line into entities
