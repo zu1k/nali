@@ -1,6 +1,7 @@
 package geoip
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -14,7 +15,7 @@ type GeoIP struct {
 	db *geoip2.Reader
 }
 
-// new geoip from db file
+// new geoip from database file
 func NewGeoIP(filePath string) (geoip GeoIP) {
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
@@ -31,18 +32,32 @@ func NewGeoIP(filePath string) (geoip GeoIP) {
 	return
 }
 
-// find ip info
-func (g GeoIP) Find(ip string) string {
-	ipData := net.ParseIP(ip)
-	record, err := g.db.City(ipData)
-	if err != nil {
-		log.Fatal(err)
+func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err error) {
+	ip := net.ParseIP(query)
+	if ip == nil {
+		return nil, errors.New("Query should be valid IP")
 	}
-	country := record.Country.Names["zh-CN"]
-	city := record.City.Names["zh-CN"]
-	if city == "" {
-		return country
+	record, err := g.db.City(ip)
+	if err != nil {
+		return
+	}
+
+	result = Result{
+		Country: record.Country.Names["zh-CN"],
+		City:    record.City.Names["zh-CN"],
+	}
+	return
+}
+
+type Result struct {
+	Country string
+	City    string
+}
+
+func (r Result) String() string {
+	if r.City == "" {
+		return r.Country
 	} else {
-		return fmt.Sprintf("%s %s", country, city)
+		return fmt.Sprintf("%s %s", r.Country, r.City)
 	}
 }

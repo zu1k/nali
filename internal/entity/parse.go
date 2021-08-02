@@ -3,6 +3,10 @@ package entity
 import (
 	"sort"
 
+	"github.com/zu1k/nali/pkg/dbif"
+
+	"github.com/zu1k/nali/internal/db"
+
 	"github.com/zu1k/nali/internal/re"
 )
 
@@ -49,6 +53,7 @@ func ParseLine(line string) Entities {
 					Text: line[idx:start],
 				})
 			}
+			e.Info = db.Find(dbif.QueryType(e.Type), e.Text)
 			es = append(es, e)
 			idx = e.Loc[1]
 		}

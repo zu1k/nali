@@ -1,14 +1,18 @@
-package ipdb
+package db
 
 import (
 	"os"
 	"strings"
 )
 
-// ip db interface
-type IPDB interface {
-	Find(ip string) string
-}
+// ip database type
+type IPDBType int
+
+const (
+	GEOIP2 = iota // geoip2
+	QQIP          // chunzhen
+	IPIP          // ipip.net
+)
 
 func GetIPDBType() IPDBType {
 	dbname := os.Getenv("NALI_DB")

@@ -2,7 +2,6 @@ package app
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"runtime"
 
@@ -28,27 +27,11 @@ func Root(args []string) {
 			if line == "quit" || line == "exit" {
 				return
 			}
-			fmt.Printf("%s\n", ReplaceIPInString(ReplaceCDNInString(line)))
+			// TODO: pring line
+			//fmt.Printf("%s\n", ReplaceIPInString(ReplaceCDNInString(line)))
 		}
 	} else {
-		ParseIPs(args)
-	}
-}
-
-func CDN(args []string) {
-	if len(args) == 0 {
-		stdin := bufio.NewScanner(os.Stdin)
-		for stdin.Scan() {
-			line := stdin.Text()
-			if needTransform {
-				line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
-			}
-			if line == "quit" || line == "exit" {
-				return
-			}
-			fmt.Println(ReplaceCDNInString(line))
-		}
-	} else {
-		ParseCDNs(args)
+		// TODO: do something
+		//ParseIPs(args)
 	}
 }
