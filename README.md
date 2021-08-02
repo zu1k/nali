@@ -38,6 +38,7 @@ However the C version has too few functions, and the js version is too big and t
 - Both ipv4 and ipv6 supported
 - CDN provider query
 - Full platform support
+- Color print
 
 ## Install
 
@@ -154,28 +155,6 @@ Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
 
 ### Query CDN provider
 
-#### Query CDN provider only
-
-```
-$ nslookup www.gov.cn | nali cdn
-Server:         127.0.0.53
-Address:        127.0.0.53#53
-
-Non-authoritative answer:
-www.gov.cn      canonical name = www.gov.cn.bsgslb.cn [白山云 CDN].
-www.gov.cn.bsgslb.cn [白山云 CDN]       canonical name = zgovweb.v.bsgslb.cn [白山云 CDN].
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 185.232.56.148
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 185.232.56.147
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 2001:428:6402:21b::6
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 2001:428:6402:21b::5
-```
-
-#### Also query IP geo
-
 ```
 $ nslookup www.gov.cn | nali
 Server:         127.0.0.53 [局域网 IP]
@@ -192,14 +171,6 @@ Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Company, LLC (CenturyLink)]
 ```
 
-#### Use standalone
-
-You should parse cname by yourself
-
-```
-$ nali cdn cdn.somecdncname.com
-```
-
 ## Interface
 
 ### Help
@@ -211,14 +182,13 @@ Usage:
   nali [command]
 
 Available Commands:
-  cdn         Query cdn service provider
+  completion  generate the autocompletion script for the specified shell
   help        Help about any command
-  parse       Query IP information
   update      update chunzhen ip database
 
 Flags:
-  -h, --help     help for nali
-  -t, --toggle   Help message for toggle
+      --gbk    Use GBK decoder
+  -h, --help   help for nali
 
 Use "nali [command] --help" for more information about a command.
 ```

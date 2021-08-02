@@ -4,14 +4,11 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/zu1k/nali/internal/constant"
-
-	"github.com/zu1k/nali/pkg/cdn"
-	"github.com/zu1k/nali/pkg/zxipv6wry"
-
-	"github.com/zu1k/nali/pkg/qqwry"
-
 	"github.com/spf13/cobra"
+	"github.com/zu1k/nali/internal/constant"
+	"github.com/zu1k/nali/pkg/cdn"
+	"github.com/zu1k/nali/pkg/qqwry"
+	"github.com/zu1k/nali/pkg/zxipv6wry"
 )
 
 // updateCmd represents the update command

@@ -3,6 +3,8 @@ package entity
 import (
 	"strings"
 
+	"github.com/fatih/color"
+
 	"github.com/zu1k/nali/pkg/dbif"
 )
 
@@ -51,4 +53,24 @@ func (es Entities) String() string {
 		}
 	}
 	return result.String()
+}
+
+func (es Entities) ColorString() string {
+	var line strings.Builder
+	for _, e := range es {
+		s := e.Text
+		switch e.Type {
+		case TypeIPv4:
+			s = color.GreenString(e.Text)
+		case TypeIPv6:
+			s = color.BlueString(e.Text)
+		case TypeDomain:
+			s = color.YellowString(e.Text)
+		}
+		if e.Type != TypePlain && len(e.Info) > 0 {
+			s += " [" + color.RedString(e.Info) + "] "
+		}
+		line.WriteString(s)
+	}
+	return line.String()
 }

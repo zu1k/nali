@@ -57,5 +57,13 @@ func ParseLine(line string) Entities {
 		}
 	}
 
+	if len(es) == 0 {
+		es = append(es, &Entity{
+			Loc:  []int{0, len(line)},
+			Type: TypePlain,
+			Text: line,
+		})
+	}
+
 	return es
 }
