@@ -60,7 +60,7 @@ func ParseLine(line string) Entities {
 		es = append(es, &Entity{
 			Loc:  []int{idx, total},
 			Type: TypePlain,
-			Text: line,
+			Text: line[idx:total],
 		})
 	}
 
