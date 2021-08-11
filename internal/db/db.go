@@ -65,7 +65,7 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 			if Language == "zh-CN" {
 				db = zxipv6wry.NewZXwry(ZXIPv6WryPath)
 			} else {
-				geoip.NewGeoIP(GeoLite2CityPath)
+				db = geoip.NewGeoIP(GeoLite2CityPath)
 			}
 		}
 	case dbif.TypeDomain:
