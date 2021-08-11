@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-
 	"github.com/zu1k/nali/pkg/dbif"
 )
 
