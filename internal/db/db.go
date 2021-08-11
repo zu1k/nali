@@ -4,13 +4,11 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/zu1k/nali/pkg/ipip"
-
-	"github.com/zu1k/nali/pkg/geoip"
-
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/cdn"
 	"github.com/zu1k/nali/pkg/dbif"
+	"github.com/zu1k/nali/pkg/geoip"
+	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
 )

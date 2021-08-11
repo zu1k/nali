@@ -4,9 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/zu1k/nali/internal/app"
-
 	"github.com/spf13/cobra"
+	"github.com/zu1k/nali/internal/app"
 )
 
 var rootCmd = &cobra.Command{
