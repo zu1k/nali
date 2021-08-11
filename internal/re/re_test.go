@@ -1,4 +1,4 @@
-package app
+package re
 
 import (
 	"fmt"
@@ -14,10 +14,10 @@ var domainList = []string{
 
 func TestDomainRe(t *testing.T) {
 	for _, domain := range domainList {
-		if !domainRe.MatchString(domain) {
+		if !DomainRe.MatchString(domain) {
 			t.Error(domain)
 			t.Fail()
 		}
-		fmt.Println(domainRe.FindAllString(domain, -1))
+		fmt.Println(DomainRe.FindAllString(domain, -1))
 	}
 }

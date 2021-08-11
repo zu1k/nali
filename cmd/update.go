@@ -4,13 +4,11 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/zu1k/nali/pkg/cdn"
-	"github.com/zu1k/nali/pkg/zxipv6wry"
-
-	"github.com/zu1k/nali/constant"
-	"github.com/zu1k/nali/pkg/qqwry"
-
 	"github.com/spf13/cobra"
+	"github.com/zu1k/nali/internal/constant"
+	"github.com/zu1k/nali/pkg/cdn"
+	"github.com/zu1k/nali/pkg/qqwry"
+	"github.com/zu1k/nali/pkg/zxipv6wry"
 )
 
 // updateCmd represents the update command
@@ -29,7 +27,7 @@ var updateCmd = &cobra.Command{
 		}
 
 		// ZX ipv6
-		filePath = filepath.Join(constant.HomePath, "ipv6wry.db")
+		filePath = filepath.Join(constant.HomePath, "ipv6wry.database")
 		log.Println("正在下载最新 ZX IPv6数据库...")
 		_, err = zxipv6wry.Download(filePath)
 		if err != nil {
