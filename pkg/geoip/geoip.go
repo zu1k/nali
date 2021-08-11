@@ -42,9 +42,16 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 		return
 	}
 
+	lang := "zh-CN"
+	if len(params) > 0 {
+		if _, ok := record.Country.Names[params[0]]; ok {
+			lang = params[0]
+		}
+	}
+
 	result = Result{
-		Country: record.Country.Names["zh-CN"],
-		City:    record.City.Names["zh-CN"],
+		Country: record.Country.Names[lang],
+		City:    record.City.Names[lang],
 	}
 	return
 }

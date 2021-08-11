@@ -36,6 +36,7 @@ However the C version has too few functions, and the js version is too big and t
 - Interactive query
 - Offline query
 - Both ipv4 and ipv6 supported
+- Multilingual support
 - CDN provider query
 - Full platform support
 - Color print
@@ -193,7 +194,7 @@ Flags:
 Use "nali [command] --help" for more information about a command.
 ```
 
-### Update chunzhen IP database
+### Update database
 
 ```
 $ nali update
@@ -201,9 +202,9 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-### Use other database
+### Select database
 
-Set environment variables `NALI_DB`
+Users can specify which database to use， set environment variables `NALI_DB_IP4`, `NALI_DB_IP6` or both.
 
 supported database:
 
@@ -216,21 +217,21 @@ supported database:
 ##### Use geoip db
 
 ```
-set NALI_DB=geoip
+set NALI_DB_IP4=geoip
 
 or use powershell
 
-$env:NALI_DB="geoip"
+$env:NALI_DB_IP4="geoip"
 ```
 
 ##### Use ipip db
 
 ```
-set NALI_DB=ipip
+set NALI_DB_IP6=ipip
 
 or use powershell
 
-$env:NALI_DB="ipip"
+$env:NALI_DB_IP6="ipip"
 ```
 
 #### Linux
@@ -238,13 +239,24 @@ $env:NALI_DB="ipip"
 ##### Use geoip db
 
 ```
-export NALI_DB=geoip
+export NALI_DB_IP4=geoip
 ```
 
 ##### Use ipip db
 
 ```
-export NALI_DB=ipip
+export NALI_DB_IP6=ipip
+```
+
+### Multilingual support
+
+Specify the language to be used by modifying the environment variable `NALI_LANG`, when using a non-Chinese language only the GeoIP2 database is supported
+
+The values that can be set for this parameter can be found in the list of supported databases for GeoIP2
+
+```
+# NALI_LANG=en nali 1.1.1.1
+1.1.1.1 [Australia]
 ```
 
 ### Change database directory
