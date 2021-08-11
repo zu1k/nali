@@ -10,5 +10,5 @@ require (
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
 	github.com/spf13/cobra v1.2.1
 	github.com/ulikunitz/xz v0.5.10 // indirect
-	golang.org/x/text v0.3.6
+	golang.org/x/text v0.3.7
 )
