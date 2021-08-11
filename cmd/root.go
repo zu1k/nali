@@ -4,9 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/spf13/cobra"
 	"github.com/zu1k/nali/internal/app"
-	"github.com/zu1k/nali/internal/ipdb"
+
+	"github.com/spf13/cobra"
 )
 
 var rootCmd = &cobra.Command{
@@ -53,9 +53,8 @@ Find document on: https://github.com/zu1k/nali
 `,
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		app.InitIPDB(ipdb.GetIPDBType())
-		app.InitCDNDB()
-		app.Root(args)
+		gbk, _ := cmd.Flags().GetBool("gbk")
+		app.Root(args, gbk)
 	},
 }
 
@@ -65,4 +64,8 @@ func Execute() {
 		log.Fatal(err.Error())
 		os.Exit(1)
 	}
+}
+
+func init() {
+	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
 }

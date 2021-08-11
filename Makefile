@@ -2,8 +2,8 @@ NAME=nali
 BINDIR=bin
 VERSION=$(shell git describe --tags || echo "unknown version")
 BUILDTIME=$(shell date -u)
-GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/zu1k/nali/constant.Version=$(VERSION)" \
-		-X "github.com/zu1k/nali/constant.BuildTime=$(BUILDTIME)" \
+GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/zu1k/nali/internal/constant.Version=$(VERSION)" \
+		-X "github.com/zu1k/nali/internal/constant.BuildTime=$(BUILDTIME)" \
 		-w -s'
 
 PLATFORM_LIST = \

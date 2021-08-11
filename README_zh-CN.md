@@ -35,8 +35,10 @@
 - 支持管道处理
 - 支持交互式查询
 - 同时支持IPv4和IPv6
+- 支持多语言
 - 查询完全离线
 - 全平台支持
+- 支持彩色输出
 
 ## 安装
 
@@ -159,28 +161,6 @@ Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
 
 因为 CDN 服务通常使用 CNAME 的域名解析方式，所以推荐与 `nslookup` 或者 `dig` 配合使用，在已经知道 CNAME 后可单独使用
 
-#### 只查询 CDN 服务提供商
-
-```
-$ nslookup www.gov.cn | nali cdn
-Server:         127.0.0.53
-Address:        127.0.0.53#53
-
-Non-authoritative answer:
-www.gov.cn      canonical name = www.gov.cn.bsgslb.cn [白山云 CDN].
-www.gov.cn.bsgslb.cn [白山云 CDN]       canonical name = zgovweb.v.bsgslb.cn [白山云 CDN].
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 185.232.56.148
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 185.232.56.147
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 2001:428:6402:21b::6
-Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
-Address: 2001:428:6402:21b::5
-```
-
-#### 查询所有信息
-
 ```
 $ nslookup www.gov.cn | nali
 Server:         127.0.0.53 [局域网 IP]
@@ -197,14 +177,6 @@ Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Company, LLC (CenturyLink)]
 ```
 
-#### 单独使用
-
-需要提前查询到 CNAME 域名
-
-```
-$ nali cdn cdn.somecdncname.com
-```
-
 ## 用户交互
 
 ### 查看帮助
@@ -216,9 +188,7 @@ Usage:
   nali [command]
 
 Available Commands:
-  cdn         Query cdn service provider
   help        Help about any command
-  parse       Query IP information
   update      update chunzhen ip database
 
 Flags:
@@ -228,7 +198,7 @@ Flags:
 Use "nali [command] --help" for more information about a command.
 ```
 
-### 更新纯真数据库
+### 更新数据库
 
 ```
 $ nali update
@@ -236,35 +206,36 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-### 使用 Geoip2 数据库
+### 自选数据库
 
-需要设置环境变量： `NALI_DB`
+用户可以指定使用哪个数据库，需要设置环境变量： `NALI_DB_IP4`、`NALI_DB_IP6` 或者两个同时设置
 
 支持的变量内容:
 
 - Geoip2 `['geoip', 'geoip2', 'geo']`
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
+- IPIP `['ipip', 'ipipfree', 'ipip.net']`
 
 #### Windows平台
 
 ##### 使用geoip数据库
 
 ```
-set NALI_DB=geoip
+set NALI_DB_IP4=geoip
 
 或者使用 powershell
 
-$env:NALI_DB="geoip"
+$env:NALI_DB_IP4="geoip"
 ```
 
 ##### 使用ipip数据库
 
 ```
-set NALI_DB=ipip
+set NALI_DB_IP6=ipip
 
 或者使用 powershell
 
-$env:NALI_DB="ipip"
+$env:NALI_DB_IP6="ipip"
 ```
 
 #### Linux平台
@@ -272,13 +243,24 @@ $env:NALI_DB="ipip"
 ##### 使用geoip数据库
 
 ```
-export NALI_DB=geoip
+export NALI_DB_IP4=geoip
 ```
 
 ##### 使用ipip数据库
 
 ```
-export NALI_DB=ipip
+export NALI_DB_IP4=ipip
+```
+
+### 多语言支持
+
+通过修改环境变量 `NALI_LANG` 来指定使用的语言，当使用非中文语言时仅支持GeoIP2这个数据库
+
+该参数可设置的值见 GeoIP2 这个数据库的支持列表
+
+```
+# NALI_LANG=en nali 1.1.1.1
+1.1.1.1 [Australia]
 ```
 
 ### 更换数据库目录

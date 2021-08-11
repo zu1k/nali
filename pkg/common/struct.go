@@ -1,8 +1,11 @@
 package common
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
-// FileData: info of db file
+// FileData: info of database file
 type FileData struct {
 	Data     []byte
 	FilePath string
@@ -84,4 +87,13 @@ func (db *IPDB) ReadArea(offset uint32) []byte {
 func GetMiddleOffset(start uint32, end uint32, indexLen uint32) uint32 {
 	records := ((end - start) / indexLen) >> 1
 	return start + records*indexLen
+}
+
+type Result struct {
+	Country string
+	Area    string
+}
+
+func (r Result) String() string {
+	return fmt.Sprintf("%s %s", r.Country, r.Area)
 }

@@ -2,6 +2,7 @@ package qqwry
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -17,7 +18,7 @@ type QQwry struct {
 	common.IPDB
 }
 
-// NewQQwry new db from path
+// NewQQwry new database from path
 func NewQQwry(filePath string) QQwry {
 	var fileData []byte
 	var fileInfo common.FileData
@@ -55,25 +56,28 @@ func NewQQwry(filePath string) QQwry {
 	}
 }
 
-// Find ip地址查询对应归属地信息
-func (db QQwry) Find(ip string) (res string) {
-	if strings.Count(ip, ".") != 3 {
-		return
+func (db QQwry) Find(query string, params ...string) (result fmt.Stringer, err error) {
+	ip := net.ParseIP(query)
+	if ip == nil {
+		return nil, errors.New("Query should be IPv4")
 	}
+	ip4 := ip.To4()
+	if ip4 == nil {
+		return nil, errors.New("Query should be IPv4")
+	}
+	ip4uint := binary.BigEndian.Uint32(ip4)
 
-	ip4 := binary.BigEndian.Uint32(net.ParseIP(ip).To4())
-
-	offset := db.searchIndex(ip4)
+	offset := db.searchIndex(ip4uint)
 	if offset <= 0 {
-		return
+		return nil, errors.New("Query not valid")
 	}
 
 	var gbkCountry []byte
 	var gbkArea []byte
 
 	mode := db.ReadMode(offset + 4)
-	// [IP][0x01][国家和地区信息的绝对偏移地址]
-	if mode == common.RedirectMode1 {
+	switch mode {
+	case common.RedirectMode1: // [IP][0x01][国家和地区信息的绝对偏移地址]
 		countryOffset := db.ReadUInt24()
 		mode = db.ReadMode(countryOffset)
 		if mode == common.RedirectMode2 {
@@ -85,11 +89,11 @@ func (db QQwry) Find(ip string) (res string) {
 			countryOffset += uint32(len(gbkCountry) + 1)
 		}
 		gbkArea = db.ReadArea(countryOffset)
-	} else if mode == common.RedirectMode2 {
+	case common.RedirectMode2:
 		countryOffset := db.ReadUInt24()
 		gbkCountry = db.ReadString(countryOffset)
 		gbkArea = db.ReadArea(offset + 8)
-	} else {
+	default:
 		gbkCountry = db.ReadString(offset + 4)
 		gbkArea = db.ReadArea(offset + uint32(5+len(gbkCountry)))
 	}
@@ -98,13 +102,11 @@ func (db QQwry) Find(ip string) (res string) {
 	country, _ := enc.String(string(gbkCountry))
 	area, _ := enc.String(string(gbkArea))
 
-	country = strings.ReplaceAll(country, " CZ88.NET", "")
-	area = strings.ReplaceAll(area, " CZ88.NET", "")
-
-	if area == "" {
-		return country
+	result = common.Result{
+		Country: strings.ReplaceAll(country, " CZ88.NET", ""),
+		Area:    strings.ReplaceAll(area, " CZ88.NET", ""),
 	}
-	return fmt.Sprintf("%s %s", country, area)
+	return result, nil
 }
 
 // searchIndex 查找索引位置
