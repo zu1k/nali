@@ -3,7 +3,7 @@ module github.com/zu1k/nali
 go 1.14
 
 require (
-	github.com/fatih/color v1.12.0
+	github.com/fatih/color v1.13.0
 	github.com/ipipdotnet/ipdb-go v1.3.1
 	github.com/oschwald/geoip2-golang v1.5.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
