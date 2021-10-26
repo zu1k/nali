@@ -12,4 +12,5 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	golang.org/x/text v0.3.7
+	golang.org/x/tools v0.1.7 // indirect
 )
