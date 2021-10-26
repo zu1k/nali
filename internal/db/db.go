@@ -3,6 +3,7 @@ package db
 import (
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/cdn"
@@ -105,5 +106,7 @@ func Find(typ dbif.QueryType, query string) string {
 	if err != nil {
 		return ""
 	}
-	return result.String()
+	r := strings.Trim(result.String(), " ")
+	queryCache[query] = r
+	return r
 }
