@@ -287,6 +287,12 @@ export NALI_DB_HOME=/home/nali
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
+Thanks to JetBrains for the Open Source License 
+
+<a href="https://www.jetbrains.com/?from=nali">
+  <img src="assets/GoLand.svg">
+</a>
+
 ## License
 
 MIT
