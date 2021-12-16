@@ -58,27 +58,35 @@ func NewCDN(filePath string) *CDN {
 
 func (db CDN) Find(query string, params ...string) (result fmt.Stringer, err error) {
 	baseCname := parseBaseCname(query)
-	if baseCname == "" {
-		return nil, errors.New("base domain parse failed")
-	}
-	cdnResult, found := db.Data[baseCname]
-	if found {
-		return cdnResult, nil
+	for _, domain := range baseCname {
+		if domain != "" {
+			cdnResult, found := db.Data[domain]
+			if found {
+				return cdnResult, nil
+			}
+		}
+
+		if strings.Contains(domain, "kunlun") {
+			return CDNResult{
+				Name: "阿里云 CDN",
+			}, nil
+		}
 	}
 
-	if strings.Contains(baseCname, "kunlun") {
-		return CDNResult{
-			Name: "阿里云 CDN",
-		}, nil
-	}
 	return nil, errors.New("not found")
 }
 
-func parseBaseCname(domain string) string {
-	hostParts := strings.Split(domain, ".")
-	if len(hostParts) < 2 {
-		return domain
+func parseBaseCname(domain string) (result []string) {
+	parts := strings.Split(domain, ".")
+	size := len(parts)
+	if size == 0 {
+		return []string{}
 	}
-	baseCname := hostParts[len(hostParts)-2] + "." + hostParts[len(hostParts)-1]
-	return baseCname
+	domain = parts[size-1]
+	result = append(result, domain)
+	for i := len(parts) - 2; i >= 0; i-- {
+		domain = parts[i] + "." + domain
+		result = append(result, domain)
+	}
+	return result
 }
