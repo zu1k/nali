@@ -45,10 +45,10 @@ However the C version has too few functions, and the js version is too big and t
 
 ### Install from source
 
-Nali Requires Go >= 1.14. You can build it from source:
+Nali Requires Go >= 1.18. You can build it from source:
 
 ```sh
-$ go get -u -v github.com/zu1k/nali
+$ go install github.com/zu1k/nali
 ```
 
 ### Install pre-build binariy
@@ -56,12 +56,6 @@ $ go get -u -v github.com/zu1k/nali
 Pre-built binaries are available here: [release](https://github.com/zu1k/nali/releases)
 
 Download the binary compatible with your platform, unpack and copy to the directory in path
-
-### Install from docker
-
-```
-docker pull docker.pkg.github.com//zu1k/nali/nali:latest
-```
 
 ## Usage
 

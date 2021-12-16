@@ -21,3 +21,17 @@ func TestDomainRe(t *testing.T) {
 		fmt.Println(DomainRe.FindAllString(domain, -1))
 	}
 }
+
+var validIPv6List = []string{
+	"::ffff:104.26.11.119",
+}
+
+func TestIPv6Re(t *testing.T) {
+	for _, ip := range validIPv6List {
+		if !IPv6Re.MatchString(ip) {
+			t.Error(ip)
+			t.Fail()
+		}
+		fmt.Println(IPv6Re.FindAllString(ip, -1))
+	}
+}
