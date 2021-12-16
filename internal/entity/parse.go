@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"net/netip"
 	"sort"
 
 	"github.com/zu1k/nali/internal/db"
@@ -23,11 +24,20 @@ func ParseLine(line string) Entities {
 		})
 	}
 	for _, e := range ip6sLoc {
-		tmp = append(tmp, &Entity{
-			Loc:  e,
-			Type: TypeIPv6,
-			Text: line[e[0]:e[1]],
-		})
+		text := line[e[0]:e[1]]
+		if ip, _ := netip.ParseAddr(text); ip.Is4In6() {
+			tmp = append(tmp, &Entity{
+				Loc:  e,
+				Type: TypeIPv4,
+				Text: ip.Unmap().String(),
+			})
+		} else {
+			tmp = append(tmp, &Entity{
+				Loc:  e,
+				Type: TypeIPv6,
+				Text: text,
+			})
+		}
 	}
 	for _, e := range domainsLoc {
 		tmp = append(tmp, &Entity{

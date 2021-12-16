@@ -47,7 +47,7 @@
 Nali 需要预先安装 Go. 安装后可以从源码安装软件:
 
 ```sh
-$ go get -u -v github.com/zu1k/nali
+$ go install github.com/zu1k/nali
 ```
 
 ### 下载预编译的可执行程序
@@ -55,12 +55,6 @@ $ go get -u -v github.com/zu1k/nali
 可以从Release页面下载预编译好的可执行程序: [Release](https://github.com/zu1k/nali/releases)
 
 你需要选择适合你系统和硬件架构的版本下载，解压后可直接运行
-
-### 使用 Docker 版本
-
-```
-docker pull docker.pkg.github.com//zu1k/nali/nali:latest
-```
 
 ## 使用说明
 
