@@ -9,8 +9,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18.0-beta1
-          stable: 'false'
+          go-version: 1.17
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
