@@ -16,7 +16,7 @@ jobs:
       packages: write
     steps:
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       - name: Log in to the Container registry
         uses: docker/login-action@latest
         with:
