@@ -4,6 +4,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/zu1k/nali/internal/constant"
+
 	"github.com/spf13/cobra"
 	"github.com/zu1k/nali/internal/app"
 )
@@ -50,7 +52,8 @@ Find document on: https://github.com/zu1k/nali
 
 	$ nslookup google.com | nali
 `,
-	Args: cobra.MinimumNArgs(0),
+	Version: constant.Version,
+	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		gbk, _ := cmd.Flags().GetBool("gbk")
 		app.Root(args, gbk)

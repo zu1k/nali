@@ -44,7 +44,7 @@
 
 ### 从源码安装
 
-Nali 需要预先安装 Go. 安装后可以从源码安装软件:
+Nali 需要预先安装 Go >= 1.18. 安装后可以从源码安装软件:
 
 ```sh
 $ go install github.com/zu1k/nali
