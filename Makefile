@@ -100,5 +100,9 @@ $(zip_releases): %.zip : %
 all-arch: $(PLATFORM_LIST) $(WINDOWS_ARCH_LIST)
 
 releases: $(gz_releases) $(zip_releases)
+
+sha256sum:
+	cd $(BINDIR); for file in *; do sha256sum $$file > $$file.sha256; done
+
 clean:
 	rm $(BINDIR)/*
