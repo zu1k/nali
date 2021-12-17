@@ -4,10 +4,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/zu1k/nali/internal/constant"
-
 	"github.com/spf13/cobra"
 	"github.com/zu1k/nali/internal/app"
+	"github.com/zu1k/nali/internal/constant"
 )
 
 var rootCmd = &cobra.Command{

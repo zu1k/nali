@@ -25,13 +25,7 @@ func ParseLine(line string) Entities {
 	}
 	for _, e := range ip6sLoc {
 		text := line[e[0]:e[1]]
-		if ip, _ := netip.ParseAddr(text); ip.Is4In6() {
-			tmp = append(tmp, &Entity{
-				Loc:  e,
-				Type: TypeIPv4,
-				Text: ip.Unmap().String(),
-			})
-		} else {
+		if ip, _ := netip.ParseAddr(text); !ip.Is4In6() {
 			tmp = append(tmp, &Entity{
 				Loc:  e,
 				Type: TypeIPv6,
