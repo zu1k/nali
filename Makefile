@@ -7,6 +7,7 @@ GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/zu1k/nali/inte
 		-w -s'
 
 PLATFORM_LIST = \
+	darwin-arm64 \
 	darwin-amd64 \
 	linux-386 \
 	linux-amd64 \
@@ -31,6 +32,9 @@ all: linux-amd64 darwin-amd64 windows-amd64 # Most used
 
 docker:
 	$(GOBUILD) -o $(BINDIR)/$(NAME)-$@
+
+darwin-arm64:
+	GOARCH=arm64 GOOS=darwin $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
 darwin-amd64:
 	GOARCH=amd64 GOOS=darwin $(GOBUILD) -o $(BINDIR)/$(NAME)-$@
