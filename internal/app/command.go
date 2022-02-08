@@ -6,6 +6,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/zu1k/nali/internal/entity"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
@@ -22,9 +23,9 @@ func Root(args []string, needTransform bool) {
 			if line == "quit" || line == "exit" {
 				return
 			}
-			fmt.Printf("%s\n", entity.ParseLine(line).ColorString())
+			fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
 		}
 	} else {
-		fmt.Printf("%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
+		fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
 	}
 }
