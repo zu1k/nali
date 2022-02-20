@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/lionsoul2014/ip2region/binding/golang/ip2region"
 
@@ -40,11 +41,20 @@ func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, e
 		return nil, err
 	}
 
-	fmt.Println(ip)
+	area := ""
+	if ip.Province != "0" {
+		area = ip.Province
+	}
+	if ip.City != "0" && strings.EqualFold(ip.City, ip.Province) {
+		area = area + " " + ip.Province
+	}
+	if ip.ISP != "0" {
+		area = area + " " + ip.ISP
+	}
 
 	result = common.Result{
 		Country: ip.Country,
-		Area:    ip.Province,
+		Area:    area,
 	}
 	return result, nil
 }
