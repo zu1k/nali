@@ -28,10 +28,12 @@ However the C version has too few functions, and the js version is too big and t
 
 ## Feature
 
-- Chunzhen qqip database
-- ZX ipv6 database
-- Geoip2 city database
-- IPIP free database
+- Multi database support
+  - Chunzhen qqip database
+  - ZX ipv6 database
+  - Geoip2 city database
+  - IPIP free database
+  - ip2region database
 - Pipeline support
 - Interactive query
 - Offline query
@@ -205,6 +207,7 @@ supported database:
 - Geoip2 `['geoip', 'geoip2', 'geo']`
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
 - IPIP `['ipip', 'ipipfree', 'ipip.net']`
+- Ip2Resion `['ip2region', 'region', 'i2r']`
 
 #### Windows
 
@@ -278,6 +281,7 @@ export NALI_DB_HOME=/home/nali
 - [CDN provider数据库](https://github.com/SukkaLab/cdn)
 - [IPIP数据库](https://www.ipip.net/product/ip.html)
 - [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
+- [ip2region数据库](https://github.com/lionsoul2014/ip2region)
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 

@@ -27,10 +27,12 @@
 
 ## 功能
 
-- 纯真 IPv4 离线数据库
-- ZX IPv6 离线数据库
-- Geoip2 城市数据库 (可选)
-- IPIP 数据库 (可选)
+- 支持多种数据库
+  - 纯真 IPv4 离线数据库
+  - ZX IPv6 离线数据库
+  - Geoip2 城市数据库 (可选)
+  - IPIP 数据库 (可选)
+  - ip2region 数据库 (可选)
 - CDN 服务提供商查询
 - 支持管道处理
 - 支持交互式查询
@@ -209,6 +211,7 @@ $ nali update
 - Geoip2 `['geoip', 'geoip2', 'geo']`
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
 - IPIP `['ipip', 'ipipfree', 'ipip.net']`
+- Ip2Resion `['ip2region', 'region', 'i2r']`
 
 #### Windows平台
 
@@ -282,6 +285,7 @@ export NALI_DB_HOME=/home/nali
 - [CDN provider数据库](https://github.com/SukkaLab/cdn)
 - [IPIP数据库](https://www.ipip.net/product/ip.html)
 - [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
+- [ip2region数据库](https://github.com/lionsoul2014/ip2region)
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
