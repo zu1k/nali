@@ -13,6 +13,7 @@ require (
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
+	github.com/lionsoul2014/ip2region v2.2.0-release+incompatible // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/oschwald/maxminddb-golang v1.8.0 // indirect
