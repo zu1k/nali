@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/zu1k/nali/pkg/ip2region"
+
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/cdn"
 	"github.com/zu1k/nali/pkg/dbif"
@@ -19,6 +21,7 @@ var (
 	ZXIPv6WryPath    = filepath.Join(constant.HomePath, "zxipv6wry.db")
 	GeoLite2CityPath = filepath.Join(constant.HomePath, "GeoLite2-City.mmdb")
 	IPIPFreePath     = filepath.Join(constant.HomePath, "ipipfree.ipdb")
+	Ip2RegionPath    = filepath.Join(constant.HomePath, "ip2region.db")
 	CDNPath          = filepath.Join(constant.HomePath, "cdn.json")
 
 	Language       = "zh-CN"
@@ -80,6 +83,7 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 }
 
 func GetIPDBbyName(name string) (db dbif.DB) {
+	name = strings.ToLower(name)
 	switch name {
 	case "geo", "geoip", "geoip2":
 		return geoip.NewGeoIP(GeoLite2CityPath)
@@ -87,6 +91,8 @@ func GetIPDBbyName(name string) (db dbif.DB) {
 		return qqwry.NewQQwry(QQWryPath)
 	case "ipip", "ipipfree", "ipip.net":
 		return ipip.NewIPIPFree(IPIPFreePath)
+	case "ip2region", "region", "i2r":
+		return ip2region.NewIp2Region(Ip2RegionPath)
 	default:
 		return qqwry.NewQQwry(QQWryPath)
 	}
