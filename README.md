@@ -291,6 +291,13 @@ Thanks to JetBrains for the Open Source License
   <img src="assets/GoLand.svg">
 </a>
 
-## License
+## Author
 
-MIT
+**Nali** © [zu1k](https://github.com/zu1k), Released under the [MIT](./LICENSE) License.<br>
+
+> Blog [@zu1k](https://lgf.im) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/zu1k/nali.svg)](https://starchart.cc/zu1k/nali)

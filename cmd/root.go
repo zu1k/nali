@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
+	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/entity"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/zu1k/nali/internal/constant"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 )
