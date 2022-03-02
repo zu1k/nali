@@ -6,42 +6,43 @@ import (
 	"encoding/binary"
 	"io/ioutil"
 	"log"
-	"net/http"
 
 	"github.com/zu1k/nali/pkg/common"
 )
 
-func Download(filePath string) (data []byte, err error) {
-	data, err = getData()
+func Download(filePath ...string) (data []byte, err error) {
+	data, err = downloadAndDecrypt()
 	if err != nil {
 		log.Printf("纯真IP库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
 		log.Println("下载链接： https://qqwry.mirror.noc.one/qqwry.rar")
 		return
 	}
-	common.ExistThenRemove(filePath)
-	if err = ioutil.WriteFile(filePath, data, 0644); err == nil {
-		log.Printf("已将最新的 纯真IP库 保存到本地: %s ", filePath)
+
+	if len(filePath) == 1 {
+		if err := common.SaveFile(filePath[0], data); err == nil {
+			log.Println("已将最新的 纯真IP库 保存到本地:", filePath)
+		}
 	}
 	return
 }
 
-func getData() (data []byte, err error) {
-	resp, err := http.Get("https://qqwry.mirror.noc.one/qqwry.rar")
-	if err != nil {
-		return
-	}
-	defer resp.Body.Close()
+const (
+	mirror = "https://qqwry.mirror.noc.one/qqwry.rar"
+	key    = "https://qqwry.mirror.noc.one/copywrite.rar"
+)
 
-	body, err := ioutil.ReadAll(resp.Body)
+func downloadAndDecrypt() (data []byte, err error) {
+	data, err = common.GetHttpClient().Get(mirror)
 	if err != nil {
-		return
+		return nil, err
 	}
+
 	key, err := getCopyWriteKey()
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	return unRar(body, key)
+	return unRar(data, key)
 }
 
 func unRar(data []byte, key uint32) ([]byte, error) {
@@ -62,15 +63,10 @@ func unRar(data []byte, key uint32) ([]byte, error) {
 }
 
 func getCopyWriteKey() (uint32, error) {
-	resp, err := http.Get("https://qqwry.mirror.noc.one/copywrite.rar")
+	body, err := common.GetHttpClient().Get(key)
 	if err != nil {
 		return 0, err
 	}
-	defer resp.Body.Close()
 
-	if body, err := ioutil.ReadAll(resp.Body); err != nil {
-		return 0, err
-	} else {
-		return binary.LittleEndian.Uint32(body[5*4:]), nil
-	}
+	return binary.LittleEndian.Uint32(body[5*4:]), nil
 }

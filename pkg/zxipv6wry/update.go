@@ -4,47 +4,41 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 
 	"github.com/saracen/go7z"
 	"github.com/zu1k/nali/pkg/common"
 )
 
-func Download(filePath string) (data []byte, err error) {
+func Download(filePath ...string) (data []byte, err error) {
 	data, err = getData()
 	if err != nil {
 		log.Printf("ZX IPv6数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
 		log.Println("下载链接： https://ip.zxinc.org/ip.7z")
 		return
 	}
-	common.ExistThenRemove(filePath)
-	if err = ioutil.WriteFile(filePath, data, 0644); err == nil {
-		log.Printf("已将最新的 ZX IPv6数据库 保存到本地: %s ", filePath)
+
+	if len(filePath) == 1 {
+		if err := common.SaveFile(filePath[0], data); err == nil {
+			log.Println("已将最新的 ZX IPv6数据库 保存到本地:", filePath[0])
+		}
 	}
 	return
-
 }
 
-func getData() (data []byte, err error) {
-	resp, err := http.Get("https://ip.zxinc.org/ip.7z")
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
+const (
+	zx = "https://ip.zxinc.org/ip.7z"
+)
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
+func getData() (data []byte, err error) {
+	data, err = common.GetHttpClient().Get(zx)
 
 	file7z, err := ioutil.TempFile("", "*")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer os.Remove(file7z.Name())
-
-	if err := ioutil.WriteFile(file7z.Name(), body, 0644); err == nil {
+	if err := common.SaveFile(file7z.Name(), data); err == nil {
 		return Un7z(file7z.Name())
 	}
 	return
@@ -53,21 +47,21 @@ func getData() (data []byte, err error) {
 func Un7z(filePath string) (data []byte, err error) {
 	sz, err := go7z.OpenReader(filePath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer sz.Close()
 
 	fileNoNeed, err := ioutil.TempFile("", "*")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	fileNeed, err := ioutil.TempFile("", "*")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	for {
 		hdr, err := sz.Next()
@@ -75,7 +69,7 @@ func Un7z(filePath string) (data []byte, err error) {
 			break // End of archive
 		}
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 
 		if hdr.Name == "ipv6wry.db" {
@@ -90,7 +84,7 @@ func Un7z(filePath string) (data []byte, err error) {
 	}
 	err = fileNoNeed.Close()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer os.Remove(fileNoNeed.Name())
 	defer os.Remove(fileNeed.Name())

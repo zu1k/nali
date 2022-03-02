@@ -25,7 +25,7 @@ func (r CDNResult) String() string {
 	return r.Name
 }
 
-func NewCDN(filePath string) *CDN {
+func NewCDN(filePath string) (*CDN, error) {
 	cdnDist := make(CDNDist)
 	cdnData := make([]byte, 0)
 
@@ -34,26 +34,26 @@ func NewCDN(filePath string) *CDN {
 		log.Println("文件不存在，尝试从网络获取最新CDN数据库")
 		cdnData, err = Download(filePath)
 		if err != nil {
-			os.Exit(1)
+			return nil, err
 		}
 	} else {
 		cdnFile, err := os.OpenFile(filePath, os.O_RDONLY, 0400)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		defer cdnFile.Close()
 
 		cdnData, err = ioutil.ReadAll(cdnFile)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 
 	err = json.Unmarshal(cdnData, &cdnDist)
 	if err != nil {
-		panic("cdn data parse failed!")
+		return nil, err
 	}
-	return &CDN{Data: cdnDist}
+	return &CDN{Data: cdnDist}, nil
 }
 
 func (db CDN) Find(query string, params ...string) (result fmt.Stringer, err error) {

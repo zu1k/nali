@@ -12,21 +12,18 @@ type IPIPFree struct {
 	*ipdb.City
 }
 
-func NewIPIPFree(filePath string) IPIPFree {
+func NewIPIPFree(filePath string) (*IPIPFree, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Printf("IPIP数据库不存在，请手动下载解压后保存到本地: %s \n", filePath)
 		log.Println("下载链接： https://www.ipip.net/product/ip.html")
-		os.Exit(1)
-		return IPIPFree{}
+		return nil, err
 	} else {
 		db, err := ipdb.NewCity(filePath)
 		if err != nil {
-			log.Fatalln("IPIP 数据库 初始化失败")
-			log.Fatal(err)
-			os.Exit(1)
+			return nil, err
 		}
-		return IPIPFree{City: db}
+		return &IPIPFree{City: db}, nil
 	}
 }
 
