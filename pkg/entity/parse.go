@@ -4,10 +4,9 @@ import (
 	"net/netip"
 	"sort"
 
-	"github.com/zu1k/nali/pkg/re"
-
 	"github.com/zu1k/nali/internal/db"
 	"github.com/zu1k/nali/pkg/dbif"
+	"github.com/zu1k/nali/pkg/re"
 )
 
 // ParseLine parse a line into entities
