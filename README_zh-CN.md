@@ -295,6 +295,8 @@ export NALI_DB_HOME=/home/nali
   <img src="assets/GoLand.svg">
 </a>
 
-## 开源证书
+## 作者
 
-MIT
+**Nali** © [zu1k](https://github.com/zu1k), 遵循 [MIT](./LICENSE) 证书.<br>
+
+> Blog [@zu1k](https://lgf.im) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
