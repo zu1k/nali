@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/lionsoul2014/ip2region/binding/golang/ip2region"
-
 	"github.com/zu1k/nali/pkg/common"
 )
 
@@ -15,24 +14,24 @@ type Ip2Region struct {
 	db *ip2region.Ip2Region
 }
 
-func NewIp2Region(filePath string) Ip2Region {
+func NewIp2Region(filePath string) (*Ip2Region, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，尝试从网络获取最新 ip2region 库")
 		_, err = Download(filePath)
 		if err != nil {
-			os.Exit(1)
+			return nil, err
 		}
 	}
 
 	region, err := ip2region.New(filePath)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return Ip2Region{
+	return &Ip2Region{
 		db: region,
-	}
+	}, nil
 }
 
 func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, err error) {

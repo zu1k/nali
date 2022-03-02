@@ -19,7 +19,7 @@ type QQwry struct {
 }
 
 // NewQQwry new database from path
-func NewQQwry(filePath string) QQwry {
+func NewQQwry(filePath string) (*QQwry, error) {
 	var fileData []byte
 	var fileInfo common.FileData
 
@@ -28,18 +28,18 @@ func NewQQwry(filePath string) QQwry {
 		log.Println("文件不存在，尝试从网络获取最新纯真 IP 库")
 		fileData, err = Download(filePath)
 		if err != nil {
-			os.Exit(1)
+			return nil, err
 		}
 	} else {
 		fileInfo.FileBase, err = os.OpenFile(filePath, os.O_RDONLY, 0400)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		defer fileInfo.FileBase.Close()
 
 		fileData, err = ioutil.ReadAll(fileInfo.FileBase)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 	fileInfo.Data = fileData
@@ -48,12 +48,12 @@ func NewQQwry(filePath string) QQwry {
 	start := binary.LittleEndian.Uint32(buf[:4])
 	end := binary.LittleEndian.Uint32(buf[4:])
 
-	return QQwry{
+	return &QQwry{
 		IPDB: common.IPDB{
 			Data:  &fileInfo,
 			IPNum: (end-start)/7 + 1,
 		},
-	}
+	}, nil
 }
 
 func (db QQwry) Find(query string, params ...string) (result fmt.Stringer, err error) {

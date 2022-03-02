@@ -24,10 +24,10 @@ type DB interface {
 }
 
 var (
-	_ DB = qqwry.QQwry{}
-	_ DB = zxipv6wry.ZXwry{}
-	_ DB = ipip.IPIPFree{}
-	_ DB = geoip.GeoIP{}
-	_ DB = ip2region.Ip2Region{}
-	_ DB = cdn.CDN{}
+	_ DB = &qqwry.QQwry{}
+	_ DB = &zxipv6wry.ZXwry{}
+	_ DB = &ipip.IPIPFree{}
+	_ DB = &geoip.GeoIP{}
+	_ DB = &ip2region.Ip2Region{}
+	_ DB = &cdn.CDN{}
 )

@@ -1,16 +1,16 @@
 package db
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"github.com/zu1k/nali/pkg/ip2region"
 
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/cdn"
 	"github.com/zu1k/nali/pkg/dbif"
 	"github.com/zu1k/nali/pkg/geoip"
+	"github.com/zu1k/nali/pkg/ip2region"
 	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
@@ -51,38 +51,44 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 		return db
 	}
 
+	var err error
+
 	switch typ {
 	case dbif.TypeIPv4:
 		if IPv4DBSelected != "" {
-			db = GetIPDBbyName(IPv4DBSelected)
+			db, err = GetIPDBbyName(IPv4DBSelected)
 		} else {
 			if Language == "zh-CN" {
-				db = qqwry.NewQQwry(QQWryPath)
+				db, err = qqwry.NewQQwry(QQWryPath)
 			} else {
-				db = geoip.NewGeoIP(GeoLite2CityPath)
+				db, err = geoip.NewGeoIP(GeoLite2CityPath)
 			}
 		}
 	case dbif.TypeIPv6:
 		if IPv6DBSelected != "" {
-			db = GetIPDBbyName(IPv6DBSelected)
+			db, err = GetIPDBbyName(IPv6DBSelected)
 		} else {
 			if Language == "zh-CN" {
-				db = zxipv6wry.NewZXwry(ZXIPv6WryPath)
+				db, err = zxipv6wry.NewZXwry(ZXIPv6WryPath)
 			} else {
-				db = geoip.NewGeoIP(GeoLite2CityPath)
+				db, err = geoip.NewGeoIP(GeoLite2CityPath)
 			}
 		}
 	case dbif.TypeDomain:
-		db = cdn.NewCDN(CDNPath)
+		db, err = cdn.NewCDN(CDNPath)
 	default:
 		panic("Query type not supported!")
+	}
+
+	if err != nil || db == nil {
+		log.Fatalln("Database init failed:", err)
 	}
 
 	dbCache[typ] = db
 	return
 }
 
-func GetIPDBbyName(name string) (db dbif.DB) {
+func GetIPDBbyName(name string) (dbif.DB, error) {
 	name = strings.ToLower(name)
 	switch name {
 	case "geo", "geoip", "geoip2":
@@ -99,9 +105,18 @@ func GetIPDBbyName(name string) (db dbif.DB) {
 }
 
 func Update() {
-	qqwry.Download(QQWryPath)
-	zxipv6wry.Download(ZXIPv6WryPath)
-	cdn.Download(CDNPath)
+	_, err := qqwry.Download(QQWryPath)
+	if err != nil {
+		log.Fatalln("Database QQWry download failed:", err)
+	}
+	_, err = zxipv6wry.Download(ZXIPv6WryPath)
+	if err != nil {
+		log.Fatalln("Database ZXIPv6Wry download failed:", err)
+	}
+	_, err = cdn.Download(CDNPath)
+	if err != nil {
+		log.Fatalln("Database CDN download failed:", err)
+	}
 }
 
 func Find(typ dbif.QueryType, query string) string {

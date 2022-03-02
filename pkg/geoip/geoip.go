@@ -16,20 +16,19 @@ type GeoIP struct {
 }
 
 // new geoip from database file
-func NewGeoIP(filePath string) (geoip GeoIP) {
+func NewGeoIP(filePath string) (*GeoIP, error) {
 	// 判断文件是否存在
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，请自行下载 Geoip2 City库，并保存在", filePath)
-		os.Exit(1)
+		return nil, err
 	} else {
 		db, err := geoip2.Open(filePath)
 		if err != nil {
 			log.Fatal(err)
 		}
-		geoip = GeoIP{db: db}
+		return &GeoIP{db: db}, nil
 	}
-	return
 }
 
 func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err error) {

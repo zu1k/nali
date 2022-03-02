@@ -18,7 +18,7 @@ type ZXwry struct {
 	common.IPDB
 }
 
-func NewZXwry(filePath string) ZXwry {
+func NewZXwry(filePath string) (*ZXwry, error) {
 	var fileData []byte
 	var fileInfo common.FileData
 
@@ -27,28 +27,28 @@ func NewZXwry(filePath string) ZXwry {
 		log.Println("文件不存在，尝试从网络获取最新ZX IPv6数据库")
 		fileData, err = Download(filePath)
 		if err != nil {
-			os.Exit(1)
+			return nil, err
 		}
 	} else {
 		fileInfo.FileBase, err = os.OpenFile(filePath, os.O_RDONLY, 0400)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		defer fileInfo.FileBase.Close()
 
 		fileData, err = ioutil.ReadAll(fileInfo.FileBase)
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 	}
 
 	fileInfo.Data = fileData
 
-	return ZXwry{
+	return &ZXwry{
 		IPDB: common.IPDB{
 			Data: &fileInfo,
 		},
-	}
+	}, nil
 }
 
 func (db ZXwry) Find(query string, params ...string) (result fmt.Stringer, err error) {
