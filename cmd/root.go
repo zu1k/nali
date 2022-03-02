@@ -1,12 +1,19 @@
 package cmd
 
 import (
+	"bufio"
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
+	"github.com/zu1k/nali/pkg/entity"
+
+	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"github.com/zu1k/nali/internal/app"
 	"github.com/zu1k/nali/internal/constant"
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 )
 
 var rootCmd = &cobra.Command{
@@ -55,7 +62,22 @@ Find document on: https://github.com/zu1k/nali
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		gbk, _ := cmd.Flags().GetBool("gbk")
-		app.Root(args, gbk)
+
+		if len(args) == 0 {
+			stdin := bufio.NewScanner(os.Stdin)
+			for stdin.Scan() {
+				line := stdin.Text()
+				if gbk {
+					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
+				}
+				if line == "quit" || line == "exit" {
+					return
+				}
+				_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
+			}
+		} else {
+			_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
+		}
 	},
 }
 

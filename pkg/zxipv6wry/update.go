@@ -20,7 +20,7 @@ func Download(filePath ...string) (data []byte, err error) {
 
 	if len(filePath) == 1 {
 		if err := common.SaveFile(filePath[0], data); err == nil {
-			log.Println("已将最新的 ZX IPv6数据库 保存到本地:", filePath[0])
+			log.Println("已将最新的 ZX IPv6数据库 保存到本地:", filePath)
 		}
 	}
 	return

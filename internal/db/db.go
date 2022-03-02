@@ -104,18 +104,27 @@ func GetIPDBbyName(name string) (dbif.DB, error) {
 	}
 }
 
-func Update() {
+func UpdateAllDB() {
+	log.Println("正在下载最新 纯真 IPv4数据库...")
 	_, err := qqwry.Download(QQWryPath)
 	if err != nil {
-		log.Fatalln("Database QQWry download failed:", err)
+		log.Fatalln("数据库 QQWry 下载失败:", err)
 	}
+
+	log.Println("正在下载最新 ZX IPv6数据库...")
 	_, err = zxipv6wry.Download(ZXIPv6WryPath)
 	if err != nil {
-		log.Fatalln("Database ZXIPv6Wry download failed:", err)
+		log.Fatalln("数据库 ZXIPv6Wry 下载失败:", err)
 	}
+	_, err = ip2region.Download(Ip2RegionPath)
+	if err != nil {
+		log.Fatalln("数据库 Ip2Region 下载失败:", err)
+	}
+
+	log.Println("正在下载最新 CDN服务提供商数据库...")
 	_, err = cdn.Download(CDNPath)
 	if err != nil {
-		log.Fatalln("Database CDN download failed:", err)
+		log.Fatalln("数据库 CDN 下载失败:", err)
 	}
 }
 
