@@ -2,7 +2,7 @@
   <br>Nali<br>
 </h1>
 
-<h4 align="center">一个查询IP地理信息和CDN提供商的离线终端工具.</h4>
+<h4 align="center">An offline tool for querying IP geographic information and CDN provider.</h4>
 
 <p align="center">
   <a href="https://github.com/zu1k/nali/actions">
@@ -16,65 +16,66 @@
   </a>
 </p>
 
-## 来源
+#### [中文文档](https://github.com/zu1k/nali/blob/master/README.md)
 
-该工具受 Nali C版本 和 nali-cli js版本的启发.
+## Origin
 
-我想要在终端对IP地理信息和CDN服务提供商进行查询，发现了Nali这个工具，Nali与哪里谐音，非常适合这类工具
+Inspired by Nali C version and nali-cli js version.
 
-经过简单的使用，我发现最初的C语言版本功能缺失，而js版本包实在大的恐怖、而支持的平台非常有限，所以我用golang重写了这个工具，在原有功能的基础上增加了对IPv6的支持，并且增加了Geoip2数据库
+I want to query the IP geographic information and CDN service provider on the terminal, then found the Nali tool. Nali mean 'where' in Chinese, good name for this kind of tools.
 
+However the C version has too few functions, and the js version is too big and the supported platforms are not complete, so I rewrite it in golang, add IPv6 support and Geoip2 database.
 
-## 功能
+## Feature
 
-- 支持多种数据库
-  - 纯真 IPv4 离线数据库
-  - ZX IPv6 离线数据库
-  - Geoip2 城市数据库 (可选)
-  - IPIP 数据库 (可选)
-  - ip2region 数据库 (可选)
-- CDN 服务提供商查询
-- 支持管道处理
-- 支持交互式查询
-- 同时支持IPv4和IPv6
-- 支持多语言
-- 查询完全离线
-- 全平台支持
-- 支持彩色输出
+- Multi database support
+  - Chunzhen qqip database
+  - ZX ipv6 database
+  - Geoip2 city database
+  - IPIP free database
+  - ip2region database
+- Pipeline support
+- Interactive query
+- Offline query
+- Both ipv4 and ipv6 supported
+- Multilingual support
+- CDN provider query
+- Full platform support
+- Color print
 
-## 安装
+## Install
 
-### 从源码安装
+### Install from source
 
-Nali 需要预先安装 Go >= 1.18. 安装后可以从源码安装软件:
+Nali Requires Go >= 1.18. You can build it from source:
 
 ```sh
 $ go install github.com/zu1k/nali
 ```
 
-### 下载预编译的可执行程序
+### Install pre-build binariy
 
-可以从Release页面下载预编译好的可执行程序: [Release](https://github.com/zu1k/nali/releases)
+Pre-built binaries are available here: [release](https://github.com/zu1k/nali/releases)
 
-你需要选择适合你系统和硬件架构的版本下载，解压后可直接运行
+Download the binary compatible with your platform, unpack and copy to the directory in path
 
-## 使用说明
+## Usage
 
-### 查询一个IP的地理信息
+### Query a simple IP address
 
 ```
 $ nali 1.2.3.4
 1.2.3.4 [澳大利亚 APNIC Debogon-prefix网络]
 ```
 
-#### 或者 使用 `管道`
+#### or use `pipe`
 
 ```
 $ echo IP 6.6.6.6 | nali
 IP 6.6.6.6 [美国 亚利桑那州华楚卡堡市美国国防部网络中心]
 ```
 
-### 同时查询多个IP的地理信息
+### Query multiple IP addresses
 
 ```
 $ nali 1.2.3.4 4.3.2.1 123.23.3.0
@@ -83,9 +84,9 @@ $ nali 1.2.3.4 4.3.2.1 123.23.3.0
 123.23.3.0 [越南 越南邮电集团公司]
 ```
 
-### 交互式查询
+### Interactive query
 
-使用 `exit` 或  `quit` 退出查询
+use `exit` or  `quit` to quit
 
 ```
 $ nali
@@ -98,9 +99,7 @@ $ nali
 quit
 ```
 
-### 与 `dig` 命令配合使用
-
-需要你系统中已经安装好 dig 程序
+### Use with dig
 
 ```
 $ dig nali.lgf.im +short | nali
@@ -109,9 +108,7 @@ $ dig nali.lgf.im +short | nali
 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-### 与 `nslookup` 命令配合使用
-
-需要你系统中已经安装好 nslookup 程序
+### Use with nslookup
 
 ```
 $ nslookup nali.lgf.im 8.8.8.8 | nali
@@ -127,19 +124,19 @@ Name:   nali.lgf.im
 Address: 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-### 与任意程序配合使用
+### Use with any other program
 
-因为 nali 支持管道处理，所以可以和任意程序配合使用
+Because nali can read the contents of the `stdin` pipeline, it can be used with any program
 
 ```
 bash abc.sh | nali
 ```
 
-Nali 将在 IP后面插入IP地理信息，CDN域名后面插入CDN服务提供商信息
+Nali will insert ip information after ip
 
-### 支持IPv6
+### IPV6 support
 
-和 IPv4 用法完全相同
+Use like ipv4
 
 ```
 $ nslookup google.com | nali
@@ -153,9 +150,7 @@ Name:   google.com
 Address: 2a00:1450:400e:809::200e [荷兰Amsterdam Google Inc. 服务器网段]
 ```
 
-### 查询 CDN 服务提供商
-
-因为 CDN 服务通常使用 CNAME 的域名解析方式，所以推荐与 `nslookup` 或者 `dig` 配合使用，在已经知道 CNAME 后可单独使用
+### Query CDN provider
 
 ```
 $ nslookup www.gov.cn | nali
@@ -173,9 +168,9 @@ Name:   zgovweb.v.bsgslb.cn [白山云 CDN]
 Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Company, LLC (CenturyLink)]
 ```
 
-## 用户交互
+## Interface
 
-### 查看帮助
+### Help
 
 ```
 $ nali --help
@@ -184,17 +179,18 @@ Usage:
   nali [command]
 
 Available Commands:
+  completion  generate the autocompletion script for the specified shell
   help        Help about any command
   update      update chunzhen ip database
 
 Flags:
-  -h, --help     help for nali
-  -t, --toggle   Help message for toggle
+      --gbk    Use GBK decoder
+  -h, --help   help for nali
 
 Use "nali [command] --help" for more information about a command.
 ```
 
-### 更新数据库
+### Update database
 
 ```
 $ nali update
@@ -202,69 +198,69 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-### 自选数据库
+### Select database
 
-用户可以指定使用哪个数据库，需要设置环境变量： `NALI_DB_IP4`、`NALI_DB_IP6` 或者两个同时设置
+Users can specify which database to use， set environment variables `NALI_DB_IP4`, `NALI_DB_IP6` or both.
 
-支持的变量内容:
+supported database:
 
 - Geoip2 `['geoip', 'geoip2', 'geo']`
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
 - IPIP `['ipip', 'ipipfree', 'ipip.net']`
 - Ip2Resion `['ip2region', 'region', 'i2r']`
 
-#### Windows平台
+#### Windows
 
-##### 使用geoip数据库
+##### Use geoip db
 
 ```
 set NALI_DB_IP4=geoip
 
-或者使用 powershell
+or use powershell
 
 $env:NALI_DB_IP4="geoip"
 ```
 
-##### 使用ipip数据库
+##### Use ipip db
 
 ```
 set NALI_DB_IP6=ipip
 
-或者使用 powershell
+or use powershell
 
 $env:NALI_DB_IP6="ipip"
 ```
 
-#### Linux平台
+#### Linux
 
-##### 使用geoip数据库
+##### Use geoip db
 
 ```
 export NALI_DB_IP4=geoip
 ```
 
-##### 使用ipip数据库
+##### Use ipip db
 
 ```
-export NALI_DB_IP4=ipip
+export NALI_DB_IP6=ipip
 ```
 
-### 多语言支持
+### Multilingual support
 
-通过修改环境变量 `NALI_LANG` 来指定使用的语言，当使用非中文语言时仅支持GeoIP2这个数据库
+Specify the language to be used by modifying the environment variable `NALI_LANG`, when using a non-Chinese language only the GeoIP2 database is supported
 
-该参数可设置的值见 GeoIP2 这个数据库的支持列表
+The values that can be set for this parameter can be found in the list of supported databases for GeoIP2
 
 ```
 # NALI_LANG=en nali 1.1.1.1
 1.1.1.1 [Australia]
 ```
 
-### 更换数据库目录
+### Change database directory
 
-如果未指定数据库存放目录，数据库默认将存放在 `~/.nali`
+If the database directory is not specified, the database will be placed in `~/.nali`
 
-设置环境变量 `NALI_DB_HOME` 来指定数据库目录
+Set environment variables `NALI_DB_HOME` to specify the database directory
 
 ```
 set NALI_DB_HOME=D:\nalidb
@@ -274,7 +270,7 @@ or
 export NALI_DB_HOME=/home/nali
 ```
 
-## 感谢列表
+## Thanks
 
 - [纯真QQIP离线数据库](http://www.cz88.net/fox/ipdat.shtml)
 - [qqwry mirror](https://qqwry.mirror.noc.one/)
@@ -289,14 +285,19 @@ export NALI_DB_HOME=/home/nali
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
-感谢 JetBrains 提供开源项目免费License 
+Thanks to JetBrains for the Open Source License 
 
 <a href="https://www.jetbrains.com/?from=nali">
   <img src="assets/GoLand.svg">
 </a>
 
-## 作者
+## Author
 
-**Nali** © [zu1k](https://github.com/zu1k), 遵循 [MIT](./LICENSE) 证书.<br>
+**Nali** © [zu1k](https://github.com/zu1k), Released under the [MIT](./LICENSE) License.<br>
 
 > Blog [@zu1k](https://lgf.im) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
+
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/zu1k/nali.svg)](https://starchart.cc/zu1k/nali)
