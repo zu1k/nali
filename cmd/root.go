@@ -44,11 +44,11 @@ Find document on: https://github.com/zu1k/nali
 
 #4 Use with dig
 
-	$ dig nali.lgf.im +short | nali
+	$ dig nali.zu1k.com +short | nali
 
 #5 Use with nslookup
 
-	$ nslookup nali.lgf.im 8.8.8.8 | nali
+	$ nslookup nali.zu1k.com 8.8.8.8 | nali
 
 #6 Use with any other program
 

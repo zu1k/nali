@@ -22,7 +22,7 @@ var (
 	GeoLite2CityPath = filepath.Join(constant.HomePath, "GeoLite2-City.mmdb")
 	IPIPFreePath     = filepath.Join(constant.HomePath, "ipipfree.ipdb")
 	Ip2RegionPath    = filepath.Join(constant.HomePath, "ip2region.db")
-	CDNPath          = filepath.Join(constant.HomePath, "cdn.json")
+	CDNPath          = filepath.Join(constant.HomePath, "cdn.yml")
 
 	Language       = "zh-CN"
 	IPv4DBSelected = ""

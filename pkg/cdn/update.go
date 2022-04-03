@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	githubUrl   = "https://raw.githubusercontent.com/SukkaLab/cdn/master/dist/cdn.json"
-	jsdelivrUrl = "https://cdn.jsdelivr.net/gh/SukkaLab/cdn/dist/cdn.json"
+	githubUrl   = "https://raw.githubusercontent.com/SukkaLab/cdn/master/src/cdn.yml"
+	jsdelivrUrl = "https://cdn.jsdelivr.net/gh/SukkaLab/cdn/src/cdn.yml"
 )
 
 func Download(filePath ...string) (data []byte, err error) {
