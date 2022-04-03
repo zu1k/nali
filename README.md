@@ -105,7 +105,7 @@ quit
 需要你系统中已经安装好 dig 程序
 
 ```
-$ dig nali.lgf.im +short | nali
+$ dig nali.zu1k.com +short | nali
 104.28.2.115 [美国 CloudFlare公司CDN节点]
 104.28.3.115 [美国 CloudFlare公司CDN节点]
 172.67.135.48 [美国 CloudFlare节点]
@@ -116,16 +116,16 @@ $ dig nali.lgf.im +short | nali
 需要你系统中已经安装好 nslookup 程序
 
 ```
-$ nslookup nali.lgf.im 8.8.8.8 | nali
+$ nslookup nali.zu1k.com 8.8.8.8 | nali
 Server:         8.8.8.8 [美国 加利福尼亚州圣克拉拉县山景市谷歌公司DNS服务器]
 Address:        8.8.8.8 [美国 加利福尼亚州圣克拉拉县山景市谷歌公司DNS服务器]#53
 
 Non-authoritative answer:
-Name:   nali.lgf.im
+Name:   nali.zu1k.com
 Address: 104.28.3.115 [美国 CloudFlare公司CDN节点]
-Name:   nali.lgf.im
+Name:   nali.zu1k.com
 Address: 104.28.2.115 [美国 CloudFlare公司CDN节点]
-Name:   nali.lgf.im
+Name:   nali.zu1k.com
 Address: 172.67.135.48 [美国 CloudFlare节点]
 ```
 
@@ -301,7 +301,7 @@ export NALI_DB_HOME=/home/nali
 
 **Nali** © [zu1k](https://github.com/zu1k), 遵循 [MIT](./LICENSE) 证书.<br>
 
-> Blog [@zu1k](https://lgf.im) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
+> Blog [@zu1k](https://zu1k.com) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
 
 ## Star统计
 

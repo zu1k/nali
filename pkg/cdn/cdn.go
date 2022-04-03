@@ -1,13 +1,14 @@
 package cdn
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 type CDN struct {
@@ -49,7 +50,7 @@ func NewCDN(filePath string) (*CDN, error) {
 		}
 	}
 
-	err = json.Unmarshal(cdnData, &cdnDist)
+	err = yaml.Unmarshal(cdnData, &cdnDist)
 	if err != nil {
 		return nil, err
 	}
