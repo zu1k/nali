@@ -18,8 +18,8 @@ type CDN struct {
 type CDNDist map[string]CDNResult
 
 type CDNResult struct {
-	Name string `json:"name"`
-	Link string `json:"link"`
+	Name string `yaml:"name"`
+	Link string `yaml:"link"`
 }
 
 func (r CDNResult) String() string {
