@@ -38,7 +38,7 @@ func getData() (data []byte, err error) {
 		return nil, err
 	}
 	defer os.Remove(file7z.Name())
-	if err := common.SaveFile(file7z.Name(), data); err == nil {
+	if err := ioutil.WriteFile(file7z.Name(), data, 0644); err == nil {
 		return Un7z(file7z.Name())
 	}
 	return
