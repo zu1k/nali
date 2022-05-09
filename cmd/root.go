@@ -7,13 +7,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/zu1k/nali/internal/constant"
-	"github.com/zu1k/nali/pkg/entity"
-
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
+
+	"github.com/zu1k/nali/internal/constant"
+	"github.com/zu1k/nali/pkg/entity"
 )
 
 var rootCmd = &cobra.Command{
@@ -55,8 +55,6 @@ Find document on: https://github.com/zu1k/nali
 	bash abc.sh | nali
 
 #7 IPV6 support
-
-	$ nslookup google.com | nali
 `,
 	Version: constant.Version,
 	Args:    cobra.MinimumNArgs(0),
@@ -85,7 +83,6 @@ Find document on: https://github.com/zu1k/nali
 func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err.Error())
-		os.Exit(1)
 	}
 }
 

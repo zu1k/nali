@@ -7,22 +7,27 @@ import (
 )
 
 var (
-	// HomePath database home path
-	HomePath string
+	// WorkDirPath database home path
+	WorkDirPath string
 )
 
 func init() {
-	HomePath = os.Getenv("NALI_DB_HOME")
-	if HomePath == "" {
+	WorkDirPath = os.Getenv("NALI_HOME")
+	if WorkDirPath == "" {
+		WorkDirPath = os.Getenv("NALI_DB_HOME")
+	}
+	if WorkDirPath == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			panic(err)
 		}
-		HomePath = filepath.Join(homeDir, ".nali")
+		WorkDirPath = filepath.Join(homeDir, ".nali")
 	}
-	if _, err := os.Stat(HomePath); os.IsNotExist(err) {
-		if err := os.MkdirAll(HomePath, 0777); err != nil {
-			log.Fatal("can not create", HomePath, ", use bin dir instead")
+	if _, err := os.Stat(WorkDirPath); os.IsNotExist(err) {
+		if err := os.MkdirAll(WorkDirPath, 0777); err != nil {
+			log.Fatal("can not create", WorkDirPath, ", use bin dir instead")
 		}
 	}
+
+	_ = os.Chdir(WorkDirPath)
 }
