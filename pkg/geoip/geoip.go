@@ -7,6 +7,8 @@ import (
 	"net"
 	"os"
 
+	"github.com/spf13/viper"
+
 	"github.com/oschwald/geoip2-golang"
 )
 
@@ -41,11 +43,9 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 		return
 	}
 
-	lang := "zh-CN"
-	if len(params) > 0 {
-		if _, ok := record.Country.Names[params[0]]; ok {
-			lang = params[0]
-		}
+	lang := viper.GetString("selected.lang")
+	if lang == "" {
+		lang = "zh-CN"
 	}
 
 	result = Result{
