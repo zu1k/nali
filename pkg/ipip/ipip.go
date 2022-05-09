@@ -12,7 +12,7 @@ type IPIPFree struct {
 	*ipdb.City
 }
 
-func NewIPIPFree(filePath string) (*IPIPFree, error) {
+func NewIPIP(filePath string) (*IPIPFree, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Printf("IPIP数据库不存在，请手动下载解压后保存到本地: %s \n", filePath)

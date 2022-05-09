@@ -17,6 +17,7 @@ vendor
 
 # GoLand
 .idea/*
+.vscode
 
 # macOS file
 .DS_Store
