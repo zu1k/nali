@@ -35,6 +35,7 @@
   - Geoip2 城市数据库 (可选)
   - IPIP 数据库 (可选)
   - ip2region 数据库 (可选)
+  - DB-IP 数据库 (可选)
 - CDN 服务提供商查询
 - 支持管道处理
 - 支持交互式查询
@@ -51,7 +52,7 @@
 Nali 需要预先安装 Go >= 1.18. 安装后可以从源码安装软件:
 
 ```sh
-$ go install github.com/zu1k/nali
+$ go install github.com/zu1k/nali@latest
 ```
 
 ### 下载预编译的可执行程序
@@ -177,6 +178,26 @@ Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Com
 
 ## 用户交互
 
+程序第一次运行后，会在工作目录生成配置文件 `config.yaml` (默认`~/.nali/config.yaml`)，配置文件定义了数据库信息，默认用户无需进行修改
+
+数据库格式默认如下：
+
+```yaml
+- name: geoip
+  name-alias:
+  - geolite
+  - geolite2
+  format: mmdb
+  file: GeoLite2-City.mmdb
+  languages:
+  - ALL
+  types:
+  - IPv4
+  - IPv6
+```
+
+其中，`languages` 和 `types` 表示该数据库支持的语言和查询类型。 如果你需要增加数据库，需小心修改配置文件，如果有任何问题，欢迎提 issue 询问。
+
 ### 查看帮助
 
 ```
@@ -187,7 +208,7 @@ Usage:
 
 Available Commands:
   help        Help about any command
-  update      update chunzhen ip database
+  update      update qqwry, zxipv6wry, ip2region ip database and cdn
 
 Flags:
   -h, --help     help for nali
@@ -198,8 +219,18 @@ Use "nali [command] --help" for more information about a command.
 
 ### 更新数据库
 
+更新所有可以自动更新的数据库
+
 ```
 $ nali update
+2020/07/17 12:53:46 正在下载最新纯真 IP 库...
+2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
+```
+
+或者指定数据库
+
+```
+$ nali update --db qqwry,cdn
 2020/07/17 12:53:46 正在下载最新纯真 IP 库...
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
@@ -210,10 +241,11 @@ $ nali update
 
 支持的变量内容:
 
-- Geoip2 `['geoip', 'geoip2', 'geo']`
-- Chunzhen `['chunzhen', 'qqip', 'qqwry']`
-- IPIP `['ipip', 'ipipfree', 'ipip.net']`
-- Ip2Resion `['ip2region', 'region', 'i2r']`
+- Geoip2 `['geoip', 'geoip2']`
+- Chunzhen `['chunzhen', 'qqwry']`
+- IPIP `['ipip']`
+- Ip2Resion `['ip2region', 'i2r']`
+- DBIP `['dbip', 'db-ip']`
 
 #### Windows平台
 
@@ -262,18 +294,18 @@ export NALI_DB_IP4=ipip
 1.1.1.1 [Australia]
 ```
 
-### 更换数据库目录
+### 更换工作目录
 
 如果未指定数据库存放目录，数据库默认将存放在 `~/.nali`
 
-设置环境变量 `NALI_DB_HOME` 来指定数据库目录
+设置环境变量 `NALI_HOME` 来指定工作目录，数据库存放在工作目录下。也可在配置文件中使用绝对路径指定其他数据库路径。
 
 ```
-set NALI_DB_HOME=D:\nalidb
+set NALI_HOME=D:\nali
 
 or
 
-export NALI_DB_HOME=/home/nali
+export NALI_HOME=/var/nali
 ```
 
 ## 感谢列表
@@ -301,7 +333,7 @@ export NALI_DB_HOME=/home/nali
 
 **Nali** © [zu1k](https://github.com/zu1k), 遵循 [MIT](./LICENSE) 证书.<br>
 
-> Blog [@zu1k](https://zu1k.com) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
+> Blog [zu1k.com](https://zu1k.com) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
 
 ## Star统计
 

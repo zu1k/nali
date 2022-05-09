@@ -34,6 +34,7 @@ However the C version has too few functions, and the js version is too big and t
   - Geoip2 city database
   - IPIP free database
   - ip2region database
+  - db-ip database
 - Pipeline support
 - Interactive query
 - Offline query
@@ -50,7 +51,7 @@ However the C version has too few functions, and the js version is too big and t
 Nali Requires Go >= 1.18. You can build it from source:
 
 ```sh
-$ go install github.com/zu1k/nali
+$ go install github.com/zu1k/nali@latest
 ```
 
 ### Install pre-build binariy
@@ -170,6 +171,24 @@ Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Com
 
 ## Interface
 
+After nali runs for the first time, a configuration file `config.yaml` will be generated in the working directory (default `~/.nali/config.yaml`), the configuration file defines the database information.
+
+A database is defined as the follows:
+
+```yaml
+- name: geoip
+  name-alias:
+  - geolite
+  - geolite2
+  format: mmdb
+  file: GeoLite2-City.mmdb
+  languages:
+  - ALL
+  types:
+  - IPv4
+  - IPv6
+```
+
 ### Help
 
 ```
@@ -192,8 +211,18 @@ Use "nali [command] --help" for more information about a command.
 
 ### Update database
 
+Update all databases if avaliable:
+
 ```
 $ nali update
+2020/07/17 12:53:46 正在下载最新纯真 IP 库...
+2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
+```
+
+Updata selected databases:
+
+```
+$ nali update --db qqwry,cdn
 2020/07/17 12:53:46 正在下载最新纯真 IP 库...
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
@@ -204,10 +233,11 @@ Users can specify which database to use， set environment variables `NALI_DB_IP
 
 supported database:
 
-- Geoip2 `['geoip', 'geoip2', 'geo']`
-- Chunzhen `['chunzhen', 'qqip', 'qqwry']`
-- IPIP `['ipip', 'ipipfree', 'ipip.net']`
-- Ip2Resion `['ip2region', 'region', 'i2r']`
+- Geoip2 `['geoip', 'geoip2']`
+- Chunzhen `['chunzhen', 'qqwry']`
+- IPIP `['ipip']`
+- Ip2Resion `['ip2region', 'i2r']`
+- - DBIP `['dbip', 'db-ip']`
 
 #### Windows
 
@@ -260,14 +290,14 @@ The values that can be set for this parameter can be found in the list of suppor
 
 If the database directory is not specified, the database will be placed in `~/.nali`
 
-Set environment variables `NALI_DB_HOME` to specify the database directory
+Set environment variables `NALI_HOME` to specify the working directory
 
 ```
-set NALI_DB_HOME=D:\nalidb
+set NALI_HOME=D:\nalidb
 
 or
 
-export NALI_DB_HOME=/home/nali
+export NALI_HOME=/home/nali
 ```
 
 ## Thanks
@@ -295,7 +325,7 @@ Thanks to JetBrains for the Open Source License
 
 **Nali** © [zu1k](https://github.com/zu1k), Released under the [MIT](./LICENSE) License.<br>
 
-> Blog [@zu1k](https://zu1k.com) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
+> Blog [zu1k.com](https://zu1k.com) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
 
 
 ## Stargazers over time

@@ -3,17 +3,6 @@ package db
 func GetDefaultDBList() List {
 	return List{
 		&DB{
-			Name: "geoip",
-			NameAlias: []string{
-				"geolite",
-				"geolite2",
-			},
-			Format:    FormatMMDB,
-			File:      "GeoLite2-City.mmdb",
-			Languages: LanguagesAll,
-			Types:     TypesIP,
-		},
-		&DB{
 			Name: "qqwry",
 			NameAlias: []string{
 				"chunzhen",
@@ -33,6 +22,28 @@ func GetDefaultDBList() List {
 			File:      "zxipv6wry.db",
 			Languages: LanguagesZH,
 			Types:     TypesIPv6,
+		},
+		&DB{
+			Name: "geoip",
+			NameAlias: []string{
+				"geoip2",
+				"geolite",
+				"geolite2",
+			},
+			Format:    FormatMMDB,
+			File:      "GeoLite2-City.mmdb",
+			Languages: LanguagesAll,
+			Types:     TypesIP,
+		},
+		&DB{
+			Name: "dbip",
+			NameAlias: []string{
+				"db-ip",
+			},
+			Format:    FormatMMDB,
+			File:      "dbip.mmdb",
+			Languages: LanguagesAll,
+			Types:     TypesIP,
 		},
 		&DB{
 			Name:      "ipip",
