@@ -14,6 +14,7 @@ import (
 	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
+	"github.com/zu1k/nali/pkg/ip2location"
 )
 
 var (
@@ -23,6 +24,7 @@ var (
 	IPIPFreePath     = filepath.Join(constant.HomePath, "ipipfree.ipdb")
 	Ip2RegionPath    = filepath.Join(constant.HomePath, "ip2region.db")
 	CDNPath          = filepath.Join(constant.HomePath, "cdn.yml")
+	IP2LocationPath    = filepath.Join(constant.HomePath, "IP2LOCATION-LITE-DB3.IPV6.BIN")
 
 	Language       = "zh-CN"
 	IPv4DBSelected = ""
@@ -99,6 +101,8 @@ func GetIPDBbyName(name string) (dbif.DB, error) {
 		return ipip.NewIPIPFree(IPIPFreePath)
 	case "ip2region", "region", "i2r":
 		return ip2region.NewIp2Region(Ip2RegionPath)
+	case "ip2location", "bin", "ipl":
+		return ip2locationdb.NewIP2LocationDB(IP2LocationPath)
 	default:
 		return qqwry.NewQQwry(QQWryPath)
 	}

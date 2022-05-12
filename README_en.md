@@ -34,6 +34,7 @@ However the C version has too few functions, and the js version is too big and t
   - Geoip2 city database
   - IPIP free database
   - ip2region database
+  - IP2Location DB3 LITE database
 - Pipeline support
 - Interactive query
 - Offline query
@@ -208,6 +209,7 @@ supported database:
 - Chunzhen `['chunzhen', 'qqip', 'qqwry']`
 - IPIP `['ipip', 'ipipfree', 'ipip.net']`
 - Ip2Resion `['ip2region', 'region', 'i2r']`
+- IP2Location LITE `['ip2location', 'bin', 'ipl']`
 
 #### Windows
 
@@ -256,6 +258,8 @@ The values that can be set for this parameter can be found in the list of suppor
 1.1.1.1 [Australia]
 ```
 
+NOTE: The IP2Location database only contains English values so it will ignore the language variable.
+
 ### Change database directory
 
 If the database directory is not specified, the database will be placed in `~/.nali`
@@ -282,6 +286,7 @@ export NALI_DB_HOME=/home/nali
 - [IPIP数据库](https://www.ipip.net/product/ip.html)
 - [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
 - [ip2region数据库](https://github.com/lionsoul2014/ip2region)
+- [IP2Location DB3 LITE](https://lite.ip2location.com/database/db3-ip-country-region-city) *get the IPv6 BIN file as it contains both IPv4+IPv6 data*
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 

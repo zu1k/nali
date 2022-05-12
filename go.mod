@@ -15,12 +15,16 @@ require (
 
 require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/oschwald/maxminddb-golang v1.9.0 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
+)
+
+require (
+	github.com/ip2location/ip2location-go/v9 v9.2.0
+	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/saracen/go7z-fixtures v0.0.0-20190623165746-aa6b8fba1d2f // indirect
 	github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f // indirect
-	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
 	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
 	golang.org/x/tools v0.1.7 // indirect
