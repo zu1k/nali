@@ -35,6 +35,7 @@ However the C version has too few functions, and the js version is too big and t
   - IPIP free database
   - ip2region database
   - db-ip database
+  - IP2Location DB3 LITE database
 - Pipeline support
 - Interactive query
 - Offline query
@@ -238,6 +239,7 @@ supported database:
 - IPIP `['ipip']`
 - Ip2Resion `['ip2region', 'i2r']`
 - - DBIP `['dbip', 'db-ip']`
+- IP2Location `['ip2location']`
 
 #### Windows
 
@@ -312,6 +314,7 @@ export NALI_HOME=/home/nali
 - [IPIP数据库](https://www.ipip.net/product/ip.html)
 - [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
 - [ip2region数据库](https://github.com/lionsoul2014/ip2region)
+- [IP2Location DB3 LITE](https://lite.ip2location.com/database/db3-ip-country-region-city) *use the IPv6 BIN as it contains both IPv4 & IPv6*
 - [Cobra CLI库](https://github.com/spf13/cobra)
 - [Nali-cli](https://github.com/SukkaW/nali-cli)
 
