@@ -9,6 +9,7 @@ import (
 	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
+	"github.com/zu1k/nali/pkg/ip2location"
 )
 
 type QueryType uint
@@ -29,5 +30,6 @@ var (
 	_ DB = &ipip.IPIPFree{}
 	_ DB = &geoip.GeoIP{}
 	_ DB = &ip2region.Ip2Region{}
+	_ DB = &ip2locationdb.IP2LocationDB{}
 	_ DB = &cdn.CDN{}
 )

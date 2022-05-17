@@ -10,6 +10,7 @@ import (
 	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
+	"github.com/zu1k/nali/pkg/ip2location"
 )
 
 type DB struct {
@@ -41,6 +42,8 @@ func (d *DB) get() (db dbif.DB) {
 		db, err = geoip.NewGeoIP(filePath)
 	case FormatIP2Region:
 		db, err = ip2region.NewIp2Region(filePath)
+	case FormatIP2Location:
+		db, err = ip2locationdb.NewIP2LocationDB(filePath)
 	case FormatCDNSkkYml:
 		db, err = cdn.NewCDN(filePath)
 	default:
@@ -63,6 +66,7 @@ const (
 	FormatZXIPv6Wry        = "zxipv6wry"
 	FormatIPIP             = "ipip"
 	FormatIP2Region        = "ip2region"
+	FormatIP2Location        = "ip2location"
 
 	FormatCDNSkkYml = "cdn-skk-yml"
 )
