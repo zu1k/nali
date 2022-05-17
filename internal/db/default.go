@@ -66,7 +66,7 @@ func GetDefaultDBList() List {
 			Name:      "ip2location",
 			Format:    FormatIP2Location,
 			File:      "IP2LOCATION-LITE-DB3.IPV6.BIN",
-			Languages: LanguagesAll,
+			Languages: LanguagesEN,
 			Types:     TypesIP,
 		},
 
