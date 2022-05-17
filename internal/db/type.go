@@ -74,6 +74,7 @@ const (
 var (
 	LanguagesAll = []string{"ALL"}
 	LanguagesZH  = []string{"zh-CN"}
+	LanguagesEN  = []string{"en"}
 )
 
 type Type string
