@@ -238,7 +238,7 @@ supported database:
 - Chunzhen `['chunzhen', 'qqwry']`
 - IPIP `['ipip']`
 - Ip2Resion `['ip2region', 'i2r']`
-- - DBIP `['dbip', 'db-ip']`
+- DBIP `['dbip', 'db-ip']`
 - IP2Location `['ip2location']`
 
 #### Windows

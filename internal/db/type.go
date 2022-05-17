@@ -6,11 +6,11 @@ import (
 	"github.com/zu1k/nali/pkg/cdn"
 	"github.com/zu1k/nali/pkg/dbif"
 	"github.com/zu1k/nali/pkg/geoip"
+	"github.com/zu1k/nali/pkg/ip2location"
 	"github.com/zu1k/nali/pkg/ip2region"
 	"github.com/zu1k/nali/pkg/ipip"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
-	"github.com/zu1k/nali/pkg/ip2location"
 )
 
 type DB struct {
@@ -61,11 +61,11 @@ func (d *DB) get() (db dbif.DB) {
 type Format string
 
 const (
-	FormatMMDB      Format = "mmdb"
-	FormatQQWry            = "qqwry"
-	FormatZXIPv6Wry        = "zxipv6wry"
-	FormatIPIP             = "ipip"
-	FormatIP2Region        = "ip2region"
+	FormatMMDB        Format = "mmdb"
+	FormatQQWry              = "qqwry"
+	FormatZXIPv6Wry          = "zxipv6wry"
+	FormatIPIP               = "ipip"
+	FormatIP2Region          = "ip2region"
 	FormatIP2Location        = "ip2location"
 
 	FormatCDNSkkYml = "cdn-skk-yml"

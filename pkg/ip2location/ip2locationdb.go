@@ -23,7 +23,7 @@ func NewIP2LocationDB(filePath string) (*IP2LocationDB, error) {
 		return nil, err
 	} else {
 		db, err := ip2location.OpenDB(filePath)
-		
+
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -37,7 +37,7 @@ func (x IP2LocationDB) Find(query string, params ...string) (result fmt.Stringer
 		return nil, errors.New("Query should be valid IP")
 	}
 	record, err := x.db.Get_all(ip.String())
-	
+
 	if err != nil {
 		return
 	}
