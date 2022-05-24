@@ -9,10 +9,13 @@ import (
 const (
 	githubUrl   = "https://raw.githubusercontent.com/SukkaLab/cdn/master/src/cdn.yml"
 	jsdelivrUrl = "https://cdn.jsdelivr.net/gh/SukkaLab/cdn/src/cdn.yml"
+
+	githubUrl2   = "https://raw.githubusercontent.com/4ft35t/cdn/master/src/cdn.yml"
+	jsdelivrUrl2 = "https://cdn.jsdelivr.net/gh/4ft35t/cdn/src/cdn.yml"
 )
 
 func Download(filePath ...string) (data []byte, err error) {
-	data, err = common.GetHttpClient().Get(jsdelivrUrl, githubUrl)
+	data, err = common.GetHttpClient().Get(jsdelivrUrl, githubUrl, jsdelivrUrl2, githubUrl2)
 	if err != nil {
 		log.Printf("CDN数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
 		log.Println("下载链接：", githubUrl)
