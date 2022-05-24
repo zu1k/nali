@@ -15,12 +15,14 @@ import (
 
 type DB struct {
 	Name      string
-	NameAlias []string `yaml:"name-alias,omitempty"`
+	NameAlias []string `yaml:"name-alias,omitempty" mapstructure:"name-alias"`
 	Format    Format
 	File      string
 
 	Languages []string
 	Types     []Type
+
+	DownloadUrls []string `yaml:"download-urls,omitempty" mapstructure:"download-urls"`
 }
 
 func (d *DB) get() (db dbif.DB) {
@@ -43,7 +45,7 @@ func (d *DB) get() (db dbif.DB) {
 	case FormatIP2Region:
 		db, err = ip2region.NewIp2Region(filePath)
 	case FormatIP2Location:
-		db, err = ip2locationdb.NewIP2LocationDB(filePath)
+		db, err = ip2location.NewIP2Location(filePath)
 	case FormatCDNSkkYml:
 		db, err = cdn.NewCDN(filePath)
 	default:
