@@ -6,16 +6,17 @@ import (
 	"github.com/zu1k/nali/pkg/common"
 )
 
-const (
-	githubUrl   = "https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.db"
-	jsdelivrUrl = "https://cdn.jsdelivr.net/gh/lionsoul2014/ip2region/data/ip2region.db"
-)
+var DownloadUrls = []string{
+	"https://cdn.jsdelivr.net/gh/lionsoul2014/ip2region/data/ip2region.db",
+	"https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.db",
+}
 
+// Deprecated: This will be removed from 0.5.0, use package download instead
 func Download(filePath ...string) (data []byte, err error) {
-	data, err = common.GetHttpClient().Get(jsdelivrUrl, githubUrl)
+	data, err = common.GetHttpClient().Get(DownloadUrls...)
 	if err != nil {
 		log.Printf("CDN数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
-		log.Println("下载链接：", githubUrl)
+		log.Println("下载链接：", DownloadUrls)
 		return
 	}
 

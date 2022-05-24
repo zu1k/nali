@@ -30,6 +30,6 @@ var (
 	_ DB = &ipip.IPIPFree{}
 	_ DB = &geoip.GeoIP{}
 	_ DB = &ip2region.Ip2Region{}
-	_ DB = &ip2locationdb.IP2LocationDB{}
+	_ DB = &ip2location.IP2Location{}
 	_ DB = &cdn.CDN{}
 )

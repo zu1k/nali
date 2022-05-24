@@ -35,6 +35,7 @@ func ReadConfig(basePath string) {
 	if err != nil {
 		log.Fatalln("Config invalid:", err)
 	}
+
 	db.NameDBMap.From(dbList)
 	db.TypeDBMap.From(dbList)
 }

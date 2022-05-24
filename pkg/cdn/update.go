@@ -6,19 +6,19 @@ import (
 	"github.com/zu1k/nali/pkg/common"
 )
 
-const (
-	githubUrl   = "https://raw.githubusercontent.com/SukkaLab/cdn/master/src/cdn.yml"
-	jsdelivrUrl = "https://cdn.jsdelivr.net/gh/SukkaLab/cdn/src/cdn.yml"
+var DownloadUrls = []string{
+	"https://cdn.jsdelivr.net/gh/SukkaLab/cdn/src/cdn.yml",
+	"https://raw.githubusercontent.com/SukkaLab/cdn/master/src/cdn.yml",
+	"https://cdn.jsdelivr.net/gh/4ft35t/cdn/src/cdn.yml",
+	"https://raw.githubusercontent.com/4ft35t/cdn/master/src/cdn.yml",
+}
 
-	githubUrl2   = "https://raw.githubusercontent.com/4ft35t/cdn/master/src/cdn.yml"
-	jsdelivrUrl2 = "https://cdn.jsdelivr.net/gh/4ft35t/cdn/src/cdn.yml"
-)
-
+// Deprecated: This will be removed from 0.5.0, use package download instead
 func Download(filePath ...string) (data []byte, err error) {
-	data, err = common.GetHttpClient().Get(jsdelivrUrl, githubUrl, jsdelivrUrl2, githubUrl2)
+	data, err = common.GetHttpClient().Get(DownloadUrls...)
 	if err != nil {
 		log.Printf("CDN数据库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
-		log.Println("下载链接：", githubUrl)
+		log.Println("下载链接：", DownloadUrls)
 		return
 	}
 

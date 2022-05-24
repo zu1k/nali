@@ -1,4 +1,4 @@
-package ip2locationdb
+package ip2location
 
 import (
 	"errors"
@@ -10,13 +10,13 @@ import (
 	"github.com/ip2location/ip2location-go/v9"
 )
 
-// IP2LocationDB
-type IP2LocationDB struct {
+// IP2Location
+type IP2Location struct {
 	db *ip2location.DB
 }
 
 // new IP2Location from database file
-func NewIP2LocationDB(filePath string) (*IP2LocationDB, error) {
+func NewIP2Location(filePath string) (*IP2Location, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，请自行下载 IP2Location 库，并保存在", filePath)
@@ -27,11 +27,11 @@ func NewIP2LocationDB(filePath string) (*IP2LocationDB, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		return &IP2LocationDB{db: db}, nil
+		return &IP2Location{db: db}, nil
 	}
 }
 
-func (x IP2LocationDB) Find(query string, params ...string) (result fmt.Stringer, err error) {
+func (x IP2Location) Find(query string, params ...string) (result fmt.Stringer, err error) {
 	ip := net.ParseIP(query)
 	if ip == nil {
 		return nil, errors.New("Query should be valid IP")

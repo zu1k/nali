@@ -1,5 +1,10 @@
 package db
 
+import (
+	"github.com/zu1k/nali/pkg/cdn"
+	"github.com/zu1k/nali/pkg/ip2region"
+)
+
 func GetDefaultDBList() List {
 	return List{
 		&DB{
@@ -57,10 +62,11 @@ func GetDefaultDBList() List {
 			NameAlias: []string{
 				"i2r",
 			},
-			Format:    FormatIP2Region,
-			File:      "ip2region.db",
-			Languages: LanguagesZH,
-			Types:     TypesIPv4,
+			Format:       FormatIP2Region,
+			File:         "ip2region.db",
+			Languages:    LanguagesZH,
+			Types:        TypesIPv4,
+			DownloadUrls: ip2region.DownloadUrls,
 		},
 		&DB{
 			Name:      "ip2location",
@@ -71,11 +77,12 @@ func GetDefaultDBList() List {
 		},
 
 		&DB{
-			Name:      "cdn",
-			Format:    FormatCDNSkkYml,
-			File:      "cdn.yml",
-			Languages: LanguagesZH,
-			Types:     TypesCDN,
+			Name:         "cdn",
+			Format:       FormatCDNSkkYml,
+			File:         "cdn.yml",
+			Languages:    LanguagesZH,
+			Types:        TypesCDN,
+			DownloadUrls: cdn.DownloadUrls,
 		},
 	}
 }
