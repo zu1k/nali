@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/zlib"
 	"encoding/binary"
+	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -11,6 +12,8 @@ import (
 )
 
 func Download(filePath ...string) (data []byte, err error) {
+	fmt.Println("此方式更新的 QQWry 数据库版本过旧，请手动下载最新版纯真免费IP库: https://www.cz88.net/help")
+
 	data, err = downloadAndDecrypt()
 	if err != nil {
 		log.Printf("纯真IP库下载失败，请手动下载解压后保存到本地: %s \n", filePath)
