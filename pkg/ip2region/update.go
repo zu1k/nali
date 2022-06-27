@@ -7,8 +7,8 @@ import (
 )
 
 var DownloadUrls = []string{
-	"https://cdn.jsdelivr.net/gh/lionsoul2014/ip2region/data/ip2region.db",
-	"https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.db",
+	"https://cdn.jsdelivr.net/gh/lionsoul2014/ip2region/data/ip2region.xdb",
+	"https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.xdb",
 }
 
 // Deprecated: This will be removed from 0.5.0, use package download instead

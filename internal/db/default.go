@@ -63,7 +63,7 @@ func GetDefaultDBList() List {
 				"i2r",
 			},
 			Format:       FormatIP2Region,
-			File:         "ip2region.db",
+			File:         "ip2region.xdb",
 			Languages:    LanguagesZH,
 			Types:        TypesIPv4,
 			DownloadUrls: ip2region.DownloadUrls,
