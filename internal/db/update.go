@@ -84,7 +84,7 @@ func getUpdateFuncByName(name string) (func() error, string) {
 				}
 				return err
 			}, FormatZXIPv6Wry
-		case FormatCDNSkkYml:
+		case FormatCDNYml:
 			return func() error {
 				log.Println("正在下载最新 CDN服务提供商数据库...")
 				_, err := cdn.Download(getDbByName("cdn").File)

@@ -35,3 +35,21 @@ func TestIPv6Re(t *testing.T) {
 		fmt.Println(IPv6Re.FindAllString(ip, -1))
 	}
 }
+
+var maybeRegexList = []string{
+	"[a-z]*\\.example.com",
+	"kunlun[^.]+.com",
+	"gtm-a[1-7]b[1-9].com",
+}
+
+func TestMaybeRegexp(t *testing.T) {
+	if MaybeRegexp("abc.com") {
+		t.Fail()
+	}
+
+	for _, str := range maybeRegexList {
+		if !MaybeRegexp(str) {
+			t.Fail()
+		}
+	}
+}

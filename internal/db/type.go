@@ -46,7 +46,7 @@ func (d *DB) get() (db dbif.DB) {
 		db, err = ip2region.NewIp2Region(filePath)
 	case FormatIP2Location:
 		db, err = ip2location.NewIP2Location(filePath)
-	case FormatCDNSkkYml:
+	case FormatCDNYml:
 		db, err = cdn.NewCDN(filePath)
 	default:
 		panic("DB format not supported!")
@@ -70,7 +70,7 @@ const (
 	FormatIP2Region          = "ip2region"
 	FormatIP2Location        = "ip2location"
 
-	FormatCDNSkkYml = "cdn-skk-yml"
+	FormatCDNYml = "cdn-yml"
 )
 
 var (
