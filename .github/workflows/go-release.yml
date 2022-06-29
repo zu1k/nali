@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Publish AUR package
-        uses: guumaster/aur-publish-docker-action@latest
+        uses: guumaster/aur-publish-docker-action@master
         with:
           package_name: nali-go
           commit_username: 'zu1k'
