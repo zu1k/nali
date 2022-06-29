@@ -7,10 +7,9 @@ import (
 )
 
 var DownloadUrls = []string{
-	"https://cdn.jsdelivr.net/gh/SukkaLab/cdn/src/cdn.yml",
-	"https://raw.githubusercontent.com/SukkaLab/cdn/master/src/cdn.yml",
 	"https://cdn.jsdelivr.net/gh/4ft35t/cdn/src/cdn.yml",
 	"https://raw.githubusercontent.com/4ft35t/cdn/master/src/cdn.yml",
+	"https://raw.githubusercontent.com/SukkaLab/cdn/master/src/cdn.yml",
 }
 
 // Deprecated: This will be removed from 0.5.0, use package download instead

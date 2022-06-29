@@ -78,7 +78,7 @@ func GetDefaultDBList() List {
 
 		&DB{
 			Name:         "cdn",
-			Format:       FormatCDNSkkYml,
+			Format:       FormatCDNYml,
 			File:         "cdn.yml",
 			Languages:    LanguagesZH,
 			Types:        TypesCDN,
