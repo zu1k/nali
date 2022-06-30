@@ -58,8 +58,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
-      - name: git config trust dir
-        run: git config --global --add safe.directory /github/workspace
+      - name: Get version
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF##*/v}
 
       - name: Publish AUR package nali-go
         uses: zu1k/aur-publish-action@master
@@ -68,3 +69,4 @@ jobs:
           commit_username: 'zu1k'
           commit_email: 'i@zu1k.com'
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          new_release: ${{ steps.version.outputs.version }}
