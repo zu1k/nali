@@ -2,18 +2,16 @@ name: Go
 on: [push, pull_request]
 jobs:
 
-  build:
-    name: Build
+  test-build:
+    name: Test and Build
     runs-on: ubuntu-latest
     steps:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
           go-version: '^1.18'
-
       - name: Check out code into the Go module directory
         uses: actions/checkout@v3
-
       - name: Cache go module
         uses: actions/cache@v3
         with:
@@ -21,10 +19,21 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-
       - name: Get dependencies and run test
         run: |
           go test ./...
-
       - name: Build
         run: go build
+
+  release-aur-git:
+    name: Release Aur Git
+    needs: [test-build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish AUR package
+        uses: guumaster/aur-publish-docker-action@master
+        with:
+          package_name: nali-go-git
+          commit_username: 'zu1k'
+          commit_email: 'i@zu1k.com'
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
