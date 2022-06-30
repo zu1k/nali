@@ -55,8 +55,11 @@ jobs:
     name: Release Aur
     runs-on: ubuntu-latest
     steps:
-      - name: Publish AUR package
-        uses: guumaster/aur-publish-docker-action@master
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Publish AUR package nali-go
+        uses: zu1k/aur-publish-action@master
         with:
           package_name: nali-go
           commit_username: 'zu1k'
