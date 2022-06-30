@@ -58,6 +58,9 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: git config trust dir
+        run: git config --global --add safe.directory /github/workspace
+
       - name: Publish AUR package nali-go
         uses: zu1k/aur-publish-action@master
         with:
