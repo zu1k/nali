@@ -51,13 +51,28 @@ jobs:
           name: build
           path: bin
 
+  release-aur-bin:
+    name: Release Aur bin
+    needs: [release-binary]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get version
+        id: version
+        run: echo ::set-output name=version::${GITHUB_REF##*/v}
+
+      - name: Publish AUR package nali-go-bin
+        uses: zu1k/aur-publish-action@master
+        with:
+          package_name: nali-go-bin
+          commit_username: 'zu1k'
+          commit_email: 'i@zu1k.com'
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          new_release: ${{ steps.version.outputs.version }}
+
   release-aur:
     name: Release Aur
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
       - name: Get version
         id: version
         run: echo ::set-output name=version::${GITHUB_REF##*/v}
