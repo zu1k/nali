@@ -18,15 +18,6 @@
 
 #### [English](https://github.com/zu1k/nali/blob/master/README_en.md)
 
-## 来源
-
-该工具受 Nali C版本 和 nali-cli js版本的启发.
-
-我想要在终端对IP地理信息和CDN服务提供商进行查询，发现了Nali这个工具，Nali与哪里谐音，非常适合这类工具
-
-经过简单的使用，我发现最初的C语言版本功能缺失，而js版本包实在大的恐怖、而支持的平台非常有限，所以我用golang重写了这个工具，在原有功能的基础上增加了对IPv6的支持，并且增加了Geoip2数据库
-
-
 ## 功能
 
 - 支持多种数据库
@@ -62,6 +53,14 @@ $ go install github.com/zu1k/nali@latest
 
 你需要选择适合你系统和硬件架构的版本下载，解压后可直接运行
 
+### Arch 系 Linux
+
+我们在 Aur 中发布了 3 个相关的包:
+
+- `nali-go`: Release 版本，安装时编译
+- `nali-go-bin`: Release 版本，预编译的二进制文件
+- `nali-go-git`: 最新的 master 分支版本，安装时编译
+  
 ## 使用说明
 
 ### 查询一个IP的地理信息

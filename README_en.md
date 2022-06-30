@@ -18,14 +18,6 @@
 
 #### [中文文档](https://github.com/zu1k/nali/blob/master/README.md)
 
-## Origin
-
-Inspired by Nali C version and nali-cli js version.
-
-I want to query the IP geographic information and CDN service provider on the terminal, then found the Nali tool. Nali mean 'where' in Chinese, good name for this kind of tools.
-
-However the C version has too few functions, and the js version is too big and the supported platforms are not complete, so I rewrite it in golang, add IPv6 support and Geoip2 database.
-
 ## Feature
 
 - Multi database support
@@ -60,6 +52,14 @@ $ go install github.com/zu1k/nali@latest
 Pre-built binaries are available here: [release](https://github.com/zu1k/nali/releases)
 
 Download the binary compatible with your platform, unpack and copy to the directory in path
+
+### Arch Linux
+
+We have published 3 package in Aur:
+
+- `nali-go`: release version, compile when installing
+- `nali-go-bin`: release version, pre-compiled binary
+- `nali-go-git`: the latest master branch version, compile when installing
 
 ## Usage
 
