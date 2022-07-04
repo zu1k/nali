@@ -7,7 +7,7 @@ require (
 	github.com/ip2location/ip2location-go/v9 v9.4.0
 	github.com/ipipdotnet/ipdb-go v1.3.1
 	github.com/lionsoul2014/ip2region v2.2.0-release+incompatible
-	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220624075035-53e6777abd9d
+	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8
 	github.com/oschwald/geoip2-golang v1.7.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/spf13/cobra v1.5.0
@@ -35,7 +35,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.0 // indirect
 	github.com/ulikunitz/xz v0.5.10 // indirect
-	golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b // indirect
+	golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e // indirect
 	golang.org/x/tools v0.1.7 // indirect
 	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
