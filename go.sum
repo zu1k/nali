@@ -146,6 +146,8 @@ github.com/lionsoul2014/ip2region v2.2.0-release+incompatible h1:1qp9iks+69h7IGL
 github.com/lionsoul2014/ip2region v2.2.0-release+incompatible/go.mod h1:+ZBN7PBoh5gG6/y0ZQ85vJDBe21WnfbRrQQwTfliJJI=
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220624075035-53e6777abd9d h1:E9eY3SL8JWS+mJds+Uk0OGAbLMLvMvEiebAGmo2fp1U=
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220624075035-53e6777abd9d/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
+github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8 h1:aHOC8Mcbd3TiCb+L9cSbU/NdZinWuaKSoL4qD4I3MQo=
+github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
 github.com/magiconair/properties v1.8.6 h1:5ibWZ6iY0NctNGWo87LalDlEZ6R41TqbbDamhfG/Qzo=
 github.com/magiconair/properties v1.8.6/go.mod h1:y3VJvCyxH9uVvJTWEGAELF3aiYNyPKd5NZ3oSwXrF60=
 github.com/mattn/go-colorable v0.1.9/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
@@ -344,6 +346,8 @@ golang.org/x/sys v0.0.0-20220624220833-87e55d714810 h1:rHZQSjJdAI4Xf5Qzeh2bBc5YJ
 golang.org/x/sys v0.0.0-20220624220833-87e55d714810/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b h1:2n253B2r0pYSmEV+UNCQoPfU/FiaizQEK5Gu4Bq4JE8=
 golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e h1:CsOuNlbOuf0mzxJIefr6Q4uAUetRUwZE4qt7VfzP+xo=
+golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
