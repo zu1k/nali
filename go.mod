@@ -7,7 +7,7 @@ require (
 	github.com/ip2location/ip2location-go/v9 v9.4.0
 	github.com/ipipdotnet/ipdb-go v1.3.1
 	github.com/lionsoul2014/ip2region v2.2.0-release+incompatible
-	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8
+	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220705082050-0f0c0cb4a5a6
 	github.com/oschwald/geoip2-golang v1.7.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
 	github.com/spf13/cobra v1.5.0
