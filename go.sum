@@ -148,6 +148,8 @@ github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220624075035-53e6777ab
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220624075035-53e6777abd9d/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8 h1:aHOC8Mcbd3TiCb+L9cSbU/NdZinWuaKSoL4qD4I3MQo=
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
+github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220705082050-0f0c0cb4a5a6 h1:4lJlR7mskbInnkGSixv0l7Ew/SD+xQUqWKu0KwvkpiI=
+github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220705082050-0f0c0cb4a5a6/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
 github.com/magiconair/properties v1.8.6 h1:5ibWZ6iY0NctNGWo87LalDlEZ6R41TqbbDamhfG/Qzo=
 github.com/magiconair/properties v1.8.6/go.mod h1:y3VJvCyxH9uVvJTWEGAELF3aiYNyPKd5NZ3oSwXrF60=
 github.com/mattn/go-colorable v0.1.9/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
