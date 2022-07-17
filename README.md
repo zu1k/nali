@@ -244,7 +244,7 @@ $ nali update --db qqwry,cdn
 - Geoip2 `['geoip', 'geoip2']`
 - Chunzhen `['chunzhen', 'qqwry']`
 - IPIP `['ipip']`
-- Ip2Resion `['ip2region', 'i2r']`
+- Ip2Region `['ip2region', 'i2r']`
 - DBIP `['dbip', 'db-ip']`
 - IP2Location `['ip2location']`
 
