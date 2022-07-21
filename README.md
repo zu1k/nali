@@ -311,8 +311,7 @@ export NALI_HOME=/var/nali
 
 ## 感谢列表
 
-- [纯真QQIP离线数据库](http://www.cz88.net/fox/ipdat.shtml)
-- [qqwry mirror](https://qqwry.mirror.noc.one/)
+- [纯真QQIP离线数据库](http://www.cz88.net)
 - [qqwry纯真数据库解析](https://github.com/yinheli/qqwry)
 - [ZX公网ipv6数据库](https://ip.zxinc.org/ipquery/)
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
@@ -323,7 +322,6 @@ export NALI_HOME=/var/nali
 - [ip2region数据库](https://github.com/lionsoul2014/ip2region)
 - [IP2Location DB3 LITE](https://lite.ip2location.com/database/db3-ip-country-region-city)
 - [Cobra CLI库](https://github.com/spf13/cobra)
-- [Nali-cli](https://github.com/SukkaW/nali-cli)
 
 感谢 JetBrains 提供开源项目免费License 
 

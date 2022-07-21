@@ -8,10 +8,17 @@ import (
 	"os"
 	"strings"
 
+	"github.com/zu1k/nali/pkg/download"
+
 	"github.com/lionsoul2014/ip2region/binding/golang/ip2region"
 	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
 	"github.com/zu1k/nali/pkg/common"
 )
+
+var DownloadUrls = []string{
+	"https://cdn.jsdelivr.net/gh/lionsoul2014/ip2region/data/ip2region.xdb",
+	"https://raw.githubusercontent.com/lionsoul2014/ip2region/master/data/ip2region.xdb",
+}
 
 type Ip2Region struct {
 	seacher *xdb.Searcher
@@ -22,7 +29,7 @@ func NewIp2Region(filePath string) (*Ip2Region, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，尝试从网络获取最新 ip2region 库")
-		_, err = Download(filePath)
+		_, err = download.Download(filePath, DownloadUrls...)
 		if err != nil {
 			return nil, err
 		}

@@ -10,9 +10,15 @@ import (
 	"os"
 	"strings"
 
+	"github.com/zu1k/nali/pkg/download"
+
 	"github.com/zu1k/nali/pkg/common"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
+
+var DownloadUrls = []string{
+	"https://99wry.cf/qqwry.dat",
+}
 
 type QQwry struct {
 	common.IPDB
@@ -26,7 +32,7 @@ func NewQQwry(filePath string) (*QQwry, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，尝试从网络获取最新纯真 IP 库")
-		fileData, err = Download(filePath)
+		fileData, err = download.Download(filePath, DownloadUrls...)
 		if err != nil {
 			return nil, err
 		}
