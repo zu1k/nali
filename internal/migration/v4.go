@@ -17,10 +17,7 @@ func init() {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		err = viper.SafeWriteConfig()
-		if err != nil {
-			panic(err)
-		}
+		return
 	}
 
 	dbList := db.List{}
