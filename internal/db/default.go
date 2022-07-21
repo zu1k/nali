@@ -3,6 +3,7 @@ package db
 import (
 	"github.com/zu1k/nali/pkg/cdn"
 	"github.com/zu1k/nali/pkg/ip2region"
+	"github.com/zu1k/nali/pkg/qqwry"
 )
 
 func GetDefaultDBList() List {
@@ -12,10 +13,11 @@ func GetDefaultDBList() List {
 			NameAlias: []string{
 				"chunzhen",
 			},
-			Format:    FormatQQWry,
-			File:      "qqwry.dat",
-			Languages: LanguagesZH,
-			Types:     TypesIPv4,
+			Format:       FormatQQWry,
+			File:         "qqwry.dat",
+			Languages:    LanguagesZH,
+			Types:        TypesIPv4,
+			DownloadUrls: qqwry.DownloadUrls,
 		},
 		&DB{
 			Name: "zxipv6wry",
