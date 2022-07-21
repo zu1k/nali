@@ -133,6 +133,8 @@ github.com/ip2location/ip2location-go/v9 v9.4.0 h1:VV+clcfWo+BCi37+1zVOLCoyy01GT
 github.com/ip2location/ip2location-go/v9 v9.4.0/go.mod h1:s5SV6YZL10TpfPpXw//7fEJC65G/yH7Oh+Tjq9JcQEQ=
 github.com/ipipdotnet/ipdb-go v1.3.1 h1:iMTt7a4o8r5FmTMzuHLg8XPtz8vb06gpEzJVSZzDZMY=
 github.com/ipipdotnet/ipdb-go v1.3.1/go.mod h1:yZ+8puwe3R37a/3qRftXo40nZVQbxYDLqls9o5foexs=
+github.com/ipipdotnet/ipdb-go v1.3.2 h1:kAW7+FvQqE+EhKi5niHAeverwRlCAOu2OqSSO4gDpOw=
+github.com/ipipdotnet/ipdb-go v1.3.2/go.mod h1:yZ+8puwe3R37a/3qRftXo40nZVQbxYDLqls9o5foexs=
 github.com/jstemmer/go-junit-report v0.0.0-20190106144839-af01ea7f8024/go.mod h1:6v2b51hI/fHJwM22ozAgKL4VKDeJcHhJFhtBdhmNjmU=
 github.com/jstemmer/go-junit-report v0.9.1/go.mod h1:Brl9GWCQeLvo8nXZwPNNblvFj/XSXhF0NWZEnDohbsk=
 github.com/kisielk/gotool v1.0.0/go.mod h1:XhKaO+MFFWcvkIS/tQcRk01m1F5IRFswLeQ+oQHNcck=
@@ -150,6 +152,8 @@ github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c5668
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220704023600-9376c56688c8/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220705082050-0f0c0cb4a5a6 h1:4lJlR7mskbInnkGSixv0l7Ew/SD+xQUqWKu0KwvkpiI=
 github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220705082050-0f0c0cb4a5a6/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
+github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220720083843-0856b034bc24 h1:fH0FBog66FmNQD2abDsRNK2tzkFFEXII8/g5SHPtwrY=
+github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220720083843-0856b034bc24/go.mod h1:bChUKvbKVC3zL/lLLIcu6alhQaL8uWD/DA+jRdyggdI=
 github.com/magiconair/properties v1.8.6 h1:5ibWZ6iY0NctNGWo87LalDlEZ6R41TqbbDamhfG/Qzo=
 github.com/magiconair/properties v1.8.6/go.mod h1:y3VJvCyxH9uVvJTWEGAELF3aiYNyPKd5NZ3oSwXrF60=
 github.com/mattn/go-colorable v0.1.9/go.mod h1:u6P/XSegPjTcexA+o6vUJrdnUu04hMope9wVRipJSqc=
@@ -184,6 +188,8 @@ github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f h1:1cJITU3JUI8q
 github.com/saracen/solidblock v0.0.0-20190426153529-45df20abab6f/go.mod h1:LyBTue+RWeyIfN3ZJ4wVxvDuvlGJtDgCLgCb6HCPgps=
 github.com/spf13/afero v1.8.2 h1:xehSyVa0YnHWsJ49JFljMpg1HX19V6NDZ1fkm1Xznbo=
 github.com/spf13/afero v1.8.2/go.mod h1:CtAatgMJh6bJEIs48Ay/FOnkljP3WeGUG0MC1RfAqwo=
+github.com/spf13/afero v1.9.2 h1:j49Hj62F0n+DaZ1dDCvhABaPNSGNkt32oRFxI33IEMw=
+github.com/spf13/afero v1.9.2/go.mod h1:iUV7ddyEEZPO5gA3zD4fJt6iStLlL+Lg4m2cihcDf8Y=
 github.com/spf13/cast v1.5.0 h1:rj3WzYc11XZaIZMPKmwP96zkFEnnAmV8s6XbB2aY32w=
 github.com/spf13/cast v1.5.0/go.mod h1:SpXXQ5YoyJw6s3/6cMTQuxvgRl3PCJiyaX9p6b155UU=
 github.com/spf13/cobra v1.5.0 h1:X+jTBEBqF0bHN+9cSMgmfuvv2VHJ9ezmFNf9Y/XstYU=
@@ -350,6 +356,8 @@ golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b h1:2n253B2r0pYSmEV+UNCQoPfU/
 golang.org/x/sys v0.0.0-20220627191245-f75cf1eec38b/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e h1:CsOuNlbOuf0mzxJIefr6Q4uAUetRUwZE4qt7VfzP+xo=
 golang.org/x/sys v0.0.0-20220704084225-05e143d24a9e/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 h1:0A+M6Uqn+Eje4kHMK80dtF3JCXC4ykBgQG4Fe06QRhQ=
+golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
