@@ -8,11 +8,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/zu1k/nali/pkg/download"
-
 	"github.com/lionsoul2014/ip2region/binding/golang/ip2region"
 	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
 	"github.com/zu1k/nali/pkg/common"
+	"github.com/zu1k/nali/pkg/download"
 )
 
 var DownloadUrls = []string{

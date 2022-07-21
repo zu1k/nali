@@ -10,9 +10,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/zu1k/nali/pkg/download"
-
 	"github.com/zu1k/nali/pkg/common"
+	"github.com/zu1k/nali/pkg/download"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 

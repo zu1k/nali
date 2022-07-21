@@ -7,9 +7,8 @@ import (
 	"net"
 	"os"
 
-	"github.com/spf13/viper"
-
 	"github.com/oschwald/geoip2-golang"
+	"github.com/spf13/viper"
 )
 
 // GeoIP2

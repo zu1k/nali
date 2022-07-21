@@ -10,10 +10,8 @@ import (
 	"strings"
 
 	"github.com/zu1k/nali/pkg/download"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/zu1k/nali/pkg/re"
+	"gopkg.in/yaml.v2"
 )
 
 var DownloadUrls = []string{
