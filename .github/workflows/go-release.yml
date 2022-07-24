@@ -7,6 +7,7 @@ jobs:
   release-binary:
     name: Release Binary
     runs-on: ubuntu-latest
+    environment: s3
     steps:
       - name: Setup Go
         uses: actions/setup-go@v3
@@ -50,6 +51,15 @@ jobs:
         with:
           name: build
           path: bin
+
+      - name: Upload to s3
+        if: startsWith(github.ref, 'refs/tags/')
+        run: sh .github/scripts/upload_s3.sh
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
 
   release-aur-bin:
     name: Release Aur bin
