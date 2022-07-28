@@ -70,14 +70,14 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 }
 
 func Find(typ dbif.QueryType, query string) string {
-	if result, found := queryCache[query]; found {
-		return result
+	if result, found := queryCache.Load(query); found {
+		return result.(string)
 	}
 	result, err := GetDB(typ).Find(query)
 	if err != nil {
 		return ""
 	}
 	r := strings.Trim(result.String(), " ")
-	queryCache[query] = r
+	queryCache.Store(query, r)
 	return r
 }
