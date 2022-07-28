@@ -28,6 +28,7 @@ jobs:
   release-aur-git:
     name: Release Aur Git
     needs: [test-build]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
