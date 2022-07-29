@@ -23,6 +23,7 @@ func init() {
 		IdleConnTimeout:       time.Second * 10,
 		ResponseHeaderTimeout: time.Second * 10,
 		ExpectContinueTimeout: time.Second * 20,
+		Proxy:                 http.ProxyFromEnvironment,
 	}
 }
 
