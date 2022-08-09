@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/fatih/color v1.13.0
-	github.com/ip2location/ip2location-go/v9 v9.4.0
+	github.com/ip2location/ip2location-go/v9 v9.4.1
 	github.com/ipipdotnet/ipdb-go v1.3.3
 	github.com/lionsoul2014/ip2region v2.2.0-release+incompatible
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220725052544-4dab11be988d
