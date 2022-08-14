@@ -1,12 +1,12 @@
 package common
 
 import (
-	"bytes"
 	"regexp"
 )
 
 var newlineReg = regexp.MustCompile(`\r?\n|\r\n?`)
 
+// ScanLines scan lines but keep the suffix \r and \n
 func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil
@@ -21,7 +21,7 @@ func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	}
 	// If we're at EOF, we have a final, non-terminated line. Return it.
 	if atEOF {
-		return len(data), bytes.TrimSuffix(data, []byte{'\r'}), nil
+		return len(data), data, nil
 	}
 	// Request more data.
 	return 0, nil, nil
