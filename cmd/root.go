@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"github.com/zu1k/nali/pkg/common"
 	"log"
 	"os"
 	"strings"
@@ -14,6 +13,7 @@ import (
 	"golang.org/x/text/transform"
 
 	"github.com/zu1k/nali/internal/constant"
+	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/entity"
 )
 
