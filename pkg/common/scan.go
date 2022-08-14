@@ -10,9 +10,9 @@ func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		return 0, nil, nil
 	}
 	if i, j := bytes.IndexByte(data, '\r'), bytes.IndexByte(data, '\n'); i >= 0 || j >= 0 {
-		// case 1: TOKEN\r\nTOKEN
 		if i >= 0 && j >= 0 {
 			if i+1 == j {
+				// case 1: TOKEN\r\nTOKEN
 				return i + 2, data[:i+2], nil
 			}
 			if i < j {
