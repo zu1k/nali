@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"github.com/zu1k/nali/pkg/common"
 	"log"
 	"os"
 	"strings"
@@ -63,6 +64,7 @@ Find document on: https://github.com/zu1k/nali
 
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
+			stdin.Split(common.ScanLines)
 			for stdin.Scan() {
 				line := stdin.Text()
 				if gbk {
