@@ -17,7 +17,7 @@ func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 		if i+1 < len(data) && data[i] == '\r' && data[i+1] == '\n' {
 			delimiterLen = 2
 		}
-		return i + delimiterLen, data[:i], nil
+		return i + delimiterLen, data[:i+delimiterLen], nil
 	}
 	// If we're at EOF, we have a final, non-terminated line. Return it.
 	if atEOF {

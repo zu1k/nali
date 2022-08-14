@@ -73,7 +73,7 @@ Find document on: https://github.com/zu1k/nali
 				if line == "quit" || line == "exit" {
 					return
 				}
-				_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
+				_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
 			}
 		} else {
 			_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
