@@ -14,7 +14,7 @@ func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error) {
 	if loc := newlineReg.FindIndex(data); len(loc) > 0 {
 		delimiterLen := 1
 		i := loc[0]
-		if i+1 < len(data) && data[i+1] == '\n' {
+		if i+1 < len(data) && data[i] == '\r' && data[i+1] == '\n' {
 			delimiterLen = 2
 		}
 		return i + delimiterLen, data[:i], nil
