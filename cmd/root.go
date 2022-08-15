@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"io"
 	"log"
@@ -22,13 +21,14 @@ type writer struct {
 }
 
 func (w *writer) Write(p []byte) (n int, err error) {
+	str := string(p)
 	if w.gbk {
-		p, _, _ = transform.Bytes(simplifiedchinese.GBK.NewDecoder(), p)
+		str, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), str)
 	}
-	if str := string(bytes.TrimSpace(p)); str == "quit" || str == "exit" {
+	if str := strings.TrimSpace(str); str == "quit" || str == "exit" {
 		return
 	}
-	if _, err = color.Output.Write([]byte(entity.ParseLine(string(p)).ColorString())); err != nil {
+	if _, err = color.Output.Write([]byte(entity.ParseLine(str).ColorString())); err != nil {
 		return 0, err
 	}
 	return len(p), nil
