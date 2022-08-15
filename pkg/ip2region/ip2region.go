@@ -8,8 +8,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/lionsoul2014/ip2region/binding/golang/ip2region"
 	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
+
 	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/download"
 )
@@ -21,7 +21,6 @@ var DownloadUrls = []string{
 
 type Ip2Region struct {
 	seacher *xdb.Searcher
-	db_old  *ip2region.Ip2Region
 }
 
 func NewIp2Region(filePath string) (*Ip2Region, error) {
@@ -34,35 +33,24 @@ func NewIp2Region(filePath string) (*Ip2Region, error) {
 		}
 	}
 
-	switch {
-	case strings.HasSuffix(filePath, ".xdb"):
-		f, err := os.OpenFile(filePath, os.O_RDONLY, 0400)
-		if err != nil {
-			return nil, err
-		}
-		defer f.Close()
-
-		data, err := ioutil.ReadAll(f)
-		if err != nil {
-			return nil, err
-		}
-		searcher, err := xdb.NewWithBuffer(data)
-		if err != nil {
-			fmt.Printf("无法解析 ip2region xdb 数据库: %s\n", err)
-			return nil, err
-		}
-		return &Ip2Region{
-			seacher: searcher,
-		}, nil
-	default:
-		region, err := ip2region.New(filePath)
-		if err != nil {
-			return nil, err
-		}
-		return &Ip2Region{
-			db_old: region,
-		}, nil
+	f, err := os.OpenFile(filePath, os.O_RDONLY, 0400)
+	if err != nil {
+		return nil, err
 	}
+	defer f.Close()
+
+	data, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+	searcher, err := xdb.NewWithBuffer(data)
+	if err != nil {
+		fmt.Printf("无法解析 ip2region xdb 数据库: %s\n", err)
+		return nil, err
+	}
+	return &Ip2Region{
+		seacher: searcher,
+	}, nil
 }
 
 func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, err error) {
@@ -75,27 +63,6 @@ func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, e
 				Country: strings.ReplaceAll(res, "|0", ""),
 			}, nil
 		}
-	} else if db.db_old != nil {
-		ip, err := db.db_old.MemorySearch(query)
-		if err != nil {
-			return nil, err
-		}
-
-		area := ""
-		if ip.Province != "0" {
-			area = ip.Province
-		}
-		if ip.City != "0" && strings.EqualFold(ip.City, ip.Province) {
-			area = area + " " + ip.Province
-		}
-		if ip.ISP != "0" {
-			area = area + " " + ip.ISP
-		}
-
-		return common.Result{
-			Country: ip.Country,
-			Area:    area,
-		}, nil
 	}
 
 	return nil, errors.New("ip2region 未初始化")
