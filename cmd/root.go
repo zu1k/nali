@@ -1,8 +1,9 @@
 package cmd
 
 import (
-	"bufio"
+	"bytes"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -13,9 +14,25 @@ import (
 	"golang.org/x/text/transform"
 
 	"github.com/zu1k/nali/internal/constant"
-	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/entity"
 )
+
+type writer struct {
+	gbk bool
+}
+
+func (w *writer) Write(p []byte) (n int, err error) {
+	if w.gbk {
+		p, _, _ = transform.Bytes(simplifiedchinese.GBK.NewDecoder(), p)
+	}
+	if str := string(bytes.TrimSpace(p)); str == "quit" || str == "exit" {
+		return
+	}
+	if _, err = color.Output.Write([]byte(entity.ParseLine(string(p)).ColorString())); err != nil {
+		return 0, err
+	}
+	return len(p), nil
+}
 
 var rootCmd = &cobra.Command{
 	Use:   "nali",
@@ -61,20 +78,9 @@ Find document on: https://github.com/zu1k/nali
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		gbk, _ := cmd.Flags().GetBool("gbk")
-
+		w := &writer{gbk: gbk}
 		if len(args) == 0 {
-			stdin := bufio.NewScanner(os.Stdin)
-			stdin.Split(common.ScanLines)
-			for stdin.Scan() {
-				line := stdin.Text()
-				if gbk {
-					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
-				}
-				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
-					return
-				}
-				_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
-			}
+			_, _ = io.Copy(w, os.Stdin)
 		} else {
 			_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
 		}
