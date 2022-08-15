@@ -70,7 +70,7 @@ Find document on: https://github.com/zu1k/nali
 				if gbk {
 					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
 				}
-				if line == "quit" || line == "exit" {
+				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
 					return
 				}
 				_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
