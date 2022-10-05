@@ -3,6 +3,7 @@ module github.com/zu1k/nali
 go 1.18
 
 require (
+	github.com/adrg/xdg v0.4.0
 	github.com/fatih/color v1.13.0
 	github.com/ip2location/ip2location-go/v9 v9.4.1
 	github.com/ipipdotnet/ipdb-go v1.3.3
