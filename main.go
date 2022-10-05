@@ -8,6 +8,6 @@ import (
 )
 
 func main() {
-	config.ReadConfig(constant.WorkDirPath)
+	config.ReadConfig(constant.ConfigDirPath)
 	cmd.Execute()
 }

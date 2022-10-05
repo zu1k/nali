@@ -13,7 +13,7 @@ import (
 func init() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(constant.WorkDirPath)
+	viper.AddConfigPath(constant.ConfigDirPath)
 
 	err := viper.ReadInConfig()
 	if err != nil {

@@ -7,27 +7,59 @@ import (
 )
 
 var (
-	// WorkDirPath database home path
-	WorkDirPath string
+	ConfigDirPath string
+	DataDirPath   string
 )
 
 func init() {
-	WorkDirPath = os.Getenv("NALI_HOME")
-	if WorkDirPath == "" {
-		WorkDirPath = os.Getenv("NALI_DB_HOME")
-	}
-	if WorkDirPath == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			panic(err)
+	if naliHome := os.Getenv("NALI_HOME"); len(naliHome) != 0 {
+		ConfigDirPath = naliHome
+		DataDirPath = naliHome
+	} else {
+		if dir, got := getFirstValidEnv("NALI_CONFIG_HOME", "XDG_CONFIG_HOME"); got {
+			ConfigDirPath = dir
+		} else {
+			homeDir, err := os.UserHomeDir()
+			if err != nil {
+				log.Fatal("get user's home dir failed!")
+			}
+			ConfigDirPath = filepath.Join(homeDir, ".nali")
 		}
-		WorkDirPath = filepath.Join(homeDir, ".nali")
-	}
-	if _, err := os.Stat(WorkDirPath); os.IsNotExist(err) {
-		if err := os.MkdirAll(WorkDirPath, 0777); err != nil {
-			log.Fatal("can not create", WorkDirPath, ", use bin dir instead")
+
+		if dir, got := getFirstValidEnv("NALI_DB_HOME", "XDG_DATA_HOME"); got {
+			DataDirPath = dir
+		} else {
+			homeDir, err := os.UserHomeDir()
+			if err != nil {
+				log.Fatal("get user's home dir failed!")
+			}
+			DataDirPath = filepath.Join(homeDir, ".nali")
 		}
 	}
 
-	_ = os.Chdir(WorkDirPath)
+	prepareDir(ConfigDirPath)
+	prepareDir(DataDirPath)
+
+	os.Chdir(DataDirPath)
+}
+
+func getFirstValidEnv(keys ...string) (string, bool) {
+	for _, key := range keys {
+		if value := os.Getenv(key); len(value) > 0 {
+			return value, true
+		}
+	}
+	return "", false
+}
+
+func prepareDir(dir string) {
+	stat, err := os.Stat(dir)
+	if os.IsNotExist(err) {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Fatal("can not create config dir:", dir)
+		}
+	}
+	if !stat.IsDir() {
+		log.Fatal("path already exists, but not a dir:", dir)
+	}
 }
