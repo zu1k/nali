@@ -8,10 +8,13 @@ import (
 	"github.com/zu1k/nali/internal/constant"
 )
 
-const oldDefaultWorkPath = "~/.nali/"
-
 func migration2v6() {
-	_, err := os.Stat(oldDefaultWorkPath)
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return
+	}
+	oldDefaultWorkPath := filepath.Join(homeDir, ".nali")
+	_, err = os.Stat(oldDefaultWorkPath)
 	if err == nil {
 		println("Old data directories are detected and will attempt to migrate automatically")
 		oldDefaultConfigPath := filepath.Join(oldDefaultWorkPath, "config.yaml")
