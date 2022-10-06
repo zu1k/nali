@@ -10,7 +10,7 @@ import (
 	"github.com/zu1k/nali/pkg/ip2region"
 )
 
-func init() {
+func migration2v4() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(constant.ConfigDirPath)
