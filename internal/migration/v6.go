@@ -17,6 +17,7 @@ func migration2v6() {
 	_, err = os.Stat(oldDefaultWorkPath)
 	if err == nil {
 		println("Old data directories are detected and will attempt to migrate automatically")
+
 		oldDefaultConfigPath := filepath.Join(oldDefaultWorkPath, "config.yaml")
 		stat, err := os.Stat(oldDefaultConfigPath)
 		if err == nil {
@@ -24,14 +25,16 @@ func migration2v6() {
 				_ = os.Rename(oldDefaultConfigPath, filepath.Join(constant.ConfigDirPath, "config.yaml"))
 			}
 		}
+
 		files, err := os.ReadDir(oldDefaultWorkPath)
 		if err == nil {
 			for _, file := range files {
 				if file.Type().IsRegular() {
-					_ = os.Rename(filepath.Join(oldDefaultWorkPath, file.Name()), filepath.Join(constant.ConfigDirPath, file.Name()))
+					_ = os.Rename(filepath.Join(oldDefaultWorkPath, file.Name()), filepath.Join(constant.DataDirPath, file.Name()))
 				}
 			}
 		}
+
 		err = os.RemoveAll(oldDefaultWorkPath)
 		if err != nil {
 			log.Errorf("Auto migration failed: %s\n", err)
