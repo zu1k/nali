@@ -11,7 +11,7 @@ require (
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20220907060842-b2ba5d58e48d
 	github.com/oschwald/geoip2-golang v1.8.0
 	github.com/saracen/go7z v0.0.0-20191010121135-9c09b6bd7fda
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/spf13/viper v1.13.0
 	golang.org/x/text v0.3.7
 	gopkg.in/yaml.v2 v2.4.0
