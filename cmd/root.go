@@ -67,9 +67,6 @@ Find document on: https://github.com/zu1k/nali
 			stdin.Split(common.ScanLines)
 			for stdin.Scan() {
 				line := stdin.Text()
-				if gbk {
-					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
-				}
 				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
 					return
 				}
