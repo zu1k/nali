@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
@@ -16,8 +17,16 @@ import (
 	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/entity"
 )
+func Isutf8(s string)bool{
+	return utf8.ValidString(s)
+}
 
-func isGBK(data []byte) bool {
+func isGBK(s string) bool {
+	//先检查是否是utf8字符
+	if Isutf8(s){
+		return false
+	}
+	data:=[]byte(s)
 	length := len(data)
 	var i int = 0
 	for i < length {
@@ -94,7 +103,7 @@ Find document on: https://github.com/zu1k/nali
 			for stdin.Scan() {
 				line := stdin.Text()
 				//fmt.Println("isUtf8:", gbk) 
-				if isGBK([]byte(line)) {
+				if isGBK(line) {
 					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
 				}
 				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
