@@ -17,6 +17,32 @@ import (
 	"github.com/zu1k/nali/pkg/entity"
 )
 
+func isGBK(data []byte) bool {
+	length := len(data)
+	var i int = 0
+	for i < length {
+		//fmt.Printf("for %x\n", data[i])
+		if data[i] <= 0xff {
+			//编码小于等于127,只有一个字节的编码，兼容ASCII吗
+			i++
+			continue
+		} else {
+			//大于127的使用双字节编码
+			if 	data[i] >= 0x81 &&
+				data[i] <= 0xfe &&
+				data[i + 1] >= 0x40 &&
+				data[i + 1] <= 0xfe &&
+				data[i + 1] != 0xf7 {
+				i += 2
+				continue
+			} else {
+				return false
+			}
+		}
+	}
+	return true
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "nali",
 	Short: "An offline tool for querying IP geographic information",
@@ -60,13 +86,17 @@ Find document on: https://github.com/zu1k/nali
 	Version: constant.Version,
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		gbk, _ := cmd.Flags().GetBool("gbk")
+		//gbk, _ := cmd.Flags().GetBool("gbk")
 
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
 			stdin.Split(common.ScanLines)
 			for stdin.Scan() {
 				line := stdin.Text()
+				//fmt.Println("isUtf8:", gbk) 
+				if isGBK([]byte(line)) {
+					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
+				}
 				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
 					return
 				}
