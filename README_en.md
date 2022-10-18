@@ -288,11 +288,13 @@ The values that can be set for this parameter can be found in the list of suppor
 1.1.1.1 [Australia]
 ```
 
-### Change database directory
+### Change directory
 
-If the database directory is not specified, the database will be placed in `~/.nali`
+Set the environment variable `NALI_HOME` to specify the working directory where the configuration file and database are stored. You can also use absolute paths in the configuration file to specify other database paths.
 
-Set environment variables `NALI_HOME` to specify the working directory
+Set the environment variable `NALI_CONFIG_HOME` to specify the configuration file directory and `NALI_DB_HOME` to specify the database file directory.
+
+If no environment variable is specified, the XDG specification will be used, with the configuration file directory in `$XDG_CONFIG_HOME/nali` and the database file directory in `$XDG_DATA_HOME/nali`.
 
 ```
 set NALI_HOME=D:\nalidb

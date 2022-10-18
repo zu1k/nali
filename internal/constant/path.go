@@ -4,30 +4,46 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/adrg/xdg"
 )
 
 var (
-	// WorkDirPath database home path
-	WorkDirPath string
+	ConfigDirPath string
+	DataDirPath   string
 )
 
 func init() {
-	WorkDirPath = os.Getenv("NALI_HOME")
-	if WorkDirPath == "" {
-		WorkDirPath = os.Getenv("NALI_DB_HOME")
-	}
-	if WorkDirPath == "" {
-		homeDir, err := os.UserHomeDir()
-		if err != nil {
-			panic(err)
+	if naliHome := os.Getenv("NALI_HOME"); len(naliHome) != 0 {
+		ConfigDirPath = naliHome
+		DataDirPath = naliHome
+	} else {
+		ConfigDirPath = os.Getenv("NALI_CONFIG_HOME")
+		if len(ConfigDirPath) == 0 {
+			ConfigDirPath = filepath.Join(xdg.ConfigHome, "nali")
 		}
-		WorkDirPath = filepath.Join(homeDir, ".nali")
-	}
-	if _, err := os.Stat(WorkDirPath); os.IsNotExist(err) {
-		if err := os.MkdirAll(WorkDirPath, 0777); err != nil {
-			log.Fatal("can not create", WorkDirPath, ", use bin dir instead")
+
+		DataDirPath = os.Getenv("NALI_DB_HOME")
+		if len(DataDirPath) == 0 {
+			DataDirPath = filepath.Join(xdg.DataHome, "nali")
 		}
 	}
 
-	_ = os.Chdir(WorkDirPath)
+	prepareDir(ConfigDirPath)
+	prepareDir(DataDirPath)
+
+	_ = os.Chdir(DataDirPath)
+}
+
+func prepareDir(dir string) {
+	stat, err := os.Stat(dir)
+	if err != nil && os.IsNotExist(err) {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			log.Fatal("can not create config dir:", dir)
+		}
+	} else {
+		if !stat.IsDir() {
+			log.Fatal("path already exists, but not a dir:", dir)
+		}
+	}
 }
