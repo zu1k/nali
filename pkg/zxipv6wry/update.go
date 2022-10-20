@@ -33,12 +33,12 @@ const (
 func getData() (data []byte, err error) {
 	data, err = common.GetHttpClient().Get(zx)
 
-	file7z, err := ioutil.TempFile("", "*")
+	file7z, err := os.CreateTemp("", "*")
 	if err != nil {
 		return nil, err
 	}
 	defer os.Remove(file7z.Name())
-	if err := ioutil.WriteFile(file7z.Name(), data, 0644); err == nil {
+	if err := os.WriteFile(file7z.Name(), data, 0644); err == nil {
 		return Un7z(file7z.Name())
 	}
 	return
@@ -51,11 +51,11 @@ func Un7z(filePath string) (data []byte, err error) {
 	}
 	defer sz.Close()
 
-	fileNoNeed, err := ioutil.TempFile("", "*")
+	fileNoNeed, err := os.CreateTemp("", "*")
 	if err != nil {
 		return nil, err
 	}
-	fileNeed, err := ioutil.TempFile("", "*")
+	fileNeed, err := os.CreateTemp("", "*")
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func Un7z(filePath string) (data []byte, err error) {
 	for {
 		hdr, err := sz.Next()
 		if err == io.EOF {
-			break // End of archive
+			break // IdxEnd of archive
 		}
 		if err != nil {
 			return nil, err

@@ -8,10 +8,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
-
-	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/download"
+	"github.com/zu1k/nali/pkg/wry"
+
+	"github.com/lionsoul2014/ip2region/binding/golang/xdb"
 )
 
 var DownloadUrls = []string{
@@ -59,7 +59,7 @@ func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, e
 		if err != nil {
 			return nil, err
 		} else {
-			return common.Result{
+			return wry.Result{
 				Country: strings.ReplaceAll(res, "|0", ""),
 			}, nil
 		}
