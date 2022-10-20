@@ -45,6 +45,10 @@ func NewQQwry(filePath string) (*QQwry, error) {
 		}
 	}
 
+	if len(fileData) < 8 {
+		log.Fatalln("纯真 IP 库存在错误，请重新下载")
+	}
+
 	header := fileData[0:8]
 	start := binary.LittleEndian.Uint32(header[:4])
 	end := binary.LittleEndian.Uint32(header[4:])

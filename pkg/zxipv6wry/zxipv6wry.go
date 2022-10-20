@@ -39,6 +39,10 @@ func NewZXwry(filePath string) (*ZXwry, error) {
 		}
 	}
 
+	if len(fileData) < 24 {
+		log.Fatalln("ZX IPv6数据库存在错误，请重新下载")
+	}
+
 	header := fileData[:24]
 	offLen := header[6]
 	ipLen := header[7]
