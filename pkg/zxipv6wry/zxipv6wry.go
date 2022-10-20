@@ -47,6 +47,10 @@ func NewZXwry(filePath string) (*ZXwry, error) {
 	counts := binary.LittleEndian.Uint64(header[8:16])
 	end := start + counts*11
 
+	if uint64(len(fileData)) < end {
+		log.Fatalln("ZX IPv6数据库存在错误，请重新下载")
+	}
+
 	return &ZXwry{
 		IPDB: wry.IPDB[uint64]{
 			Data: fileData,

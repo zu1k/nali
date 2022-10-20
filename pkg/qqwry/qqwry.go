@@ -49,6 +49,10 @@ func NewQQwry(filePath string) (*QQwry, error) {
 	start := binary.LittleEndian.Uint32(header[:4])
 	end := binary.LittleEndian.Uint32(header[4:])
 
+	if uint32(len(fileData)) < end+7 {
+		log.Fatalln("纯真 IP 库存在错误，请重新下载")
+	}
+
 	return &QQwry{
 		IPDB: wry.IPDB[uint32]{
 			Data: fileData,
