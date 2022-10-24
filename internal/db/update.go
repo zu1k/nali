@@ -2,12 +2,12 @@ package db
 
 import (
 	"errors"
-	"github.com/zu1k/nali/pkg/qqwry"
 	"log"
 	"strings"
 	"time"
 
 	"github.com/zu1k/nali/pkg/download"
+	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
 )
 

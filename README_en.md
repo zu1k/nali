@@ -41,7 +41,7 @@
 
 ### Install from source
 
-Nali Requires Go >= 1.18. You can build it from source:
+Nali Requires Go >= 1.19. You can build it from source:
 
 ```sh
 $ go install github.com/zu1k/nali@latest
