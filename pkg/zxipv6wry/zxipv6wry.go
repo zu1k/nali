@@ -39,7 +39,7 @@ func NewZXwry(filePath string) (*ZXwry, error) {
 		}
 	}
 
-	if len(fileData) < 24 {
+	if !CheckFile(fileData) {
 		log.Fatalln("ZX IPv6数据库存在错误，请重新下载")
 	}
 
@@ -50,10 +50,6 @@ func NewZXwry(filePath string) (*ZXwry, error) {
 	start := binary.LittleEndian.Uint64(header[16:24])
 	counts := binary.LittleEndian.Uint64(header[8:16])
 	end := start + counts*11
-
-	if uint64(len(fileData)) < end {
-		log.Fatalln("ZX IPv6数据库存在错误，请重新下载")
-	}
 
 	return &ZXwry{
 		IPDB: wry.IPDB[uint64]{
@@ -84,4 +80,26 @@ func (db *ZXwry) Find(query string, _ ...string) (result fmt.Stringer, err error
 	reader := wry.NewReader(db.Data)
 	reader.Parse(offset)
 	return reader.Result, nil
+}
+
+func CheckFile(data []byte) bool {
+	if len(data) < 4 {
+		return false
+	}
+	if string(data[:4]) != "IPDB" {
+		return false
+	}
+
+	if len(data) < 24 {
+		return false
+	}
+	header := data[:24]
+	start := binary.LittleEndian.Uint64(header[16:24])
+	counts := binary.LittleEndian.Uint64(header[8:16])
+	end := start + counts*11
+	if start >= end || uint64(len(data)) < end {
+		return false
+	}
+
+	return true
 }

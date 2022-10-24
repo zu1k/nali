@@ -1,6 +1,8 @@
 package db
 
 import (
+	"errors"
+	"github.com/zu1k/nali/pkg/qqwry"
 	"log"
 	"strings"
 	"time"
@@ -33,6 +35,11 @@ var DbNameListForUpdate = []string{
 	"cdn",
 }
 
+var DbCheckFunc = map[Format]func([]byte) bool{
+	FormatQQWry:     qqwry.CheckFile,
+	FormatZXIPv6Wry: zxipv6wry.CheckFile,
+}
+
 func getUpdateFuncByName(name string) (func() error, string) {
 	name = strings.TrimSpace(name)
 	if db := getDbByName(name); db != nil {
@@ -40,12 +47,20 @@ func getUpdateFuncByName(name string) (func() error, string) {
 		if len(db.DownloadUrls) > 0 {
 			return func() error {
 				log.Printf("正在下载最新 %s 数据库...\n", db.Name)
-				_, err := download.Download(db.File, db.DownloadUrls...)
+				data, err := download.Download(db.File, db.DownloadUrls...)
 				if err != nil {
-					log.Printf("%s 数据库下载失败: %s\n", db.Name, db.File)
+					log.Printf("%s 数据库下载失败，请手动下载解压后保存到本地: %s \n", db.Name, db.File)
+					log.Println("下载链接：", db.DownloadUrls)
 					log.Println("error:", err)
 					return err
 				} else {
+					if check, ok := DbCheckFunc[db.Format]; ok {
+						if !check(data) {
+							log.Printf("%s 数据库下载失败，请手动下载解压后保存到本地: %s \n", db.Name, db.File)
+							log.Println("下载链接：", db.DownloadUrls)
+							return errors.New("数据库内容出错")
+						}
+					}
 					log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
 					return nil
 				}
