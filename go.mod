@@ -6,7 +6,7 @@ require (
 	github.com/adrg/xdg v0.4.0
 	github.com/fatih/color v1.13.0
 	github.com/google/martian v2.1.0+incompatible
-	github.com/ip2location/ip2location-go/v9 v9.4.1
+	github.com/ip2location/ip2location-go/v9 v9.5.0
 	github.com/ipipdotnet/ipdb-go v1.3.3
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20221017063954-c5c24655eb63
 	github.com/oschwald/geoip2-golang v1.8.0
