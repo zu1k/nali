@@ -25,6 +25,6 @@ var updateCmd = &cobra.Command{
 }
 
 func init() {
+	updateCmd.PersistentFlags().String("db", "", "choose db you want to update")
 	rootCmd.AddCommand(updateCmd)
-	rootCmd.PersistentFlags().String("db", "", "choose db you want to update")
 }

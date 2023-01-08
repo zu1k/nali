@@ -14,6 +14,20 @@ func migration2v6() {
 		return
 	}
 	oldDefaultWorkPath := filepath.Join(homeDir, ".nali")
+
+	oldDefaultWorkPath, err = filepath.Abs(oldDefaultWorkPath)
+	if err != nil {
+		log.Errorf("Get absolute path for oldDefaultWorkPath failed: %s\n", err)
+	}
+	mewWorkPath, err := filepath.Abs(constant.ConfigDirPath)
+	if err != nil {
+		log.Errorf("Get absolute path for mewWorkPath failed: %s\n", err)
+	}
+	if oldDefaultWorkPath == mewWorkPath {
+		// User chooses to continue using old directory
+		return
+	}
+
 	_, err = os.Stat(oldDefaultWorkPath)
 	if err == nil {
 		println("Old data directories are detected and will attempt to migrate automatically")
