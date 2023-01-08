@@ -14,7 +14,11 @@ import (
 )
 
 var DownloadUrls = []string{
-	"https://99wry.cf/qqwry.dat",
+	"https://cdn.jsdelivr.net/gh/sspanel-uim/qqwry.dat/qqwry.dat",
+	"https://github.com/sspanel-uim/qqwry.dat/raw/main/qqwry.dat",
+	// Other repo:
+	// https://github.com/HMBSbige/qqwry
+	// https://github.com/metowolf/qqwry.dat
 }
 
 type QQwry struct {
