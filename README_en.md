@@ -327,10 +327,3 @@ Thanks to JetBrains for the Open Source License
 ## Author
 
 **Nali** © [zu1k](https://github.com/zu1k), Released under the [MIT](./LICENSE) License.<br>
-
-> Blog [zu1k.com](https://zu1k.com) · GitHub [@zu1k](https://github.com/zu1k) · Twitter [@zu1k_lv](https://twitter.com/zu1k_lv) · Telegram Channel [@peekfun](https://t.me/peekfun)
-
-
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/zu1k/nali.svg)](https://starchart.cc/zu1k/nali)
