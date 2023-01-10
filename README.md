@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://github.com/zu1k/nali/actions">
-    <img src="https://img.shields.io/github/workflow/status/zu1k/nali/Go?style=flat-square" alt="Github Actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/zu1k/nali/go.yml?branch=master&style=flat-square" alt="Github Actions">
   </a>
   <a href="https://goreportcard.com/report/github.com/zu1k/nali">
     <img src="https://goreportcard.com/badge/github.com/zu1k/nali?style=flat-square">
