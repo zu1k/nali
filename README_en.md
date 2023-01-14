@@ -26,14 +26,14 @@
   - Geoip2 city database
   - IPIP free database
   - ip2region database
-  - db-ip database
+  - DB-IP database
   - IP2Location DB3 LITE database
+- CDN provider query
 - Pipeline support
 - Interactive query
-- Offline query
 - Both ipv4 and ipv6 supported
 - Multilingual support
-- CDN provider query
+- Offline query
 - Full platform support
 - Color print
 
@@ -47,7 +47,7 @@ Nali Requires Go >= 1.19. You can build it from source:
 $ go install github.com/zu1k/nali@latest
 ```
 
-### Install pre-build binariy
+### Install pre-build binary
 
 Pre-built binaries are available here: [release](https://github.com/zu1k/nali/releases)
 
@@ -55,7 +55,7 @@ Download the binary compatible with your platform, unpack and copy to the direct
 
 ### Arch Linux
 
-We have published 3 package in Aur:
+We have published 3 packages in Aur:
 
 - `nali-go`: release version, compile when installing
 - `nali-go-bin`: release version, pre-compiled binary
@@ -101,7 +101,7 @@ $ nali
 quit
 ```
 
-### Use with dig
+### Use with `dig`
 
 ```
 $ dig nali.zu1k.com +short | nali
@@ -110,7 +110,7 @@ $ dig nali.zu1k.com +short | nali
 172.67.135.48 [美国 CloudFlare节点]
 ```
 
-### Use with nslookup
+### Use with `nslookup`
 
 ```
 $ nslookup nali.zu1k.com 8.8.8.8 | nali
@@ -128,17 +128,17 @@ Address: 172.67.135.48 [美国 CloudFlare节点]
 
 ### Use with any other program
 
-Because nali can read the contents of the `stdin` pipeline, it can be used with any program
+Because nali can read the contents of the `stdin` pipeline, it can be used with any program.
 
 ```
 bash abc.sh | nali
 ```
 
-Nali will insert ip information after ip
+Nali will insert IP information after IP address.
 
-### IPV6 support
+### IPv6 support
 
-Use like ipv4
+Use like IPv4
 
 ```
 $ nslookup google.com | nali
@@ -174,7 +174,7 @@ Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Com
 
 After nali runs for the first time, a configuration file `config.yaml` will be generated in the working directory (default `~/.nali/config.yaml`), the configuration file defines the database information.
 
-A database is defined as the follows:
+A database is defined as follows:
 
 ```yaml
 - name: geoip
@@ -212,7 +212,7 @@ Use "nali [command] --help" for more information about a command.
 
 ### Update database
 
-Update all databases if avaliable:
+Update all databases if available:
 
 ```
 $ nali update
@@ -220,7 +220,7 @@ $ nali update
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-Updata selected databases:
+Update specified databases:
 
 ```
 $ nali update --db qqwry,cdn
@@ -228,11 +228,11 @@ $ nali update --db qqwry,cdn
 2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
 ```
 
-### Select database
+### Specify database
 
-Users can specify which database to use， set environment variables `NALI_DB_IP4`, `NALI_DB_IP6` or both.
+Users can specify which database to use，set environment variables `NALI_DB_IP4`, `NALI_DB_IP6` or both.
 
-supported database:
+Supported database:
 
 - Geoip2 `['geoip', 'geoip2']`
 - Chunzhen `['chunzhen', 'qqwry']`
