@@ -14,6 +14,9 @@
   <a href="https://github.com/zu1k/nali/releases">
     <img src="https://img.shields.io/github/release/zu1k/nali/all.svg?style=flat-square">
   </a>
+  <a href="https://github.com/zu1k/nali/releases">
+    <img src="https://img.shields.io/github/downloads/zu1k/nali/total?style=flat-square">
+  </a>
 </p>
 
 #### [English](https://github.com/zu1k/nali/blob/master/README_en.md)
