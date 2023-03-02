@@ -18,7 +18,7 @@ const (
 )
 
 type Entity struct {
-	Loc  []int // s[Loc[0]:Loc[1]]
+	Loc  [2]int // s[Loc[0]:Loc[1]]
 	Type EntityType
 
 	Text string

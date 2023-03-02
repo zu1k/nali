@@ -18,7 +18,7 @@ func ParseLine(line string) Entities {
 	tmp := make(Entities, 0, len(ip4sLoc)+len(ip6sLoc)+len(domainsLoc))
 	for _, e := range ip4sLoc {
 		tmp = append(tmp, &Entity{
-			Loc:  e,
+			Loc:  *(*[2]int)(e),
 			Type: TypeIPv4,
 			Text: line[e[0]:e[1]],
 		})
@@ -27,7 +27,7 @@ func ParseLine(line string) Entities {
 		text := line[e[0]:e[1]]
 		if ip, _ := netip.ParseAddr(text); !ip.Is4In6() {
 			tmp = append(tmp, &Entity{
-				Loc:  e,
+				Loc:  *(*[2]int)(e),
 				Type: TypeIPv6,
 				Text: text,
 			})
@@ -35,7 +35,7 @@ func ParseLine(line string) Entities {
 	}
 	for _, e := range domainsLoc {
 		tmp = append(tmp, &Entity{
-			Loc:  e,
+			Loc:  *(*[2]int)(e),
 			Type: TypeDomain,
 			Text: line[e[0]:e[1]],
 		})
@@ -50,7 +50,7 @@ func ParseLine(line string) Entities {
 		if start >= idx {
 			if start > idx {
 				es = append(es, &Entity{
-					Loc:  []int{idx, start},
+					Loc:  [2]int{idx, start},
 					Type: TypePlain,
 					Text: line[idx:start],
 				})
@@ -62,7 +62,7 @@ func ParseLine(line string) Entities {
 	}
 	if total := len(line); idx < total {
 		es = append(es, &Entity{
-			Loc:  []int{idx, total},
+			Loc:  [2]int{idx, total},
 			Type: TypePlain,
 			Text: line[idx:total],
 		})
