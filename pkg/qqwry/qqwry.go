@@ -14,8 +14,7 @@ import (
 )
 
 var DownloadUrls = []string{
-	"https://cdn.jsdelivr.net/gh/sspanel-uim/qqwry.dat/qqwry.dat",
-	"https://github.com/sspanel-uim/qqwry.dat/raw/main/qqwry.dat",
+	"https://gh-release.zu1k.com/HMBSbige/qqwry/qqwry.dat", // redirect to HMBSbige/qqwry
 	// Other repo:
 	// https://github.com/HMBSbige/qqwry
 	// https://github.com/metowolf/qqwry.dat
