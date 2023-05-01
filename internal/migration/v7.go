@@ -28,11 +28,13 @@ func migration2v7() {
 
 	needOverwrite := false
 	for _, adb := range dbList {
-		if adb.Name == "qqwry" && len(adb.DownloadUrls) == 1 &&
-			(adb.DownloadUrls[0] == "https://99wry.cf/qqwry.dat" ||
-				strings.Contains(adb.DownloadUrls[0], "sspanel-uim")) {
-			needOverwrite = true
-			adb.DownloadUrls = qqwry.DownloadUrls
+		if adb.Name == "qqwry" {
+			if len(adb.DownloadUrls) == 0 ||
+				adb.DownloadUrls[0] == "https://99wry.cf/qqwry.dat" ||
+				strings.Contains(adb.DownloadUrls[0], "sspanel-uim") {
+				needOverwrite = true
+				adb.DownloadUrls = qqwry.DownloadUrls
+			}
 		}
 	}
 
