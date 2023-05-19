@@ -19,7 +19,7 @@ const (
 )
 
 type Entity struct {
-	Loc  [2]int     // s[Loc[0]:Loc[1]]
+	Loc  [2]int     `json:"-"` // s[Loc[0]:Loc[1]]
 	Type EntityType `json:"type"`
 
 	Text string `json:"ip"`
