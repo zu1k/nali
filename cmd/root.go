@@ -3,13 +3,14 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	"log"
+	"os"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
-	"log"
-	"os"
-	"strings"
 
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/common"
@@ -61,7 +62,6 @@ Find document on: https://github.com/zu1k/nali
 	Run: func(cmd *cobra.Command, args []string) {
 		gbk, _ := cmd.Flags().GetBool("gbk")
 		isJson, _ := cmd.Flags().GetBool("json")
-		isJsonline, _ := cmd.Flags().GetBool("jsonline")
 
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
@@ -75,17 +75,14 @@ Find document on: https://github.com/zu1k/nali
 					return
 				}
 				if isJson {
-					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).Json())
+					_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).Json())
 				} else {
-					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
+					_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
 				}
-
 			}
 		} else {
 			if isJson {
 				_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).Json())
-			} else if isJsonline {
-				_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).JsonLine())
 			} else {
 				_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
 			}
@@ -102,6 +99,5 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
-	rootCmd.PersistentFlags().BoolP("json", "j", false, "Output in JSON format")
-	rootCmd.PersistentFlags().BoolP("jsonline", "l", false, "JSON output with newlines")
+	rootCmd.Flags().BoolP("json", "j", false, "Output in JSON format")
 }

@@ -48,26 +48,14 @@ func ParseLine(line string) Entities {
 	for _, e := range tmp {
 		start := e.Loc[0]
 		if start >= idx {
-			//if start > idx {
-			//	es = append(es, &Entity{
-			//		Loc:  [2]int{idx, start},
-			//		Type: TypePlain,
-			//		Text: line[idx:start],
-			//	})
-			//}
 			res := db.Find(dbif.QueryType(e.Type), e.Text)
-			e.Info = res.Area
-			e.GEO = res.Country
-			es = append(es, e)
-			idx = e.Loc[1]
+			if res != nil {
+				e.InfoText = res.String()
+				e.Info = res
+				es = append(es, e)
+				idx = e.Loc[1]
+			}
 		}
-	}
-	if total := len(line); idx < total {
-		es = append(es, &Entity{
-			Loc:  [2]int{idx, total},
-			Type: TypePlain,
-			Text: line[idx:total],
-		})
 	}
 
 	return es

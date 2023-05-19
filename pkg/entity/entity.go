@@ -22,9 +22,9 @@ type Entity struct {
 	Loc  [2]int     `json:"-"` // s[Loc[0]:Loc[1]]
 	Type EntityType `json:"type"`
 
-	Text string `json:"ip"`
-	Info string `json:"tag"`
-	GEO  string `json:"geo"`
+	Text     string      `json:"ip"`
+	InfoText string      `json:"text"`
+	Info     interface{} `json:"info"`
 }
 
 func (e Entity) ParseInfo() error {
@@ -57,8 +57,8 @@ func (es Entities) String() string {
 	var result strings.Builder
 	for _, entity := range es {
 		result.WriteString(entity.Text)
-		if entity.Type != TypePlain && len(entity.Info) > 0 {
-			result.WriteString("[" + entity.Info + "] ")
+		if entity.Type != TypePlain && len(entity.InfoText) > 0 {
+			result.WriteString("[" + entity.InfoText + "] ")
 		}
 	}
 	return result.String()
@@ -67,35 +67,30 @@ func (es Entities) String() string {
 func (es Entities) ColorString() string {
 	var line strings.Builder
 	for _, e := range es {
-		s := e.Text
 		switch e.Type {
 		case TypeIPv4:
-			s = color.GreenString(e.Text)
+			line.WriteString(color.GreenString(e.Text))
 		case TypeIPv6:
-			s = color.BlueString(e.Text)
+			line.WriteString(color.BlueString(e.Text))
 		case TypeDomain:
-			s = color.YellowString(e.Text)
+			line.WriteString(color.YellowString(e.Text))
+		default:
+			line.WriteString(e.Text)
 		}
-		if e.Type != TypePlain && len(e.Info) > 0 {
-			s += " [" + color.RedString(e.Info) + "] "
+		if e.Type != TypePlain {
+			if len(e.InfoText) > 0 {
+				line.WriteString(" [" + color.RedString(e.InfoText) + "] ")
+			}
 		}
-		line.WriteString(s + "\n")
+		line.WriteString("\n")
 	}
-	return line.String()
+	return strings.TrimSpace(line.String())
 }
 
 func (es Entities) Json() string {
-	jsonResult, err := json.Marshal(es)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-	return string(jsonResult)
-}
-
-func (es Entities) JsonLine() string {
 	var s strings.Builder
 	for _, e := range es {
 		s.WriteString(e.Json() + "\n")
 	}
-	return s.String()
+	return strings.TrimSpace(s.String())
 }
