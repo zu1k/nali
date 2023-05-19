@@ -22,9 +22,9 @@ type Entity struct {
 	Loc  [2]int     `json:"-"` // s[Loc[0]:Loc[1]]
 	Type EntityType `json:"type"`
 
-	Text string `json:"ip"`
-	Info string `json:"tag"`
-	GEO  string `json:"geo"`
+	Text     string      `json:"ip"`
+	InfoText string      `json:"text"`
+	Info     interface{} `json:"info"`
 }
 
 func (e Entity) ParseInfo() error {
@@ -57,8 +57,8 @@ func (es Entities) String() string {
 	var result strings.Builder
 	for _, entity := range es {
 		result.WriteString(entity.Text)
-		if entity.Type != TypePlain && len(entity.Info) > 0 {
-			result.WriteString("[" + entity.Info + "] ")
+		if entity.Type != TypePlain && len(entity.InfoText) > 0 {
+			result.WriteString("[" + entity.InfoText + "] ")
 		}
 	}
 	return result.String()
@@ -78,11 +78,8 @@ func (es Entities) ColorString() string {
 			line.WriteString(e.Text)
 		}
 		if e.Type != TypePlain {
-			if len(e.Info) > 0 {
-				line.WriteString(" [" + color.RedString(e.Info) + "] ")
-			}
-			if len(e.GEO) > 0 {
-				line.WriteString(" [" + color.RedString(e.GEO) + "] ")
+			if len(e.InfoText) > 0 {
+				line.WriteString(" [" + color.RedString(e.InfoText) + "] ")
 			}
 		}
 		line.WriteString("\n")

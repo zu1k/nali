@@ -56,8 +56,8 @@ func ParseLine(line string) Entities {
 			//	})
 			//}
 			res := db.Find(dbif.QueryType(e.Type), e.Text)
-			e.Info = res.Area
-			e.GEO = res.Country
+			e.InfoText = res.String()
+			e.Info = res
 			es = append(es, e)
 			idx = e.Loc[1]
 		}
