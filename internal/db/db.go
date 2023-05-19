@@ -1,10 +1,9 @@
 package db
 
 import (
-	"log"
-	"strings"
-
 	"github.com/spf13/viper"
+	"github.com/zu1k/nali/pkg/wry"
+	"log"
 
 	"github.com/zu1k/nali/pkg/cdn"
 	"github.com/zu1k/nali/pkg/dbif"
@@ -69,15 +68,15 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	return
 }
 
-func Find(typ dbif.QueryType, query string) string {
+func Find(typ dbif.QueryType, query string) *wry.Result {
 	if result, found := queryCache.Load(query); found {
-		return result.(string)
+		return result.(*wry.Result)
 	}
 	result, err := GetDB(typ).Find(query)
 	if err != nil {
-		return ""
+		return nil
 	}
-	r := strings.Trim(result.String(), " ")
-	queryCache.Store(query, r)
-	return r
+	res := result.(*wry.Result)
+	queryCache.Store(query, res)
+	return res
 }

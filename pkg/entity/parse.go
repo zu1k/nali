@@ -42,20 +42,22 @@ func ParseLine(line string) Entities {
 	}
 
 	sort.Sort(tmp)
-	es := make(Entities, 0, len(tmp))
+	var es Entities
 
 	idx := 0
 	for _, e := range tmp {
 		start := e.Loc[0]
 		if start >= idx {
-			if start > idx {
-				es = append(es, &Entity{
-					Loc:  [2]int{idx, start},
-					Type: TypePlain,
-					Text: line[idx:start],
-				})
-			}
-			e.Info = db.Find(dbif.QueryType(e.Type), e.Text)
+			//if start > idx {
+			//	es = append(es, &Entity{
+			//		Loc:  [2]int{idx, start},
+			//		Type: TypePlain,
+			//		Text: line[idx:start],
+			//	})
+			//}
+			res := db.Find(dbif.QueryType(e.Type), e.Text)
+			e.Info = res.Area
+			e.GEO = res.Country
 			es = append(es, e)
 			idx = e.Loc[1]
 		}
