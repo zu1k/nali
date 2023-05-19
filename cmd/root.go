@@ -103,5 +103,5 @@ func Execute() {
 func init() {
 	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
 	rootCmd.Flags().Bool("json", false, "Output in JSON format")
-	rootCmd.Flags().Bool("jsonline", false, "json output with newlines")
+	rootCmd.PersistentFlags().BoolP("jsonline", "l", false, "JSON output with newlines")
 }
