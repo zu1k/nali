@@ -1,10 +1,11 @@
 package entity
 
 import (
-	"strings"
-
+	"encoding/json"
 	"github.com/fatih/color"
 	"github.com/zu1k/nali/pkg/dbif"
+	"log"
+	"strings"
 )
 
 type EntityType uint
@@ -18,15 +19,24 @@ const (
 )
 
 type Entity struct {
-	Loc  [2]int // s[Loc[0]:Loc[1]]
-	Type EntityType
+	Loc  [2]int     // s[Loc[0]:Loc[1]]
+	Type EntityType `json:"type"`
 
-	Text string
-	Info string
+	Text string `json:"ip"`
+	Info string `json:"tag"`
+	GEO  string `json:"geo"`
 }
 
 func (e Entity) ParseInfo() error {
 	return nil
+}
+
+func (e Entity) Json() string {
+	jsonResult, err := json.Marshal(e)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return string(jsonResult)
 }
 
 type Entities []*Entity
@@ -69,7 +79,23 @@ func (es Entities) ColorString() string {
 		if e.Type != TypePlain && len(e.Info) > 0 {
 			s += " [" + color.RedString(e.Info) + "] "
 		}
-		line.WriteString(s)
+		line.WriteString(s + "\n")
 	}
 	return line.String()
+}
+
+func (es Entities) Json() string {
+	jsonResult, err := json.Marshal(es)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return string(jsonResult)
+}
+
+func (es Entities) JsonLine() string {
+	var s strings.Builder
+	for _, e := range es {
+		s.WriteString(e.Json() + "\n")
+	}
+	return s.String()
 }
