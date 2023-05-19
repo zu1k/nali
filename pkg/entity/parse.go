@@ -62,13 +62,13 @@ func ParseLine(line string) Entities {
 			idx = e.Loc[1]
 		}
 	}
-	if total := len(line); idx < total {
-		es = append(es, &Entity{
-			Loc:  [2]int{idx, total},
-			Type: TypePlain,
-			Text: line[idx:total],
-		})
-	}
+	//if total := len(line); idx < total {
+	//	es = append(es, &Entity{
+	//		Loc:  [2]int{idx, total},
+	//		Type: TypePlain,
+	//		Text: line[idx:total],
+	//	})
+	//}
 
 	return es
 }

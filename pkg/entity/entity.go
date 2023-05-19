@@ -67,21 +67,27 @@ func (es Entities) String() string {
 func (es Entities) ColorString() string {
 	var line strings.Builder
 	for _, e := range es {
-		s := e.Text
 		switch e.Type {
 		case TypeIPv4:
-			s = color.GreenString(e.Text)
+			line.WriteString(color.GreenString(e.Text))
 		case TypeIPv6:
-			s = color.BlueString(e.Text)
+			line.WriteString(color.BlueString(e.Text))
 		case TypeDomain:
-			s = color.YellowString(e.Text)
+			line.WriteString(color.YellowString(e.Text))
+		default:
+			line.WriteString(e.Text)
 		}
-		if e.Type != TypePlain && len(e.Info) > 0 {
-			s += " [" + color.RedString(e.Info) + "] "
+		if e.Type != TypePlain {
+			if len(e.Info) > 0 {
+				line.WriteString(" [" + color.RedString(e.Info) + "] ")
+			}
+			if len(e.GEO) > 0 {
+				line.WriteString(" [" + color.RedString(e.GEO) + "] ")
+			}
 		}
-		line.WriteString(s + "\n")
+		line.WriteString("\n")
 	}
-	return line.String()
+	return strings.TrimSpace(line.String())
 }
 
 func (es Entities) Json() string {
@@ -97,5 +103,5 @@ func (es Entities) JsonLine() string {
 	for _, e := range es {
 		s.WriteString(e.Json() + "\n")
 	}
-	return s.String()
+	return strings.TrimSpace(s.String())
 }
