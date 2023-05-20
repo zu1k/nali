@@ -90,7 +90,10 @@ func (es Entities) ColorString() string {
 func (es Entities) Json() string {
 	var s strings.Builder
 	for _, e := range es {
+		if e.Type == TypePlain {
+			continue
+		}
 		s.WriteString(e.Json() + "\n")
 	}
-	return strings.TrimSpace(s.String())
+	return s.String()
 }
