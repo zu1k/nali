@@ -31,8 +31,8 @@ type CDNReTuple struct {
 }
 
 type CDNResult struct {
-	Name string `yaml:"name"`
-	Link string `yaml:"link"`
+	Name string `yaml:"name" json:"name"`
+	Link string `yaml:"link" json:"link"`
 }
 
 func (r CDNResult) String() string {

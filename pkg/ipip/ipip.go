@@ -28,9 +28,9 @@ func NewIPIP(filePath string) (*IPIPFree, error) {
 }
 
 type Result struct {
-	Country string
-	Region  string
-	City    string
+	Country string `json:"country"`
+	Region  string `json:"region"`
+	City    string `json:"city"`
 }
 
 func (r Result) String() string {

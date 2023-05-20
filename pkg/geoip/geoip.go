@@ -49,20 +49,20 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 
 	result = Result{
 		Country: record.Country.Names[lang],
-		City:    record.City.Names[lang],
+		Area:    record.City.Names[lang],
 	}
 	return
 }
 
 type Result struct {
-	Country string
-	City    string
+	Country string `json:"country"`
+	Area    string `json:"area"`
 }
 
 func (r Result) String() string {
-	if r.City == "" {
+	if r.Area == "" {
 		return r.Country
 	} else {
-		return fmt.Sprintf("%s %s", r.Country, r.City)
+		return fmt.Sprintf("%s %s", r.Country, r.Area)
 	}
 }
