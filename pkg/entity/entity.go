@@ -24,6 +24,7 @@ type Entity struct {
 
 	Text     string      `json:"ip"`
 	InfoText string      `json:"text"`
+	Source   string      `json:"source"`
 	Info     interface{} `json:"info"`
 }
 

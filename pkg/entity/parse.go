@@ -58,7 +58,8 @@ func ParseLine(line string) Entities {
 			res := db.Find(dbif.QueryType(e.Type), e.Text)
 			if res != nil {
 				e.InfoText = res.String()
-				e.Info = res
+				e.Info = res.Result
+				e.Source = res.Source
 				es = append(es, e)
 				idx = e.Loc[1]
 			}

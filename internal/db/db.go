@@ -14,7 +14,7 @@ import (
 )
 
 type Result struct {
-	Source string `json:"source"`
+	Source string
 	common.Result
 }
 
