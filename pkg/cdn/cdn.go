@@ -103,6 +103,10 @@ func (db CDN) Find(query string, params ...string) (result fmt.Stringer, err err
 	return nil, errors.New("not found")
 }
 
+func (db CDN) Name() string {
+	return "cdn"
+}
+
 func parseBaseCname(domain string) (result []string) {
 	parts := strings.Split(domain, ".")
 	size := len(parts)

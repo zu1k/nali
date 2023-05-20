@@ -54,6 +54,10 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 	return
 }
 
+func (db GeoIP) Name() string {
+	return "geoip"
+}
+
 type Result struct {
 	Country string `json:"country"`
 	Area    string `json:"area"`

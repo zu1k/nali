@@ -82,6 +82,10 @@ func (db *ZXwry) Find(query string, _ ...string) (result fmt.Stringer, err error
 	return reader.Result, nil
 }
 
+func (db *ZXwry) Name() string {
+	return "xzwry"
+}
+
 func CheckFile(data []byte) bool {
 	if len(data) < 4 {
 		return false

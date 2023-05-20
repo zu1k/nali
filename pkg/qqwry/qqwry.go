@@ -90,6 +90,10 @@ func (db QQwry) Find(query string, params ...string) (result fmt.Stringer, err e
 	return reader.Result.DecodeGBK(), nil
 }
 
+func (db QQwry) Name() string {
+	return "qqwry"
+}
+
 func CheckFile(data []byte) bool {
 	if len(data) < 8 {
 		return false

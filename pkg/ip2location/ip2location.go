@@ -31,12 +31,12 @@ func NewIP2Location(filePath string) (*IP2Location, error) {
 	}
 }
 
-func (x IP2Location) Find(query string, params ...string) (result fmt.Stringer, err error) {
+func (db IP2Location) Find(query string, params ...string) (result fmt.Stringer, err error) {
 	ip := net.ParseIP(query)
 	if ip == nil {
 		return nil, errors.New("Query should be valid IP")
 	}
-	record, err := x.db.Get_all(ip.String())
+	record, err := db.db.Get_all(ip.String())
 
 	if err != nil {
 		return
@@ -48,6 +48,10 @@ func (x IP2Location) Find(query string, params ...string) (result fmt.Stringer, 
 		City:    record.City,
 	}
 	return
+}
+
+func (db IP2Location) Name() string {
+	return "ip2location"
 }
 
 type Result struct {

@@ -13,6 +13,11 @@ import (
 	"github.com/zu1k/nali/pkg/zxipv6wry"
 )
 
+type Result struct {
+	Source string `json:"source"`
+	common.Result
+}
+
 func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	if db, found := dbTypeCache[typ]; found {
 		return db
@@ -69,15 +74,16 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	return
 }
 
-func Find(typ dbif.QueryType, query string) common.Result {
+func Find(typ dbif.QueryType, query string) *Result {
 	if result, found := queryCache.Load(query); found {
-		return result.(common.Result)
+		return result.(*Result)
 	}
-	result, err := GetDB(typ).Find(query)
+	db := GetDB(typ)
+	result, err := db.Find(query)
 	if err != nil {
 		return nil
 	}
-	res := result
+	res := &Result{db.Name(), result}
 	queryCache.Store(query, res)
 	return res
 }
