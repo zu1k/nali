@@ -77,14 +77,16 @@ Find document on: https://github.com/zu1k/nali
 				if isJson {
 					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).Json())
 				} else {
-					_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
+					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
 				}
 			}
 		} else {
 			if isJson {
 				_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(strings.Join(args, " ")).Json())
 			} else {
-				_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
+				for _, line := range args {
+					_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
+				}
 			}
 		}
 	},
