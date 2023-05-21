@@ -83,7 +83,7 @@ func (db *ZXwry) Find(query string, _ ...string) (result fmt.Stringer, err error
 }
 
 func (db *ZXwry) Name() string {
-	return "xzwry"
+	return "zxipv6wry"
 }
 
 func CheckFile(data []byte) bool {
