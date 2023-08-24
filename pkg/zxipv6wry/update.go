@@ -39,6 +39,9 @@ const (
 
 func getData() (data []byte, err error) {
 	data, err = common.GetHttpClient().Get(zx)
+	if err != nil {
+		return nil, err
+	}
 
 	file7z, err := os.CreateTemp("", "*")
 	if err != nil {

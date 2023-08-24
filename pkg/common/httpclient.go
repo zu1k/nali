@@ -1,7 +1,7 @@
 package common
 
 import (
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -46,8 +46,8 @@ func (c *HttpClient) Get(urls ...string) (body []byte, err error) {
 		resp, err = c.Do(req)
 
 		if err == nil && resp != nil && resp.StatusCode == 200 {
-			defer resp.Body.Close()
-			body, err = ioutil.ReadAll(resp.Body)
+			body, err = io.ReadAll(resp.Body)
+			_ = resp.Body.Close()
 			if err != nil {
 				continue
 			}

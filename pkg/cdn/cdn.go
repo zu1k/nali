@@ -40,7 +40,7 @@ func (r CDNResult) String() string {
 }
 
 func NewCDN(filePath string) (*CDN, error) {
-	fileData := make([]byte, 0)
+	var fileData []byte
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，尝试从网络获取最新CDN数据库")

@@ -10,12 +10,11 @@ import (
 	"github.com/ip2location/ip2location-go/v9"
 )
 
-// IP2Location
 type IP2Location struct {
 	db *ip2location.DB
 }
 
-// new IP2Location from database file
+// NewIP2Location from database file
 func NewIP2Location(filePath string) (*IP2Location, error) {
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {

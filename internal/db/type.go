@@ -53,7 +53,7 @@ func (d *DB) get() (db dbif.DB) {
 		panic("DB format not supported!")
 	}
 
-	if err != nil || db == nil {
+	if err != nil {
 		log.Fatalln("Database init failed:", err)
 	}
 
