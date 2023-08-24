@@ -28,9 +28,9 @@ func NewIPIP(filePath string) (*IPIPFree, error) {
 }
 
 type Result struct {
-	Country string
-	Region  string
-	City    string
+	Country string `json:"country"`
+	Region  string `json:"region"`
+	City    string `json:"city"`
 }
 
 func (r Result) String() string {
@@ -53,4 +53,8 @@ func (db IPIPFree) Find(query string, params ...string) (result fmt.Stringer, er
 		}
 		return
 	}
+}
+
+func (db IPIPFree) Name() string {
+	return "ipip"
 }

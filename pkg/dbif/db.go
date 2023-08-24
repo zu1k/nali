@@ -22,6 +22,7 @@ const (
 
 type DB interface {
 	Find(query string, params ...string) (result fmt.Stringer, err error)
+	Name() string
 }
 
 var (

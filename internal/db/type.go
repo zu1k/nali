@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/zu1k/nali/pkg/common"
 	"log"
 
 	"github.com/zu1k/nali/pkg/cdn"
@@ -138,4 +139,9 @@ func getDbByName(name string) (db *DB) {
 
 	log.Fatalf("DB with name %s not found!\n", name)
 	return
+}
+
+type Result struct {
+	Source string
+	common.Result
 }

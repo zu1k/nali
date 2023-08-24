@@ -42,7 +42,7 @@ func ParseLine(line string) Entities {
 	}
 
 	sort.Sort(tmp)
-	es := make(Entities, 0, len(tmp))
+	var es Entities
 
 	idx := 0
 	for _, e := range tmp {
@@ -55,9 +55,14 @@ func ParseLine(line string) Entities {
 					Text: line[idx:start],
 				})
 			}
-			e.Info = db.Find(dbif.QueryType(e.Type), e.Text)
-			es = append(es, e)
-			idx = e.Loc[1]
+			res := db.Find(dbif.QueryType(e.Type), e.Text)
+			if res != nil {
+				e.InfoText = res.String()
+				e.Info = res.Result
+				e.Source = res.Source
+				es = append(es, e)
+				idx = e.Loc[1]
+			}
 		}
 	}
 	if total := len(line); idx < total {
@@ -67,6 +72,5 @@ func ParseLine(line string) Entities {
 			Text: line[idx:total],
 		})
 	}
-
 	return es
 }

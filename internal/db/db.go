@@ -2,7 +2,6 @@ package db
 
 import (
 	"log"
-	"strings"
 
 	"github.com/spf13/viper"
 
@@ -69,15 +68,16 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 	return
 }
 
-func Find(typ dbif.QueryType, query string) string {
+func Find(typ dbif.QueryType, query string) *Result {
 	if result, found := queryCache.Load(query); found {
-		return result.(string)
+		return result.(*Result)
 	}
-	result, err := GetDB(typ).Find(query)
+	db := GetDB(typ)
+	result, err := db.Find(query)
 	if err != nil {
-		return ""
+		return nil
 	}
-	r := strings.Trim(result.String(), " ")
-	queryCache.Store(query, r)
-	return r
+	res := &Result{db.Name(), result}
+	queryCache.Store(query, res)
+	return res
 }

@@ -61,6 +61,7 @@ Find document on: https://github.com/zu1k/nali
 	Args:    cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		gbk, _ := cmd.Flags().GetBool("gbk")
+		isJson, _ := cmd.Flags().GetBool("json")
 
 		if len(args) == 0 {
 			stdin := bufio.NewScanner(os.Stdin)
@@ -73,10 +74,20 @@ Find document on: https://github.com/zu1k/nali
 				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
 					return
 				}
-				_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
+				if isJson {
+					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).Json())
+				} else {
+					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).ColorString())
+				}
 			}
 		} else {
-			_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(strings.Join(args, " ")).ColorString())
+			if isJson {
+				_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(strings.Join(args, " ")).Json())
+			} else {
+				for _, line := range args {
+					_, _ = fmt.Fprintf(color.Output, "%s\n", entity.ParseLine(line).ColorString())
+				}
+			}
 		}
 	},
 }
@@ -90,4 +101,5 @@ func Execute() {
 
 func init() {
 	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
+	rootCmd.Flags().BoolP("json", "j", false, "Output in JSON format")
 }

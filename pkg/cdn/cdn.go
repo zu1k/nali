@@ -31,8 +31,8 @@ type CDNReTuple struct {
 }
 
 type CDNResult struct {
-	Name string `yaml:"name"`
-	Link string `yaml:"link"`
+	Name string `yaml:"name" json:"name"`
+	Link string `yaml:"link" json:"link"`
 }
 
 func (r CDNResult) String() string {
@@ -101,6 +101,10 @@ func (db CDN) Find(query string, params ...string) (result fmt.Stringer, err err
 	}
 
 	return nil, errors.New("not found")
+}
+
+func (db CDN) Name() string {
+	return "cdn"
 }
 
 func parseBaseCname(domain string) (result []string) {

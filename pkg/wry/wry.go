@@ -86,8 +86,8 @@ func (r *Reader) readString(seek bool) string {
 }
 
 type Result struct {
-	Country string
-	Area    string
+	Country string `json:"country"`
+	Area    string `json:"area"`
 }
 
 func (r *Result) DecodeGBK() *Result {

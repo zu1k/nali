@@ -67,3 +67,7 @@ func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, e
 
 	return nil, errors.New("ip2region 未初始化")
 }
+
+func (db Ip2Region) Name() string {
+	return "ip2region"
+}
