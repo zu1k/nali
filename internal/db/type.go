@@ -1,10 +1,10 @@
 package db
 
 import (
-	"github.com/zu1k/nali/pkg/common"
 	"log"
 
 	"github.com/zu1k/nali/pkg/cdn"
+	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/dbif"
 	"github.com/zu1k/nali/pkg/geoip"
 	"github.com/zu1k/nali/pkg/ip2location"

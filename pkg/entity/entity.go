@@ -2,10 +2,11 @@ package entity
 
 import (
 	"encoding/json"
-	"github.com/fatih/color"
-	"github.com/zu1k/nali/pkg/dbif"
 	"log"
 	"strings"
+
+	"github.com/fatih/color"
+	"github.com/zu1k/nali/pkg/dbif"
 )
 
 type EntityType uint
