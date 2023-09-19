@@ -37,13 +37,13 @@ func init() {
 
 func prepareDir(dir string) {
 	stat, err := os.Stat(dir)
-	if err != nil && os.IsNotExist(err) {
+	if os.IsNotExist(err) {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			log.Fatal("can not create config dir:", dir)
 		}
-	} else {
-		if !stat.IsDir() {
-			log.Fatal("path already exists, but not a dir:", dir)
-		}
+	} else if err != nil {
+		log.Fatal(err)
+	} else if !stat.IsDir() {
+		log.Fatal("path already exists, but not a dir:", dir)
 	}
 }
