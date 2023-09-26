@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/zu1k/nali/internal/constant"
 
@@ -23,45 +22,21 @@ var (
 )
 
 func UpdateRepo() error {
-	rel, err := getLatestRelease(constant.Owner, constant.Repo)
+	rel, err := getLatestRelease()
 	if err != nil {
 		return fmt.Errorf("failed to get latest release: %v", err)
 	}
 
-	// get the latest version and compare version numbers, if not the latest, update it
-	if constant.Version != "unknown version" {
-		latest, _ := semver.NewVersion(rel.GetTagName())
-		cur, _ := semver.NewVersion(constant.Version)
-
-		if cur.GreaterThan(latest) {
-			return fmt.Errorf("current version %v is greater or equal to the latest version %v, no update", constant.Version, rel.GetTagName())
-		}
+	if !canUpdate(rel) {
+		return fmt.Errorf("current version %v is greater or equal to the latest version %v, no update", constant.Version, rel.GetTagName())
 	}
 
 	//Filtering assets by GOOS and GOARCH
-	for _, asset := range rel.Assets {
-		name := asset.GetName()
-
-		if strings.Contains(name, constant.OS) &&
-			strings.Contains(name, constant.Arch) &&
-			!strings.Contains(name, ".sha256") {
-			tAsset = asset
-			break
-		}
+	if tAsset = getTargetAsset(rel, false); tAsset == nil {
+		return fmt.Errorf("no target asset found for %s %s", constant.OS, constant.Arch)
 	}
-
-	for _, asset := range rel.Assets {
-		name := asset.GetName()
-
-		if strings.Contains(name, tAsset.GetName()) &&
-			strings.Contains(name, ".sha256") {
-			shaAsset = asset
-			break
-		}
-	}
-
-	if tAsset == nil || shaAsset == nil {
-		return fmt.Errorf("no target and sha256 asset found for %s %s", constant.OS, constant.Arch)
+	if shaAsset = getTargetAsset(rel, true); shaAsset == nil {
+		return fmt.Errorf("no sha256 asset found for %s %s", constant.OS, constant.Arch)
 	}
 
 	//Download the new version nali and its sha256
@@ -98,6 +73,16 @@ func UpdateRepo() error {
 
 	log.Printf("Successfully updated to version %v", rel.GetTagName())
 	return nil
+}
+
+func canUpdate(rel *github.RepositoryRelease) bool {
+	if constant.Version != "unknown version" {
+		latest, _ := semver.NewVersion(rel.GetTagName())
+		cur, _ := semver.NewVersion(constant.Version)
+
+		return latest.GreaterThan(cur)
+	}
+	return true
 }
 
 func update(asset io.Reader, cmdPath string) error {

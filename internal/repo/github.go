@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/common"
@@ -17,9 +18,9 @@ var (
 	client *github.Client
 )
 
-func getLatestRelease(owner, repo string) (*github.RepositoryRelease, error) {
+func getLatestRelease() (*github.RepositoryRelease, error) {
 	client = github.NewClient(common.GetHttpClient().Client)
-	rel, resp, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
+	rel, resp, err := client.Repositories.GetLatestRelease(ctx, constant.Owner, constant.Repo)
 	if err != nil {
 		if resp != nil && resp.StatusCode == 404 {
 			// 404 means repository not found or release not found. It's not an error here.
@@ -32,6 +33,22 @@ func getLatestRelease(owner, repo string) (*github.RepositoryRelease, error) {
 	}
 
 	return rel, nil
+}
+
+func getTargetAsset(rel *github.RepositoryRelease, sha bool) *github.ReleaseAsset {
+	for _, asset := range rel.Assets {
+		name := asset.GetName()
+
+		if strings.Contains(name, constant.OS) && strings.Contains(name, constant.Arch) {
+			if sha && strings.Contains(name, ".sha256") {
+				return asset
+			}
+			if !sha && !strings.Contains(name, ".sha256") {
+				return asset
+			}
+		}
+	}
+	return nil
 }
 
 func download(ctx context.Context, assetId int64) (data []byte, err error) {
