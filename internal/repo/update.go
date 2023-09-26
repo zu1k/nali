@@ -4,26 +4,25 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	semver "github.com/Masterminds/semver/v3"
-	"github.com/google/go-github/v55/github"
-	"github.com/zu1k/nali/internal/constant"
 	"io"
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
+	"strings"
+
+	"github.com/zu1k/nali/internal/constant"
+
+	"github.com/Masterminds/semver/v3"
+	"github.com/google/go-github/v55/github"
 )
 
 var (
-	ctx          = context.Background()
-	reVersion    = regexp.MustCompile(`\d+\.\d+\.\d+`)
-	assetSuffixs = []string{".zip", ".gz"}
-	versionRe    = "(v)?\\d+\\.\\d+\\.\\d+"
-	tAsset       *github.ReleaseAsset
-	shaAsset     *github.ReleaseAsset
+	ctx      = context.Background()
+	tAsset   *github.ReleaseAsset
+	shaAsset *github.ReleaseAsset
 )
 
-func UpdateRepo(version string) error {
+func UpdateRepo() error {
 	rel, err := getLatestRelease(constant.Owner, constant.Repo)
 	if err != nil {
 		return fmt.Errorf("failed to get latest release: %v", err)
@@ -39,20 +38,30 @@ func UpdateRepo(version string) error {
 		}
 	}
 
-	assetFilters := makeFilters()
-
 	//Filtering assets by GOOS and GOARCH
-	if tAsset = getTargetAsset(rel, assetFilters); tAsset == nil {
-		return fmt.Errorf("could not find target asset from release: %v", rel.GetTagName())
+	for _, asset := range rel.Assets {
+		name := asset.GetName()
+
+		if strings.Contains(name, constant.OS) &&
+			strings.Contains(name, constant.Arch) &&
+			!strings.Contains(name, ".sha256") {
+			tAsset = asset
+			break
+		}
 	}
 
-	shaFilter := tAsset.GetName() + ".sha256"
-	shaRe, err := regexp.Compile(shaFilter)
-	if err != nil {
-		return fmt.Errorf("could not compile regular expression %v for filtering releases sha256: %v", shaFilter, err)
+	for _, asset := range rel.Assets {
+		name := asset.GetName()
+
+		if strings.Contains(name, tAsset.GetName()) &&
+			strings.Contains(name, ".sha256") {
+			shaAsset = asset
+			break
+		}
 	}
-	if shaAsset = getTargetAsset(rel, []*regexp.Regexp{shaRe}); shaAsset == nil {
-		return fmt.Errorf("could not find target sha256 asset from release: %v", rel.GetTagName())
+
+	if tAsset == nil || shaAsset == nil {
+		return fmt.Errorf("no target and sha256 asset found for %s %s", constant.OS, constant.Arch)
 	}
 
 	//Download the new version nali and its sha256
@@ -82,7 +91,7 @@ func UpdateRepo(version string) error {
 		return fmt.Errorf("error occurred while decompress: %v", err)
 	}
 
-	log.Printf("Will update %v to %v downloaded from %v", exe, version, tAsset.GetBrowserDownloadURL())
+	log.Printf("Will update %v to %v downloaded from %v", exe, rel.GetTagName(), tAsset.GetBrowserDownloadURL())
 	if err = update(asset, exe); err != nil {
 		return fmt.Errorf("update executable failed: %v", err)
 	}
@@ -144,24 +153,4 @@ func update(asset io.Reader, cmdPath string) error {
 	}
 
 	return nil
-}
-
-func makeFilters() []*regexp.Regexp {
-	assetFilters := make([]*regexp.Regexp, 0)
-
-	for _, ext := range assetSuffixs {
-		filter := fmt.Sprintf("%s%c%s%c%s%c%s%s",
-			constant.Repo, constant.Sep,
-			constant.OS, constant.Sep,
-			constant.Arch, constant.Sep,
-			versionRe, ext)
-
-		re, err := regexp.Compile(filter)
-		if err != nil {
-			log.Printf("could not compile regular expression %v for filtering releases: %v", filter, err)
-			continue
-		}
-		assetFilters = append(assetFilters, re)
-	}
-	return assetFilters
 }

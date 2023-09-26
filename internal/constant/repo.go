@@ -7,5 +7,4 @@ var (
 	Repo  = "nali"
 	OS    = runtime.GOOS
 	Arch  = runtime.GOARCH
-	Sep   = '-'
 )

@@ -1,16 +1,16 @@
 package repo
 
 import (
-	"bytes"
 	"context"
 	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
-	"github.com/google/go-github/v55/github"
-	"github.com/zu1k/nali/internal/constant"
 	"io"
 	"net/http"
-	"regexp"
+
+	"github.com/zu1k/nali/internal/constant"
+	"github.com/zu1k/nali/pkg/common"
+
+	"github.com/google/go-github/v55/github"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 )
 
 func getLatestRelease(owner, repo string) (*github.RepositoryRelease, error) {
-	client = github.NewClient(http.DefaultClient)
+	client = github.NewClient(common.GetHttpClient().Client)
 	rel, resp, err := client.Repositories.GetLatestRelease(ctx, owner, repo)
 	if err != nil {
 		if resp != nil && resp.StatusCode == 404 {
@@ -32,27 +32,6 @@ func getLatestRelease(owner, repo string) (*github.RepositoryRelease, error) {
 	}
 
 	return rel, nil
-}
-
-func getTargetAsset(rel *github.RepositoryRelease, assetFilters []*regexp.Regexp) *github.ReleaseAsset {
-	var tAsset *github.ReleaseAsset
-	found := false
-
-	for _, asset := range rel.Assets {
-		name := asset.GetName()
-
-		for _, filter := range assetFilters {
-			if filter.MatchString(name) {
-				tAsset = asset
-				found = true
-				break
-			}
-		}
-		if found {
-			break
-		}
-	}
-	return tAsset
 }
 
 func download(ctx context.Context, assetId int64) (data []byte, err error) {
@@ -76,24 +55,8 @@ func validate(data, vData []byte) error {
 	hash := fmt.Sprintf("%s", vData[:sha256.BlockSize])
 	calculatedHash := fmt.Sprintf("%x", sha256.Sum256(data))
 
-	if equal, err := hexStringEquals(sha256.Size, calculatedHash, hash); !equal {
-		if err == nil {
-			return fmt.Errorf("expected %q, found %q: sha256 validation failed", hash, calculatedHash)
-		}
-		return fmt.Errorf("%s: sha256 validation failed", err.Error())
+	if calculatedHash != hash {
+		return fmt.Errorf("expected %q, found %q: sha256 validation failed", hash, calculatedHash)
 	}
 	return nil
-}
-
-func hexStringEquals(size int, a, b string) (equal bool, err error) {
-	size *= 2
-	if len(a) == size && len(b) == size {
-		var bytesA, bytesB []byte
-		if bytesA, err = hex.DecodeString(a); err == nil {
-			if bytesB, err = hex.DecodeString(b); err == nil {
-				equal = bytes.Equal(bytesA, bytesB)
-			}
-		}
-	}
-	return
 }
