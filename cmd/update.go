@@ -20,7 +20,7 @@ var updateCmd = &cobra.Command{
 		DBs, _ := cmd.Flags().GetString("db")
 
 		if err := repo.UpdateRepo(); err != nil {
-			log.Printf("update nali to latest version %s failed: %v", err)
+			log.Printf("update nali to latest version failed: %v \n", err)
 		}
 
 		var DBNameArray []string

@@ -6,7 +6,6 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 )
 
@@ -26,8 +25,7 @@ func decompress(src io.Reader, fileName string) (io.Reader, error) {
 			return fileType.decompress(src)
 		}
 	}
-	log.Print("File is not compressed")
-	return src, nil
+	return nil, fmt.Errorf("decompression algorithm not implemented")
 }
 
 func unzip(src io.Reader) (io.Reader, error) {

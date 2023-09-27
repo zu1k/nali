@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"fmt"
@@ -58,22 +59,14 @@ func download(ctx context.Context, assetId int64) (data []byte, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to call GitHub Releases API for getting the asset ID %v on repository '%v/%v': %v", assetId, constant.Owner, constant.Repo, err)
 	}
-	defer func() { _ = rc.Close() }()
+	defer rc.Close()
 	data, err = io.ReadAll(rc)
 
 	return
 }
 
-func validate(data, vData []byte) error {
-	if len(vData) < sha256.BlockSize {
-		return fmt.Errorf("incorrect checksum file format")
-	}
+func validate(data []byte, vHash []byte) bool {
+	cHash := sha256.Sum256(data)
 
-	hash := fmt.Sprintf("%s", vData[:sha256.BlockSize])
-	calculatedHash := fmt.Sprintf("%x", sha256.Sum256(data))
-
-	if calculatedHash != hash {
-		return fmt.Errorf("expected %q, found %q: sha256 validation failed", hash, calculatedHash)
-	}
-	return nil
+	return bytes.Equal(vHash, cHash[:])
 }

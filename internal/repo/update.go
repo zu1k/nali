@@ -3,6 +3,8 @@ package repo
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"log"
@@ -28,7 +30,8 @@ func UpdateRepo() error {
 	}
 
 	if !canUpdate(rel) {
-		return fmt.Errorf("current version %v is greater or equal to the latest version %v, no update", constant.Version, rel.GetTagName())
+		log.Printf("current version is already the latest version, no update \n")
+		return nil
 	}
 
 	//Filtering assets by GOOS and GOARCH
@@ -51,8 +54,12 @@ func UpdateRepo() error {
 	}
 
 	// Verifying files with sha256
-	if err = validate(data, vData); err != nil {
-		return fmt.Errorf("failed to validate asset %v: %v", tAsset.GetID(), err)
+	vHash := make([]byte, sha256.Size)
+	if _, err := hex.Decode(vHash, vData[:sha256.BlockSize]); err != nil {
+		return fmt.Errorf("failed to decode sha256 hash: %v", err)
+	}
+	if !validate(data, vHash) {
+		return fmt.Errorf("failed to validate asset %v, sha256 check failed", tAsset.GetID())
 	}
 
 	// Unzip and replace nali itself
@@ -66,12 +73,12 @@ func UpdateRepo() error {
 		return fmt.Errorf("error occurred while decompress: %v", err)
 	}
 
-	log.Printf("Will update %v to %v downloaded from %v", exe, rel.GetTagName(), tAsset.GetBrowserDownloadURL())
+	log.Printf("Updating %v to %v \n", exe, rel.GetTagName())
 	if err = update(asset, exe); err != nil {
 		return fmt.Errorf("update executable failed: %v", err)
 	}
 
-	log.Printf("Successfully updated to version %v", rel.GetTagName())
+	log.Printf("Successfully updated to version %v \n", rel.GetTagName())
 	return nil
 }
 
@@ -98,13 +105,18 @@ func update(asset io.Reader, cmdPath string) error {
 	// Copy the contents of new binary to a new executable file
 	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
 	fp, err := os.OpenFile(newPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0755)
+
 	if err != nil {
+		fp.Close()
 		return fmt.Errorf("create the new executable file failed: %v", err)
 	}
 
 	if _, err = io.Copy(fp, bytes.NewReader(newBytes)); err != nil {
+		fp.Close()
 		return fmt.Errorf("copy the new executable file failed: %v", err)
 	}
+	// if we don't call fp.Close(), windows won't let us move the new executable
+	// because the file will still be "in use"
 	fp.Close()
 
 	oldPath := filepath.Join(updateDir, fmt.Sprintf(".%s.old", filename))
@@ -134,7 +146,7 @@ func update(asset io.Reader, cmdPath string) error {
 
 	if err = os.Remove(oldPath); err != nil {
 		// windows has trouble with removing old binaries, so do nothing only print log
-		log.Printf("remove old binary failed, please remove the old binary manually: %v", err)
+		log.Printf("remove old binary failed, please remove the old binary manually: %v \n", err)
 	}
 
 	return nil
