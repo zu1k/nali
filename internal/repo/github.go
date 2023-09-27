@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"io"
-	"net/http"
 	"strings"
 
 	"github.com/zu1k/nali/internal/constant"
@@ -16,11 +15,12 @@ import (
 )
 
 var (
-	client *github.Client
+	client     *github.Client
+	httpClient = common.GetHttpClient().Client
 )
 
 func getLatestRelease() (*github.RepositoryRelease, error) {
-	client = github.NewClient(common.GetHttpClient().Client)
+	client = github.NewClient(httpClient)
 	rel, resp, err := client.Repositories.GetLatestRelease(ctx, constant.Owner, constant.Repo)
 	if err != nil {
 		if resp != nil && resp.StatusCode == 404 {
@@ -55,7 +55,7 @@ func getTargetAsset(rel *github.RepositoryRelease, sha bool) *github.ReleaseAsse
 func download(ctx context.Context, assetId int64) (data []byte, err error) {
 	var rc io.ReadCloser
 
-	rc, _, err = client.Repositories.DownloadReleaseAsset(ctx, constant.Owner, constant.Repo, assetId, http.DefaultClient)
+	rc, _, err = client.Repositories.DownloadReleaseAsset(ctx, constant.Owner, constant.Repo, assetId, httpClient)
 	if err != nil {
 		return nil, fmt.Errorf("failed to call GitHub Releases API for getting the asset ID %v on repository '%v/%v': %v", assetId, constant.Owner, constant.Repo, err)
 	}
