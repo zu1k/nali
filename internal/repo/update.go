@@ -163,8 +163,10 @@ func canUpdate(rel *github.RepositoryRelease) bool {
 }
 
 func canWrite(path string) bool {
-	if _, err := os.OpenFile(path, os.O_WRONLY, 0644); err != nil {
-		return false
+	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
+	if err == nil {
+		defer f.Close()
 	}
-	return true
+
+	return err == nil
 }
