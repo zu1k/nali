@@ -93,10 +93,10 @@ func update(asset io.Reader, cmdPath string) error {
 	filename := filepath.Base(cmdPath)
 
 	// some of our users may install nali through package management, we need to check the permissions before updating
-	if !canWrite(updateDir) {
+	if !canWriteDir(updateDir) {
 		return fmt.Errorf("no write permissions on the directory, consider updating nali manually")
 	}
-	if !canWrite(cmdPath) {
+	if !canWriteFile(cmdPath) {
 		return fmt.Errorf("no write permissions on the executable, consider updating nali manually")
 	}
 
@@ -162,7 +162,19 @@ func canUpdate(rel *github.RepositoryRelease) bool {
 	return false
 }
 
-func canWrite(path string) bool {
+func canWriteDir(path string) bool {
+	fp := filepath.Join(path, ".tempWriteCheck")
+	defer os.Remove(fp)
+
+	file, err := os.Create(fp)
+	if err == nil {
+		file.Close()
+	}
+
+	return err == nil
+}
+
+func canWriteFile(path string) bool {
 	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
 	if err == nil {
 		defer f.Close()
