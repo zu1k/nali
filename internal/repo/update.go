@@ -82,16 +82,6 @@ func UpdateRepo() error {
 	return nil
 }
 
-func canUpdate(rel *github.RepositoryRelease) bool {
-	if constant.Version != "unknown version" {
-		latest, _ := semver.NewVersion(rel.GetTagName())
-		cur, _ := semver.NewVersion(constant.Version)
-
-		return latest.GreaterThan(cur)
-	}
-	return true
-}
-
 func update(asset io.Reader, cmdPath string) error {
 	newBytes, err := io.ReadAll(asset)
 	if err != nil {
@@ -102,22 +92,32 @@ func update(asset io.Reader, cmdPath string) error {
 	updateDir := filepath.Dir(cmdPath)
 	filename := filepath.Base(cmdPath)
 
+	// some of our users may install nali through package management, we need to check the permissions before updating
+	if !canWrite(updateDir) {
+		return fmt.Errorf("no write permissions on the directory, consider updating nali manually")
+	}
+	if !canWrite(cmdPath) {
+		return fmt.Errorf("no write permissions on the executable, consider updating nali manually")
+	}
+
 	// Copy the contents of new binary to a new executable file
 	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
 	fp, err := os.OpenFile(newPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0755)
 
 	if err != nil {
-		fp.Close()
+		_ = fp.Close()
 		return fmt.Errorf("create the new executable file failed: %v", err)
 	}
 
 	if _, err = io.Copy(fp, bytes.NewReader(newBytes)); err != nil {
-		fp.Close()
+		_ = fp.Close()
 		return fmt.Errorf("copy the new executable file failed: %v", err)
 	}
 	// if we don't call fp.Close(), windows won't let us move the new executable
 	// because the file will still be "in use"
-	fp.Close()
+	if err = fp.Close(); err != nil {
+		return fmt.Errorf("failed to close file, may cause file corruption, nali updation was cancelled: %v", err)
+	}
 
 	oldPath := filepath.Join(updateDir, fmt.Sprintf(".%s.old", filename))
 
@@ -150,4 +150,21 @@ func update(asset io.Reader, cmdPath string) error {
 	}
 
 	return nil
+}
+
+func canUpdate(rel *github.RepositoryRelease) bool {
+	if constant.Version != "unknown version" {
+		latest, _ := semver.NewVersion(rel.GetTagName())
+		cur, _ := semver.NewVersion(constant.Version)
+
+		return latest.GreaterThan(cur)
+	}
+	return false
+}
+
+func canWrite(path string) bool {
+	if _, err := os.OpenFile(path, os.O_WRONLY, 0644); err != nil {
+		return false
+	}
+	return true
 }
