@@ -38,7 +38,7 @@ jobs:
 
       - name: Get version
         id: version
-        run: echo ::set-output name=version::$(git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g')
+        run: echo ::set-output name=version::$(git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;')
 
       - name: Publish AUR package nali-go-git
         uses: zu1k/aur-publish-action@master
