@@ -95,9 +95,6 @@ func update(asset io.Reader, cmdPath string) error {
 	if !canWriteDir(updateDir) {
 		return fmt.Errorf("no write permissions on the directory, consider updating nali manually")
 	}
-	if !canWriteFile(cmdPath) {
-		return fmt.Errorf("no write permissions on the executable, consider updating nali manually")
-	}
 
 	// Copy the contents of new binary to a new executable file
 	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
@@ -180,15 +177,6 @@ func canWriteDir(path string) bool {
 	file, err := os.Create(fp)
 	if err == nil {
 		file.Close()
-	}
-
-	return err == nil
-}
-
-func canWriteFile(path string) bool {
-	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
-	if err == nil {
-		defer f.Close()
 	}
 
 	return err == nil
