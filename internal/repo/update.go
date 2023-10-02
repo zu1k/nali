@@ -13,7 +13,6 @@ import (
 
 	"github.com/zu1k/nali/internal/constant"
 
-	"github.com/Masterminds/semver/v3"
 	"github.com/google/go-github/v55/github"
 )
 
@@ -96,9 +95,6 @@ func update(asset io.Reader, cmdPath string) error {
 	if !canWriteDir(updateDir) {
 		return fmt.Errorf("no write permissions on the directory, consider updating nali manually")
 	}
-	if !canWriteFile(cmdPath) {
-		return fmt.Errorf("no write permissions on the executable, consider updating nali manually")
-	}
 
 	// Copy the contents of new binary to a new executable file
 	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
@@ -153,13 +149,25 @@ func update(asset io.Reader, cmdPath string) error {
 }
 
 func canUpdate(rel *github.RepositoryRelease) bool {
-	if constant.Version != "unknown version" {
-		latest, _ := semver.NewVersion(rel.GetTagName())
-		cur, _ := semver.NewVersion(constant.Version)
-
-		return latest.GreaterThan(cur)
+	// unknown version means that the user compiled it manually instead of downloading it from the release,
+	// in which case we don't take the liberty of updating it to a potentially older version.
+	if constant.Version == "unknown version" {
+		return false
 	}
-	return false
+
+	latest, err := parseVersion(rel.GetTagName())
+	if err != nil {
+		log.Printf("failed to parse latest version: %v, err: %v \n", rel.GetTagName(), err)
+		return false
+	}
+
+	cur, err := parseVersion(constant.Version)
+	if err != nil {
+		log.Printf("failed to parse current version: %v, err: %v \n", constant.Version, err)
+		return false
+	}
+
+	return latest.GreaterThan(cur)
 }
 
 func canWriteDir(path string) bool {
@@ -169,15 +177,6 @@ func canWriteDir(path string) bool {
 	file, err := os.Create(fp)
 	if err == nil {
 		file.Close()
-	}
-
-	return err == nil
-}
-
-func canWriteFile(path string) bool {
-	f, err := os.OpenFile(path, os.O_WRONLY, 0644)
-	if err == nil {
-		defer f.Close()
 	}
 
 	return err == nil

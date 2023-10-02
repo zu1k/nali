@@ -3,7 +3,6 @@ module github.com/zu1k/nali
 go 1.19
 
 require (
-	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/adrg/xdg v0.4.0
 	github.com/fatih/color v1.15.0
 	github.com/google/go-github/v55 v55.0.0
