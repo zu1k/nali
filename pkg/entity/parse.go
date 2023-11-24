@@ -60,9 +60,11 @@ func ParseLine(line string) Entities {
 				e.InfoText = res.String()
 				e.Info = res.Result
 				e.Source = res.Source
-				es = append(es, e)
-				idx = e.Loc[1]
+			} else {
+				e.Type = TypePlain
 			}
+			idx = e.Loc[1]
+			es = append(es, e)
 		}
 	}
 	if total := len(line); idx < total {
