@@ -175,7 +175,7 @@ Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Com
 
 ## Interface
 
-After nali runs for the first time, a configuration file `config.yaml` will be generated in the working directory (default `~/.nali/config.yaml`), the configuration file defines the database information.
+After nali runs for the first time, a configuration file `config.yaml` will be generated in the config directory (use `nali info` to extract info), the configuration file defines the database information.
 
 A database is defined as follows:
 
