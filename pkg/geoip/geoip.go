@@ -48,8 +48,9 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 	}
 
 	result = Result{
-		Country: record.Country.Names[lang],
-		Area:    record.City.Names[lang],
+		Country:     record.Country.Names[lang],
+		CountryCode: record.Country.IsoCode,
+		Area:        record.City.Names[lang],
 	}
 	return
 }
@@ -59,8 +60,9 @@ func (db GeoIP) Name() string {
 }
 
 type Result struct {
-	Country string `json:"country"`
-	Area    string `json:"area"`
+	Country     string `json:"country"`
+	CountryCode string `json:"country_code"`
+	Area        string `json:"area"`
 }
 
 func (r Result) String() string {
