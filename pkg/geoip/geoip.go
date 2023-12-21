@@ -48,9 +48,9 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 	}
 
 	result = Result{
-		Country:     record.Country.Names[lang],
+		Country:     getMapLang(record.Country.Names, lang),
 		CountryCode: record.Country.IsoCode,
-		Area:        record.City.Names[lang],
+		Area:        getMapLang(record.City.Names, lang),
 	}
 	return
 }
@@ -71,4 +71,14 @@ func (r Result) String() string {
 	} else {
 		return fmt.Sprintf("%s %s", r.Country, r.Area)
 	}
+}
+
+const DefaultLang = "en"
+
+func getMapLang(data map[string]string, lang string) string {
+	res, found := data[lang]
+	if found {
+		return res
+	}
+	return data[DefaultLang]
 }
