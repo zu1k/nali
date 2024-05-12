@@ -3,7 +3,6 @@ package zxipv6wry
 import (
 	"errors"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -98,5 +97,5 @@ func Un7z(filePath string) (data []byte, err error) {
 	}
 	defer os.Remove(fileNoNeed.Name())
 	defer os.Remove(fileNeed.Name())
-	return ioutil.ReadFile(fileNeed.Name())
+	return os.ReadFile(fileNeed.Name())
 }

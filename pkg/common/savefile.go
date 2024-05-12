@@ -1,7 +1,6 @@
 package common
 
 import (
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -17,5 +16,5 @@ func SaveFile(path string, data []byte) (err error) {
 	}
 
 	// save file
-	return ioutil.WriteFile(path, data, 0644)
+	return os.WriteFile(path, data, 0644)
 }
