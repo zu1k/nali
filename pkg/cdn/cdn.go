@@ -3,7 +3,7 @@ package cdn
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"regexp"
@@ -55,7 +55,7 @@ func NewCDN(filePath string) (*CDN, error) {
 		}
 		defer cdnFile.Close()
 
-		fileData, err = ioutil.ReadAll(cdnFile)
+		fileData, err = io.ReadAll(cdnFile)
 		if err != nil {
 			return nil, err
 		}
