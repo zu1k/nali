@@ -14,9 +14,9 @@ import (
 )
 
 var DownloadUrls = []string{
-	"https://gh-release.zu1k.com/HMBSbige/qqwry/qqwry.dat", // redirect to HMBSbige/qqwry
+	"https://raw.githubusercontent.com/FW27623/qqwry/main/qqwry.dat",
 	// Other repo:
-	// https://github.com/HMBSbige/qqwry
+	// https://github.com/HMBSbige/qqwry // This repository has been archived since Jun 27, 2024.
 	// https://github.com/metowolf/qqwry.dat
 }
 
