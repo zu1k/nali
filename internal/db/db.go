@@ -2,6 +2,7 @@ package db
 
 import (
 	"log"
+	"net"
 
 	"github.com/spf13/viper"
 
@@ -71,6 +72,19 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 func Find(typ dbif.QueryType, query string) *Result {
 	if result, found := queryCache.Load(query); found {
 		return result.(*Result)
+	}
+	// Convert NAT64 64:ff9b::/96 to IPv4
+	if typ == dbif.TypeIPv6 {
+		ip := net.ParseIP(query)
+		if ip != nil {
+			_, NAT64, _ := net.ParseCIDR("64:ff9b::/96")
+			if NAT64.Contains(ip) {
+				ip4 := make(net.IP, 4)
+				copy(ip4, ip[12:16])
+				query = ip4.String()
+				typ = dbif.TypeIPv4
+			}
+		}
 	}
 	db := GetDB(typ)
 	result, err := db.Find(query)
