@@ -17,7 +17,7 @@ var httpClient *HttpClient
 
 func init() {
 	httpClient = &HttpClient{http.DefaultClient}
-	httpClient.Timeout = time.Second * 60
+	httpClient.Timeout = time.Second * 300
 	httpClient.Transport = &http.Transport{
 		TLSHandshakeTimeout:   time.Second * 5,
 		IdleConnTimeout:       time.Second * 10,
