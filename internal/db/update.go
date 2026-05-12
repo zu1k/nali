@@ -32,6 +32,7 @@ var DbNameListForUpdate = []string{
 	"qqwry",
 	"zxipv6wry",
 	"ip2region",
+	"ip2region-ipv6",
 	"cdn",
 }
 
@@ -64,7 +65,7 @@ func getUpdateFuncByName(name string) (func() error, string) {
 					log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
 					return nil
 				}
-			}, string(db.Format)
+			}, db.Name
 		}
 
 		// intenel download func

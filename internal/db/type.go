@@ -36,7 +36,7 @@ func (d *DB) get() (db dbif.DB) {
 	var err error
 	switch d.Format {
 	case FormatQQWry:
-		db, err = qqwry.NewQQwry(filePath)
+		db, err = qqwry.NewQQwry(filePath, d.DownloadUrls)
 	case FormatZXIPv6Wry:
 		db, err = zxipv6wry.NewZXwry(filePath)
 	case FormatIPIP:
@@ -44,11 +44,11 @@ func (d *DB) get() (db dbif.DB) {
 	case FormatMMDB:
 		db, err = geoip.NewGeoIP(filePath)
 	case FormatIP2Region:
-		db, err = ip2region.NewIp2Region(filePath)
+		db, err = ip2region.NewIp2Region(filePath, d.DownloadUrls)
 	case FormatIP2Location:
 		db, err = ip2location.NewIP2Location(filePath)
 	case FormatCDNYml:
-		db, err = cdn.NewCDN(filePath)
+		db, err = cdn.NewCDN(filePath, d.DownloadUrls)
 	default:
 		panic("DB format not supported!")
 	}
