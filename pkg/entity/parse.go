@@ -55,12 +55,7 @@ func ParseLine(line string) Entities {
 					Text: line[idx:start],
 				})
 			}
-			res := db.Find(dbif.QueryType(e.Type), e.Text)
-			if res != nil {
-				e.InfoText = res.String()
-				e.Info = res.Result
-				e.Source = res.Source
-			} else {
+			if !e.setResults(db.Find(dbif.QueryType(e.Type), e.Text)) {
 				e.Type = TypePlain
 			}
 			idx = e.Loc[1]
@@ -75,4 +70,38 @@ func ParseLine(line string) Entities {
 		})
 	}
 	return es
+}
+
+// setResults stores the lookup results of one entity and reports whether any
+// database answered. The top-level Source/InfoText/Info fields hold the
+// first answer with a non-empty text (or else the first answer), and when
+// several databases are selected Results lists all of them in selection
+// order, with empty text and null info for databases without an answer.
+func (e *Entity) setResults(results []*db.Result) bool {
+	var primary *db.Result
+	for _, r := range results {
+		if !r.Found() {
+			continue
+		}
+		if primary == nil || (primary.Text() == "" && r.Text() != "") {
+			primary = r
+		}
+	}
+	if primary == nil {
+		return false
+	}
+
+	e.InfoText = primary.Text()
+	e.Info = primary.Result
+	e.Source = primary.Source
+	if len(results) > 1 {
+		for _, r := range results {
+			entry := Result{Source: r.Source, Text: r.Text()}
+			if r.Found() {
+				entry.Info = r.Result
+			}
+			e.Results = append(e.Results, entry)
+		}
+	}
+	return true
 }

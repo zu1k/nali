@@ -3,11 +3,11 @@ package ip2region
 import (
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"strings"
 
+	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/download"
 	"github.com/zu1k/nali/pkg/wry"
 
@@ -40,13 +40,7 @@ func NewIp2Region(filePath string, downloadUrls []string) (*Ip2Region, error) {
 		}
 	}
 
-	f, err := os.OpenFile(filePath, os.O_RDONLY, 0400)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	data, err := io.ReadAll(f)
+	data, err := common.ReadFileMapped(filePath)
 	if err != nil {
 		return nil, err
 	}

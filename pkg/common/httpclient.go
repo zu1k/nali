@@ -34,6 +34,7 @@ func GetHttpClient() *HttpClient {
 	return &c
 }
 
+// Get downloads the first of urls that answers 200 OK.
 func (c *HttpClient) Get(urls ...string) (body []byte, err error) {
 	var req *http.Request
 	var resp *http.Response
@@ -62,7 +63,7 @@ func (c *HttpClient) Get(urls ...string) (body []byte, err error) {
 		if err != nil {
 			continue
 		}
-		return
+		return body, nil
 	}
 
 	return nil, err

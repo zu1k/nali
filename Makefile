@@ -35,7 +35,11 @@ lint:
 	go vet ./...
 	golangci-lint run ./...
 
-.PHONY: all test lint all-arch releases sha256sum clean docker
+# Debian packages for amd64, i386, armhf and arm64 (requires dpkg-deb)
+deb: linux-amd64 linux-386 linux-armv7 linux-armv8
+	NAME=$(NAME) BINDIR=$(BINDIR) sh .github/scripts/build_deb.sh "$(VERSION)"
+
+.PHONY: all test lint all-arch releases sha256sum clean docker deb
 
 docker:
 	$(GOBUILD) -o $(BINDIR)/$(NAME)-$@

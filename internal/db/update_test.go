@@ -9,6 +9,7 @@ import (
 	"sort"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -254,5 +255,49 @@ func TestDefaultDBList(t *testing.T) {
 			t.Errorf("%s and %s share the file %s", db.Name, other, db.File)
 		}
 		files[db.File] = db.Name
+	}
+}
+
+func TestUpdateDBSkipsUnchangedDatabase(t *testing.T) {
+	const content = "database v1"
+
+	tests := []struct {
+		name       string
+		body       string
+		wantUpdate bool
+	}{
+		{name: "identical content", body: content},
+		{name: "changed content", body: "database v2", wantUpdate: true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			srv := newFakeServer(t, func(w http.ResponseWriter, r *http.Request) {
+				_, _ = w.Write([]byte(tt.body))
+			})
+			file := filepath.Join(t.TempDir(), "db")
+			if err := os.WriteFile(file, []byte(content), 0644); err != nil {
+				t.Fatal(err)
+			}
+			old := time.Now().Add(-time.Minute).Truncate(time.Second)
+			if err := os.Chtimes(file, old, old); err != nil {
+				t.Fatal(err)
+			}
+			withNameDBMap(t, &DB{Name: "x", Format: formatRaw, File: file, DownloadUrls: []string{srv.URL + "/x"}})
+
+			update, _ := getUpdateFuncByName("x")
+			if err := update(); err != nil {
+				t.Fatal(err)
+			}
+
+			data, _ := os.ReadFile(file)
+			info, _ := os.Stat(file)
+			if tt.wantUpdate {
+				if string(data) != tt.body {
+					t.Fatalf("database not updated: %q", data)
+				}
+			} else if string(data) != content || !info.ModTime().Equal(old) {
+				t.Fatalf("unchanged database was rewritten: %q, mtime %v", data, info.ModTime())
+			}
+		})
 	}
 }

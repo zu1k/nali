@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bytes"
 	"errors"
 	"log"
 	"os"
@@ -55,8 +56,10 @@ func defaultUpdateList() []string {
 
 	selected := make(map[string]bool)
 	for _, key := range []string{"selected.ipv4", "selected.ipv6", "selected.cdn"} {
-		if db, found := lookupDb(viper.GetString(key)); found {
-			selected[db.Name] = true
+		for _, name := range strings.Split(viper.GetString(key), ",") {
+			if db, found := lookupDb(strings.TrimSpace(name)); found {
+				selected[db.Name] = true
+			}
 		}
 	}
 
@@ -88,6 +91,10 @@ func getUpdateFuncByName(name string) (func() error, string) {
 			return func() error {
 				log.Printf("正在下载最新 %s 数据库...\n", db.Name)
 				data, err := common.GetHttpClient().Get(db.DownloadUrls...)
+				if err == nil && sameContent(db.File, data) {
+					log.Printf("%s 数据库已是最新版本: %s\n", db.Name, db.File)
+					return nil
+				}
 				if err == nil {
 					// validate before saving so a bad download never replaces a working database
 					if check, ok := DbCheckFunc[db.Format]; ok && !check(data) {
@@ -113,11 +120,22 @@ func getUpdateFuncByName(name string) (func() error, string) {
 		case FormatZXIPv6Wry:
 			return func() error {
 				log.Println("正在下载最新 ZX IPv6数据库...")
-				_, err := zxipv6wry.Download(getDbByName("zxipv6wry").File)
+				// download and validate without saving, so an unchanged
+				// database is not rewritten
+				data, err := zxipv6wry.Download()
+				if err == nil && sameContent(db.File, data) {
+					log.Printf("%s 数据库已是最新版本: %s\n", db.Name, db.File)
+					return nil
+				}
+				if err == nil {
+					err = common.SaveFile(db.File, data)
+				}
 				if err != nil {
 					log.Println("数据库 ZXIPv6Wry 下载失败:", err)
+					return err
 				}
-				return err
+				log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
+				return nil
 			}, db.Name
 		default:
 			return func() error {
@@ -132,4 +150,14 @@ func getUpdateFuncByName(name string) (func() error, string) {
 			return nil
 		}, time.Now().String()
 	}
+}
+
+// sameContent reports whether the file at path holds exactly data.
+func sameContent(path string, data []byte) bool {
+	info, err := os.Stat(path)
+	if err != nil || info.Size() != int64(len(data)) {
+		return false
+	}
+	old, err := os.ReadFile(path)
+	return err == nil && bytes.Equal(old, data)
 }

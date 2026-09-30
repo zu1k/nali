@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/fatih/color"
 	"github.com/spf13/viper"
 
 	"github.com/zu1k/nali/internal/db"
@@ -119,5 +120,47 @@ func TestParseLinePlainText(t *testing.T) {
 	}
 	if es.String() != "no addresses here" {
 		t.Fatalf("String() = %q", es.String())
+	}
+}
+
+func TestRenderMultipleResults(t *testing.T) {
+	old := color.NoColor
+	color.NoColor = true
+	t.Cleanup(func() { color.NoColor = old })
+
+	es := Entities{
+		{Type: TypePlain, Text: "dns "},
+		{
+			Type: TypeIPv4, Text: "8.8.8.8",
+			InfoText: "美国 谷歌公司DNS服务器", Source: "qqwry", Info: "a",
+			Results: []Result{
+				{Source: "qqwry", Text: "美国 谷歌公司DNS服务器", Info: "a"},
+				{Source: "ipinfo", Text: "", Info: "b"}, // empty texts are not shown
+				{Source: "geoip", Text: "United States", Info: "c"},
+			},
+		},
+		{Type: TypePlain, Text: "end"},
+	}
+
+	if got, want := es.String(), "dns 8.8.8.8[美国 谷歌公司DNS服务器] [United States] end"; got != want {
+		t.Errorf("String():\n got %q\nwant %q", got, want)
+	}
+	if got, want := es.ColorString(), "dns 8.8.8.8 [美国 谷歌公司DNS服务器] [United States] end"; got != want {
+		t.Errorf("ColorString():\n got %q\nwant %q", got, want)
+	}
+
+	var got map[string]any
+	if err := json.Unmarshal([]byte(es[1].Json()), &got); err != nil {
+		t.Fatal(err)
+	}
+	results, ok := got["results"].([]any)
+	if got["source"] != "qqwry" || got["text"] != "美国 谷歌公司DNS服务器" || !ok || len(results) != 3 {
+		t.Fatalf("unexpected JSON %v", got)
+	}
+
+	// a single result keeps the original JSON shape
+	single := Entity{Type: TypeIPv4, Text: "1.1.1.1", InfoText: "x", Source: "qqwry"}
+	if strings.Contains(single.Json(), "results") {
+		t.Fatalf("single result JSON must not contain results: %s", single.Json())
 	}
 }

@@ -27,6 +27,38 @@ type Entity struct {
 	InfoText string      `json:"text"`
 	Source   string      `json:"source"`
 	Info     interface{} `json:"info"`
+
+	// Results holds every database's result when several databases are
+	// selected (e.g. NALI_DB_IP4=qqwry,ipinfo); the fields above then carry
+	// the first one.
+	Results []Result `json:"results,omitempty"`
+}
+
+// Result is the answer of one database for an entity.
+type Result struct {
+	Source string      `json:"source"`
+	Text   string      `json:"text"`
+	Info   interface{} `json:"info"`
+}
+
+// infoTexts returns the non-empty result texts to show after the entity.
+func (e *Entity) infoTexts() []string {
+	if e.Type == TypePlain {
+		return nil
+	}
+	if len(e.Results) == 0 {
+		if e.InfoText == "" {
+			return nil
+		}
+		return []string{e.InfoText}
+	}
+	var texts []string
+	for _, r := range e.Results {
+		if r.Text != "" {
+			texts = append(texts, r.Text)
+		}
+	}
+	return texts
 }
 
 func (e Entity) ParseInfo() error {
@@ -59,8 +91,8 @@ func (es Entities) String() string {
 	var result strings.Builder
 	for _, entity := range es {
 		result.WriteString(entity.Text)
-		if entity.Type != TypePlain && len(entity.InfoText) > 0 {
-			result.WriteString("[" + entity.InfoText + "] ")
+		for _, text := range entity.infoTexts() {
+			result.WriteString("[" + text + "] ")
 		}
 	}
 	return result.String()
@@ -78,8 +110,11 @@ func (es Entities) ColorString() string {
 		case TypeDomain:
 			s = color.YellowString(e.Text)
 		}
-		if e.Type != TypePlain && len(e.InfoText) > 0 {
-			s += " [" + color.RedString(e.InfoText) + "] "
+		if texts := e.infoTexts(); len(texts) > 0 {
+			for _, text := range texts {
+				s += " [" + color.RedString(text) + "]"
+			}
+			s += " "
 		}
 		line.WriteString(s)
 	}

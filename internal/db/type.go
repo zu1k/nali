@@ -154,3 +154,16 @@ type Result struct {
 	Source string
 	common.Result
 }
+
+// Found reports whether the database answered the query.
+func (r *Result) Found() bool {
+	return r != nil && r.Result != nil
+}
+
+// Text returns the result's text, or "" when the database had no answer.
+func (r *Result) Text() string {
+	if !r.Found() {
+		return ""
+	}
+	return r.String()
+}

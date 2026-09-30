@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 func TestGetFallsBackToNextURL(t *testing.T) {
@@ -76,5 +78,90 @@ func TestSaveFile(t *testing.T) {
 
 	if err := SaveFile(filepath.Join(dir, "missing", "db.dat"), []byte("x")); err == nil {
 		t.Fatal("saving into a missing directory should fail")
+	}
+}
+
+func TestReadFileMapped(t *testing.T) {
+	dir := t.TempDir()
+
+	path := filepath.Join(dir, "db.dat")
+	want := make([]byte, 3*4096+17)
+	for i := range want {
+		want[i] = byte(i * 7)
+	}
+	if err := os.WriteFile(path, want, 0644); err != nil {
+		t.Fatal(err)
+	}
+	got, err := ReadFileMapped(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Fatal("mapped content differs from the file")
+	}
+
+	// replacing the file with SaveFile must not affect an existing mapping
+	if err := SaveFile(path, []byte("new content")); err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Fatal("mapping changed after the file was replaced")
+	}
+
+	empty := filepath.Join(dir, "empty.dat")
+	if err := os.WriteFile(empty, nil, 0644); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := ReadFileMapped(empty); err != nil || len(got) != 0 {
+		t.Fatalf("empty file: got %d bytes, %v", len(got), err)
+	}
+
+	if _, err := ReadFileMapped(filepath.Join(dir, "missing.dat")); err == nil {
+		t.Fatal("missing file should fail")
+	}
+}
+
+func TestDecodeInput(t *testing.T) {
+	gbk, err := simplifiedchinese.GBK.NewEncoder().String("跟踪路由 8.8.8.8 中国")
+	if err != nil {
+		t.Fatal(err)
+	}
+	const utf8Line = "跟踪路由 8.8.8.8 中国"
+	gb18030, err := simplifiedchinese.GB18030.NewEncoder().String("𠀀 1.1.1.1")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	tests := []struct {
+		name              string
+		in                string
+		forceGBK, autoGBK bool
+		want              string
+	}{
+		{"utf8 untouched", utf8Line, false, false, utf8Line},
+		{"gbk untouched without auto detection", gbk, false, false, gbk},
+		{"gbk decoded when auto detected", gbk, false, true, utf8Line},
+		{"valid utf8 kept when auto detected", utf8Line, false, true, utf8Line},
+		{"ascii kept when auto detected", "1.1.1.1\n", false, true, "1.1.1.1\n"},
+		{"forced gbk", gbk, true, false, utf8Line},
+		// four-byte GB18030 sequences (code page 54936) are decoded too
+		{"gb18030 four-byte character", gb18030, false, true, "𠀀 1.1.1.1"},
+	}
+	for _, tt := range tests {
+		if got := DecodeInput(tt.in, tt.forceGBK, tt.autoGBK); got != tt.want {
+			t.Errorf("%s: got %q, want %q", tt.name, got, tt.want)
+		}
+	}
+}
+
+func TestGetRejectsNotModified(t *testing.T) {
+	// a 304 to an unconditional request must not be taken as an empty body
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusNotModified)
+	}))
+	defer srv.Close()
+
+	if body, err := GetHttpClient().Get(srv.URL); err == nil {
+		t.Fatalf("expected an error, got body %q", body)
 	}
 }

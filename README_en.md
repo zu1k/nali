@@ -65,6 +65,14 @@ We have published 3 packages in Aur:
 - `nali-go-bin`: release version, pre-compiled binary
 - `nali-go-git`: the latest master branch version, compile when installing
 
+### Debian / Ubuntu
+
+Download the `.deb` package for your architecture (amd64, i386, armhf, arm64) from the [release](https://github.com/zu1k/nali/releases) page and install it:
+
+```sh
+$ sudo apt install ./nali_*_amd64.deb
+```
+
 ## Usage
 
 ### Query a simple IP address
@@ -271,10 +279,11 @@ Available Commands:
   update      update ip databases and cdn, update nali to latest version if -v
 
 Flags:
-      --gbk       Use GBK decoder
-  -h, --help      help for nali
-  -j, --json      Output in JSON format
-  -v, --version   version for nali
+      --color string   Colorize output: auto, always or never (NO_COLOR is honored in auto mode) (default "auto")
+      --gbk            Decode input as GBK (detected automatically on Chinese Windows)
+  -h, --help           help for nali
+  -j, --json           Output in JSON format
+  -v, --version        version for nali
 
 Use "nali [command] --help" for more information about a command.
 ```
@@ -298,11 +307,22 @@ Update specific databases (comma separated, aliases allowed); these are always u
 $ nali update --db qqwry,cdn,ipinfo
 ```
 
-Downloads are validated before they replace the local file, so a failed or invalid download keeps the existing database. Add `-v` to also update nali itself to the latest version.
+When the download is identical to the local database it is not written again and nali reports it as up to date. Downloads are validated before they replace the local file, so a failed or invalid download keeps the existing database. Add `-v` to also update nali itself to the latest version.
 
 ### Specify database
 
 Users can specify which database to use by setting the environment variables `NALI_DB_IP4`, `NALI_DB_IP6` and `NALI_DB_CDN`, or `selected` in the config file. Any name or alias from [Databases](#databases) can be used.
+
+#### Query several databases at once
+
+Separate database names with commas; each database's result is shown in its own brackets:
+
+```
+$ NALI_DB_IP4=qqwry,ipinfo nali 8.8.8.8
+8.8.8.8 [美国–加利福尼亚州–圣克拉拉–山景城 谷歌公司DNS服务器] [United States AS15169 Google LLC]
+```
+
+In JSON output `source`, `text` and `info` hold the result of the first database that has one. When several databases are selected, a `results` array lists every database's result in order; databases without a result have an empty `text` and a `null` `info`.
 
 #### Windows
 
@@ -363,6 +383,32 @@ set NALI_HOME=D:\nalidb
 or
 
 export NALI_HOME=/home/nali
+```
+
+## FAQ
+
+### No colors when nali is in the middle of a pipeline
+
+Colors are only used when writing to a terminal by default. Use `--color always` to force them, e.g. `cmd | nali --color always | less -R`, and `--color never` or `NO_COLOR=1` to turn them off.
+
+### Garbled Chinese text on Windows
+
+On Simplified Chinese Windows (code page 936), input that is not valid UTF-8 is decoded as GBK automatically, so the output of `tracert`, `nslookup` and similar tools can be piped into nali directly. If text is still garbled, pass `--gbk` to always decode input as GBK.
+
+### `tail -f log | jq . | nali` holds back the last lines
+
+nali prints each line as soon as it is read. `jq` buffers its output when it is not writing to a terminal, so the last lines wait inside jq; use `jq --unbuffered`:
+
+```sh
+tail -f access.log | jq --unbuffered . | nali
+```
+
+### Filter CDN results
+
+CDN matches for domain names have `source` set to `cdn` in JSON output, so they can be filtered with jq:
+
+```sh
+nali --json < domains.txt | jq -c 'select(.source == "cdn")'
 ```
 
 ## Development

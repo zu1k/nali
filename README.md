@@ -64,7 +64,15 @@ $ go install github.com/zu1k/nali@latest
 - `nali-go`: Release 版本，安装时编译
 - `nali-go-bin`: Release 版本，预编译的二进制文件
 - `nali-go-git`: 最新的 master 分支版本，安装时编译
-  
+
+### Debian / Ubuntu
+
+从 [Release](https://github.com/zu1k/nali/releases) 页面下载对应架构（amd64、i386、armhf、arm64）的 `.deb` 包后安装：
+
+```sh
+$ sudo apt install ./nali_*_amd64.deb
+```
+
 ## 使用说明
 
 ### 查询一个IP的地理信息
@@ -279,10 +287,11 @@ Available Commands:
   update      update ip databases and cdn, update nali to latest version if -v
 
 Flags:
-      --gbk       Use GBK decoder
-  -h, --help      help for nali
-  -j, --json      Output in JSON format
-  -v, --version   version for nali
+      --color string   Colorize output: auto, always or never (NO_COLOR is honored in auto mode) (default "auto")
+      --gbk            Decode input as GBK (detected automatically on Chinese Windows)
+  -h, --help           help for nali
+  -j, --json           Output in JSON format
+  -v, --version        version for nali
 
 Use "nali [command] --help" for more information about a command.
 ```
@@ -306,11 +315,22 @@ $ nali update
 $ nali update --db qqwry,cdn,ipinfo
 ```
 
-下载的数据会先校验再替换本地文件，下载失败或内容无效时保留原有的数据库。加上 `-v` 参数会同时将 nali 更新到最新版本。
+下载的内容与本地数据库相同时不会重新写入，并显示 `数据库已是最新版本`。下载的数据会先校验再替换本地文件，下载失败或内容无效时保留原有的数据库。加上 `-v` 参数会同时将 nali 更新到最新版本。
 
 ### 自选数据库
 
 用户可以指定使用哪个数据库，需要设置环境变量 `NALI_DB_IP4`、`NALI_DB_IP6`、`NALI_DB_CDN`，或者修改配置文件中的 `selected`。可以使用[数据库一览](#数据库一览)中的任意名称或别名。
+
+#### 同时查询多个数据库
+
+用逗号分隔多个数据库名称，每个数据库的结果显示在各自的方括号中：
+
+```
+$ NALI_DB_IP4=qqwry,ipinfo nali 8.8.8.8
+8.8.8.8 [美国–加利福尼亚州–圣克拉拉–山景城 谷歌公司DNS服务器] [United States AS15169 Google LLC]
+```
+
+JSON 输出中 `source`、`text`、`info` 为第一个有结果的数据库的结果；选择了多个数据库时，另有 `results` 数组按顺序列出每个数据库的结果，没有结果的数据库 `text` 为空、`info` 为 `null`。
 
 #### Windows平台
 
@@ -371,6 +391,32 @@ set NALI_HOME=D:\nali
 or
 
 export NALI_HOME=/var/nali
+```
+
+## 常见问题
+
+### 在管道中间使用时没有颜色
+
+默认只在输出到终端时显示颜色。使用 `--color always` 强制输出颜色，例如 `cmd | nali --color always | less -R`；使用 `--color never` 或设置环境变量 `NO_COLOR=1` 关闭颜色。
+
+### Windows 下中文乱码
+
+在简体中文 Windows（代码页 936）中，nali 会自动把非 UTF-8 的输入按 GBK 解码，`tracert`、`nslookup` 等命令的输出可以直接通过管道交给 nali。如果仍然乱码，可以加 `--gbk` 强制按 GBK 解码输入。
+
+### `tail -f log | jq . | nali` 最后几行不输出
+
+nali 读到一行就立即输出。`jq` 的输出不是终端时会缓冲，所以最后几行停留在 jq 中，使用 `jq --unbuffered` 即可：
+
+```sh
+tail -f access.log | jq --unbuffered . | nali
+```
+
+### 筛选 CDN 结果
+
+域名的 CDN 识别结果在 JSON 输出中 `source` 为 `cdn`，可以用 jq 筛选：
+
+```sh
+nali --json < domains.txt | jq -c 'select(.source == "cdn")'
 ```
 
 ## 开发
