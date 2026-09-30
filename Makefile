@@ -28,6 +28,15 @@ WINDOWS_ARCH_LIST = \
 
 all: linux-amd64 darwin-amd64 windows-amd64 # Most used
 
+test:
+	go test -race ./...
+
+lint:
+	go vet ./...
+	golangci-lint run ./...
+
+.PHONY: all test lint all-arch releases sha256sum clean docker
+
 docker:
 	$(GOBUILD) -o $(BINDIR)/$(NAME)-$@
 
