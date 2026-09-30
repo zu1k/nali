@@ -193,6 +193,32 @@ A database is defined as follows:
   - IPv6
 ```
 
+### Use IPinfo Lite MMDB
+
+IPinfo flat MMDB records support both IPv4 and IPv6. Keep `format: mmdb`; the database type is detected automatically. Put `ipinfo_lite.mmdb` in the data directory shown by `nali info`, then run:
+
+```sh
+NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali 8.8.8.8 2001:4860:4860::8888
+NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali --json 8.8.8.8
+```
+
+For existing configurations, add this entry to `databases` and set `selected.ipv4` and `selected.ipv6` to `ipinfo`:
+
+```yaml
+- name: ipinfo
+  format: mmdb
+  file: ipinfo_lite.mmdb
+  download-urls:
+  - https://github.com/NetworkCats/IPinfoLite-Download/releases/latest/download/ipinfo_lite.mmdb
+  languages: [en]
+  types: [IPv4, IPv6]
+```
+
+An absolute `file` path also works. Text output includes country, ASN and AS name. JSON includes `network`, `country`, `country_code`, `continent`, `continent_code`, `asn`, `as_name` and `as_domain`. When the record omits `network`, the matched CIDR is used. Names retain the database's English values.
+
+`nali update` updates IPinfo by default; use `nali update --db ipinfo` to update it alone.
+
+
 ### Help
 
 ```

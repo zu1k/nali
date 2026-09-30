@@ -43,6 +43,14 @@ func GetDefaultDBList() List {
 			Types:     TypesIP,
 		},
 		&DB{
+			Name:         "ipinfo",
+			Format:       FormatMMDB,
+			File:         "ipinfo_lite.mmdb",
+			DownloadUrls: []string{"https://github.com/NetworkCats/IPinfoLite-Download/releases/latest/download/ipinfo_lite.mmdb"},
+			Languages:    LanguagesEN,
+			Types:        TypesIP,
+		},
+		&DB{
 			Name: "dbip",
 			NameAlias: []string{
 				"db-ip",

@@ -3,9 +3,11 @@ package geoip
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net"
-	"os"
+	"strings"
+
+	"github.com/oschwald/maxminddb-golang"
+	"github.com/zu1k/nali/pkg/ipinfo"
 
 	"github.com/oschwald/geoip2-golang"
 	"github.com/spf13/viper"
@@ -13,26 +15,32 @@ import (
 
 // GeoIP2
 type GeoIP struct {
-	db *geoip2.Reader
+	db     *geoip2.Reader
+	ipinfo *ipinfo.DB
 }
 
 // new geoip from database file
 func NewGeoIP(filePath string) (*GeoIP, error) {
-	// 判断文件是否存在
-	_, err := os.Stat(filePath)
-	if err != nil && os.IsNotExist(err) {
-		log.Println("文件不存在，请自行下载 Geoip2 City库，并保存在", filePath)
+	reader, err := maxminddb.Open(filePath)
+	if err != nil {
 		return nil, err
-	} else {
-		db, err := geoip2.Open(filePath)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return &GeoIP{db: db}, nil
 	}
+	isIPinfo := strings.Contains(strings.ToLower(reader.Metadata.DatabaseType), "ipinfo")
+	if isIPinfo {
+		return &GeoIP{ipinfo: &ipinfo.DB{Reader: reader}}, nil
+	}
+	reader.Close()
+	db, err := geoip2.Open(filePath)
+	if err != nil {
+		return nil, err
+	}
+	return &GeoIP{db: db}, nil
 }
 
 func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err error) {
+	if g.ipinfo != nil {
+		return g.ipinfo.Find(query, params...)
+	}
 	ip := net.ParseIP(query)
 	if ip == nil {
 		return nil, errors.New("Query should be valid IP")
@@ -56,6 +64,9 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 }
 
 func (db GeoIP) Name() string {
+	if db.ipinfo != nil {
+		return db.ipinfo.Name()
+	}
 	return "geoip"
 }
 
