@@ -3,15 +3,15 @@ package cdn
 import (
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"regexp"
 	"strings"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/zu1k/nali/pkg/download"
 	"github.com/zu1k/nali/pkg/re"
-	"gopkg.in/yaml.v2"
 )
 
 var DownloadUrls = []string{
@@ -73,13 +73,7 @@ func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
 			return nil, err
 		}
 	} else {
-		cdnFile, err := os.OpenFile(filePath, os.O_RDONLY, 0400)
-		if err != nil {
-			return nil, err
-		}
-		defer cdnFile.Close()
-
-		fileData, err = io.ReadAll(cdnFile)
+		fileData, err = os.ReadFile(filePath)
 		if err != nil {
 			return nil, err
 		}

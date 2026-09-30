@@ -78,3 +78,43 @@ func TestSaveFile(t *testing.T) {
 		t.Fatal("saving into a missing directory should fail")
 	}
 }
+
+func TestReadFileMapped(t *testing.T) {
+	dir := t.TempDir()
+
+	path := filepath.Join(dir, "db.dat")
+	want := make([]byte, 3*4096+17)
+	for i := range want {
+		want[i] = byte(i * 7)
+	}
+	if err := os.WriteFile(path, want, 0644); err != nil {
+		t.Fatal(err)
+	}
+	got, err := ReadFileMapped(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Fatal("mapped content differs from the file")
+	}
+
+	// replacing the file with SaveFile must not affect an existing mapping
+	if err := SaveFile(path, []byte("new content")); err != nil {
+		t.Fatal(err)
+	}
+	if string(got) != string(want) {
+		t.Fatal("mapping changed after the file was replaced")
+	}
+
+	empty := filepath.Join(dir, "empty.dat")
+	if err := os.WriteFile(empty, nil, 0644); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := ReadFileMapped(empty); err != nil || len(got) != 0 {
+		t.Fatalf("empty file: got %d bytes, %v", len(got), err)
+	}
+
+	if _, err := ReadFileMapped(filepath.Join(dir, "missing.dat")); err == nil {
+		t.Fatal("missing file should fail")
+	}
+}

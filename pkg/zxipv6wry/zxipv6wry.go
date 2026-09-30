@@ -4,11 +4,11 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"os"
 
+	"github.com/zu1k/nali/pkg/common"
 	"github.com/zu1k/nali/pkg/wry"
 )
 
@@ -27,13 +27,7 @@ func NewZXwry(filePath string) (*ZXwry, error) {
 			return nil, err
 		}
 	} else {
-		fileBase, err := os.OpenFile(filePath, os.O_RDONLY, 0400)
-		if err != nil {
-			return nil, err
-		}
-		defer fileBase.Close()
-
-		fileData, err = io.ReadAll(fileBase)
+		fileData, err = common.ReadFileMapped(filePath)
 		if err != nil {
 			return nil, err
 		}
