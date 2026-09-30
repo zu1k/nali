@@ -82,7 +82,7 @@ func CheckFile(data []byte) bool {
 	}
 	return header.StartIndexPtr >= xdb.HeaderInfoLength &&
 		header.StartIndexPtr <= header.EndIndexPtr &&
-		int(header.EndIndexPtr)+version.SegmentIndexSize <= len(data)
+		uint64(header.EndIndexPtr)+uint64(version.SegmentIndexSize) <= uint64(len(data))
 }
 
 func detectVersion(data []byte) (*xdb.Version, error) {

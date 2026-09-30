@@ -39,6 +39,6 @@ Update nali to latest version if -v`,
 
 func init() {
 	updateCmd.PersistentFlags().String("db", "", "choose db you want to update")
-	updateCmd.PersistentFlags().Bool("v", false, "decide whether to update the nali version")
+	updateCmd.PersistentFlags().BoolP("v", "v", false, "also update nali itself to the latest version")
 	rootCmd.AddCommand(updateCmd)
 }

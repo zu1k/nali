@@ -191,3 +191,13 @@ func TestFormatRegion(t *testing.T) {
 		}
 	}
 }
+
+func TestCheckFileRejectsOutOfRangeIndex(t *testing.T) {
+	data := buildXDB(t, xdb.Structure30, 4, v4Segments)
+	// an end pointer past the end of the file, large enough to overflow a
+	// 32-bit int
+	binary.LittleEndian.PutUint32(data[12:], 0xFFFFFFF0)
+	if CheckFile(data) {
+		t.Fatal("out of range index accepted")
+	}
+}

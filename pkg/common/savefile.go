@@ -5,9 +5,10 @@ import (
 	"path/filepath"
 )
 
-// SaveFile writes data to path atomically: the data is written to a
-// temporary file in the same directory and then renamed over path, so a
-// failed write never leaves a truncated database behind.
+// SaveFile writes data to a temporary file in the same directory and then
+// renames it over path, so a failed write never leaves a truncated database
+// behind. The rename is atomic on Unix; on Windows os.Rename replaces the file
+// but is not guaranteed to be atomic.
 func SaveFile(path string, data []byte) (err error) {
 	tmp, err := os.CreateTemp(filepath.Dir(path), "."+filepath.Base(path)+".tmp-*")
 	if err != nil {

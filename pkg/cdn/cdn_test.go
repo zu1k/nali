@@ -87,7 +87,12 @@ func TestCheckFile(t *testing.T) {
 	if !CheckFile([]byte(testYAML)) {
 		t.Error("valid yaml rejected")
 	}
-	for _, data := range []string{"", "<html>404</html>", "{}", "- a\n- b\n"} {
+	for _, data := range []string{
+		"", "<html>404</html>", "{}", "- a\n- b\n",
+		// entries that NewCDN would skip or that carry no name
+		"\"broken[regexp\":\n  name: Broken\n",
+		"example.com:\n  link: https://example.com\n",
+	} {
 		if CheckFile([]byte(data)) {
 			t.Errorf("%q accepted", data)
 		}

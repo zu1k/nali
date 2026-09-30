@@ -39,13 +39,25 @@ func (r CDNResult) String() string {
 	return r.Name
 }
 
-// CheckFile reports whether data is a non-empty CDN yaml database.
+// CheckFile reports whether data is a CDN yaml database with at least one
+// usable entry: a named literal domain or a named, valid regexp.
 func CheckFile(data []byte) bool {
 	cdnMap := make(map[string]CDNResult)
 	if err := yaml.Unmarshal(data, &cdnMap); err != nil {
 		return false
 	}
-	return len(cdnMap) > 0
+	for k, v := range cdnMap {
+		if k == "" || v.Name == "" {
+			continue
+		}
+		if !re.MaybeRegexp(k) {
+			return true
+		}
+		if _, err := regexp.Compile(k); err == nil {
+			return true
+		}
+	}
+	return false
 }
 
 func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
