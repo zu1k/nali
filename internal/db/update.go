@@ -56,8 +56,10 @@ func defaultUpdateList() []string {
 
 	selected := make(map[string]bool)
 	for _, key := range []string{"selected.ipv4", "selected.ipv6", "selected.cdn"} {
-		if db, found := lookupDb(viper.GetString(key)); found {
-			selected[db.Name] = true
+		for _, name := range strings.Split(viper.GetString(key), ",") {
+			if db, found := lookupDb(strings.TrimSpace(name)); found {
+				selected[db.Name] = true
+			}
 		}
 	}
 

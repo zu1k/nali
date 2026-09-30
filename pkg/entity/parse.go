@@ -55,11 +55,16 @@ func ParseLine(line string) Entities {
 					Text: line[idx:start],
 				})
 			}
-			res := db.Find(dbif.QueryType(e.Type), e.Text)
-			if res != nil {
-				e.InfoText = res.String()
-				e.Info = res.Result
-				e.Source = res.Source
+			results := db.Find(dbif.QueryType(e.Type), e.Text)
+			if len(results) > 0 {
+				e.InfoText = results[0].String()
+				e.Info = results[0].Result
+				e.Source = results[0].Source
+				if len(results) > 1 {
+					for _, r := range results {
+						e.Results = append(e.Results, Result{Source: r.Source, Text: r.String(), Info: r.Result})
+					}
+				}
 			} else {
 				e.Type = TypePlain
 			}
