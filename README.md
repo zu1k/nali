@@ -26,9 +26,10 @@
 - 支持多种数据库
   - 纯真 IPv4 离线数据库
   - ZX IPv6 离线数据库
+  - ip2region IPv4 / IPv6 数据库 (可选)
+  - IPinfo Lite 数据库 (可选)
   - Geoip2 城市数据库 (可选)
   - IPIP 数据库 (可选)
-  - ip2region 数据库 (可选)
   - DB-IP 数据库 (可选)
   - IP2Location DB3 LITE 数据库 (可选)
 - CDN 服务提供商查询
@@ -44,7 +45,7 @@
 
 ### 从源码安装
 
-Nali 需要预先安装 Go >= 1.19. 安装后可以从源码安装软件:
+Nali 需要预先安装 Go >= 1.26. 安装后可以从源码安装软件:
 
 ```sh
 $ go install github.com/zu1k/nali@latest
@@ -201,16 +202,43 @@ Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Com
 
 其中，`languages` 和 `types` 表示该数据库支持的语言和查询类型。 如果你需要增加数据库，需小心修改配置文件，如果有任何问题，欢迎提 issue 询问。
 
-### 使用 IPinfo Lite MMDB
+旧版本生成的配置文件无需修改：配置文件中找不到的数据库会使用内置的默认定义。
 
-支持 IPinfo 的平铺 MMDB 字段及 IPv4、IPv6，`format` 仍为 `mmdb`，程序会自动识别数据库类型。将 `ipinfo_lite.mmdb` 放入 `nali info` 显示的数据目录，然后运行：
+### 数据库一览
 
-```sh
-NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali 8.8.8.8 2001:4860:4860::8888
-NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali --json 8.8.8.8
+| 数据库 | 名称 / 别名 | 查询类型 | 默认文件 | 自动下载 |
+| --- | --- | --- | --- | --- |
+| 纯真 IPv4 | `qqwry`, `chunzhen` | IPv4（默认） | `qqwry.dat` | ✓ |
+| ZX IPv6 | `zxipv6wry`, `zxipv6`, `zx` | IPv6（默认） | `zxipv6wry.db` | ✓ |
+| ip2region IPv4 | `ip2region`, `i2r` | IPv4 | `ip2region.xdb` | ✓ |
+| ip2region IPv6 | `ip2region-ipv6`, `i2r-ipv6` | IPv6 | `ip2region_v6.xdb` | ✓ |
+| IPinfo Lite | `ipinfo` | IPv4、IPv6 | `ipinfo_lite.mmdb` | ✓ |
+| GeoIP2 / GeoLite2 City | `geoip`, `geoip2`, `geolite`, `geolite2` | IPv4、IPv6 | `GeoLite2-City.mmdb` | 需手动下载 |
+| DB-IP | `dbip`, `db-ip` | IPv4、IPv6 | `dbip.mmdb` | 需手动下载 |
+| IPIP | `ipip` | IPv4、IPv6 | `ipipfree.ipdb` | 需手动下载 |
+| IP2Location DB3 LITE | `ip2location` | IPv4、IPv6 | `IP2LOCATION-LITE-DB3.IPV6.BIN` | 需手动下载 |
+| CDN | `cdn` | 域名（默认） | `cdn.yml` | ✓ |
+
+支持自动下载的数据库在首次使用、本地文件不存在时会自动下载；需手动下载的数据库请将文件放入 `nali info` 显示的数据目录，或在配置文件中用绝对路径指定 `file`。
+
+### 使用 IPinfo Lite
+
+[IPinfo Lite](https://ipinfo.io/lite) 提供免费的国家和 ASN 数据，同时支持 IPv4 和 IPv6，首次使用时自动下载：
+
+```
+$ NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali 8.8.8.8 2001:4860:4860::8888
+8.8.8.8 [United States AS15169 Google LLC]
+2001:4860:4860::8888 [United States AS15169 Google LLC]
+
+$ NALI_DB_IP4=ipinfo nali --json 8.8.8.8
+{"type":0,"ip":"8.8.8.8","text":"United States AS15169 Google LLC","source":"ipinfo","info":{"network":"8.8.8.0/24","country":"United States","country_code":"US","continent":"North America","continent_code":"NA","asn":"AS15169","as_name":"Google LLC","as_domain":"google.com"}}
 ```
 
-已有配置可在 `databases` 中加入以下条目，并将 `selected.ipv4`、`selected.ipv6` 设为 `ipinfo`：
+长期使用可在配置文件中将 `selected.ipv4`、`selected.ipv6` 设为 `ipinfo`。
+
+文本输出包含国家、ASN 和 AS 名称；JSON 输出包含 `network`、`country`、`country_code`、`continent`、`continent_code`、`asn`、`as_name`、`as_domain`。数据库记录未提供 `network` 字段时，使用命中的 CIDR 网段。名称为数据库中的英文原文。
+
+`format` 为 `mmdb` 的数据库会根据元数据自动识别是否为 IPinfo 格式，因此也可以使用登录 [IPinfo](https://ipinfo.io/dashboard/downloads) 后下载的 `ipinfo_lite.mmdb`。默认下载地址是社区维护的镜像 [NetworkCats/IPinfoLite-Download](https://github.com/NetworkCats/IPinfoLite-Download)，可以在配置文件中通过 `download-urls` 改为其他地址：
 
 ```yaml
 - name: ipinfo
@@ -222,10 +250,19 @@ NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali --json 8.8.8.8
   types: [IPv4, IPv6]
 ```
 
-`file` 也可使用绝对路径。文本输出包含国家、ASN 和 AS 名称；JSON 输出包含 `network`、`country`、`country_code`、`continent`、`continent_code`、`asn`、`as_name`、`as_domain`。数据库未提供 `network` 字段时，使用命中的 CIDR 网段。IPinfo Lite 的名称使用数据库原有英文值。
+IPinfo Lite 数据以 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) 许可发布，公开使用其数据时请注明来源 IPinfo。
 
-运行 `nali update` 会默认更新 IPinfo；也可用 `nali update --db ipinfo` 单独更新。
+### 使用 ip2region IPv6
 
+ip2region 分为 IPv4（`ip2region`）和 IPv6（`ip2region-ipv6`）两个数据库文件，首次使用时自动下载：
+
+```
+$ NALI_DB_IP4=ip2region NALI_DB_IP6=ip2region-ipv6 nali 223.5.5.5 240e::1
+223.5.5.5 [中国|浙江省|杭州市|阿里|CN]
+240e::1 [中国|北京市|北京市|电信|CN]
+```
+
+旧版本的 `ip2region.xdb` 文件仍可直接使用；配置文件中失效的旧下载地址会在启动时自动迁移到 `ip2region_v4.xdb`。
 
 ### 查看帮助
 
@@ -236,46 +273,44 @@ Usage:
   nali [command]
 
 Available Commands:
+  completion  Generate the autocompletion script for the specified shell
   help        Help about any command
-  update      update qqwry, zxipv6wry, ip2region ip database and cdn
+  info        get the necessary information of nali
+  update      update ip databases and cdn, update nali to latest version if -v
 
 Flags:
-  -h, --help     help for nali
-  -t, --toggle   Help message for toggle
+      --gbk       Use GBK decoder
+  -h, --help      help for nali
+  -j, --json      Output in JSON format
+  -v, --version   version for nali
 
 Use "nali [command] --help" for more information about a command.
 ```
 
 ### 更新数据库
 
-更新所有可以自动更新的数据库
+不带参数时更新纯真、ZX IPv6、ip2region (IPv4) 和 CDN 数据库。体积较大的可选数据库 `ip2region-ipv6`（约 37 MB）和 `ipinfo`（约 24 MB）只在被选用（配置文件的 `selected` 或 `NALI_DB_*` 环境变量）或本地已存在时才会更新。
 
 ```
 $ nali update
-2020/07/17 12:53:46 正在下载最新纯真 IP 库...
-2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
+2026/09/30 09:51:48 正在下载最新 qqwry 数据库...
+2026/09/30 09:51:49 qqwry 数据库下载成功: qqwry.dat
+2026/09/30 09:51:49 正在下载最新 cdn 数据库...
+2026/09/30 09:51:50 cdn 数据库下载成功: cdn.yml
+...
 ```
 
-或者指定数据库
+或者指定数据库（逗号分隔，支持别名），指定的数据库总会更新：
 
 ```
-$ nali update --db qqwry,cdn
-2020/07/17 12:53:46 正在下载最新纯真 IP 库...
-2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
+$ nali update --db qqwry,cdn,ipinfo
 ```
+
+下载的数据会先校验再替换本地文件，下载失败或内容无效时保留原有的数据库。加上 `-v` 参数会同时将 nali 更新到最新版本。
 
 ### 自选数据库
 
-用户可以指定使用哪个数据库，需要设置环境变量： `NALI_DB_IP4`、`NALI_DB_IP6` 或者两个同时设置
-
-支持的变量内容:
-
-- Geoip2 `['geoip', 'geoip2']`
-- Chunzhen `['chunzhen', 'qqwry']`
-- IPIP `['ipip']`
-- Ip2Region `['ip2region', 'i2r']`
-- DBIP `['dbip', 'db-ip']`
-- IP2Location `['ip2location']`
+用户可以指定使用哪个数据库，需要设置环境变量 `NALI_DB_IP4`、`NALI_DB_IP6`、`NALI_DB_CDN`，或者修改配置文件中的 `selected`。可以使用[数据库一览](#数据库一览)中的任意名称或别名。
 
 #### Windows平台
 
@@ -315,12 +350,10 @@ export NALI_DB_IP4=ipip
 
 ### 多语言支持
 
-通过修改环境变量 `NALI_LANG` 来指定使用的语言，当使用非中文语言时仅支持GeoIP2这个数据库
-
-该参数可设置的值见 GeoIP2 这个数据库的支持列表
+通过环境变量 `NALI_LANG` 指定 GeoIP2 / GeoLite2 / DB-IP 数据库的输出语言，数据库中没有对应语言时使用英文。该参数可设置的值见 GeoIP2 数据库的支持列表。其他数据库只提供单一语言（例如 IPinfo Lite 为英文）。
 
 ```
-# NALI_LANG=en nali 1.1.1.1
+# NALI_LANG=en NALI_DB_IP4=geoip nali 1.1.1.1
 1.1.1.1 [Australia]
 ```
 
@@ -340,6 +373,22 @@ or
 export NALI_HOME=/var/nali
 ```
 
+## 开发
+
+需要 Go >= 1.26。
+
+```sh
+make test      # go test -race ./...
+make lint      # go vet + golangci-lint
+make all-arch  # 交叉编译所有发布平台
+```
+
+测试不依赖网络和真实数据库。MMDB 测试数据位于 `testdata/mmdb`，由独立模块 `testdata/mmdb/generate` 生成，修改后可重新生成：
+
+```sh
+cd testdata/mmdb/generate && go run .
+```
+
 ## 感谢列表
 
 - [纯真QQIP离线数据库](http://www.cz88.net)
@@ -347,6 +396,8 @@ export NALI_HOME=/var/nali
 - [ZX公网ipv6数据库](https://ip.zxinc.org/ipquery/)
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
 - [geoip2-golang解析器](https://github.com/oschwald/geoip2-golang)
+- [maxminddb-golang解析器](https://github.com/oschwald/maxminddb-golang)
+- [IPinfo Lite数据库](https://ipinfo.io/lite)
 - [CDN provider数据库](https://github.com/SukkaLab/cdn)
 - [IPIP数据库](https://www.ipip.net/product/ip.html)
 - [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)

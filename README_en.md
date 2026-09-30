@@ -26,9 +26,10 @@
 - Multi database support
   - Chunzhen qqip database
   - ZX ipv6 database
+  - ip2region IPv4 / IPv6 database
+  - IPinfo Lite database
   - Geoip2 city database
   - IPIP free database
-  - ip2region database
   - DB-IP database
   - IP2Location DB3 LITE database
 - CDN provider query
@@ -44,7 +45,7 @@
 
 ### Install from source
 
-Nali Requires Go >= 1.19. You can build it from source:
+Nali Requires Go >= 1.26. You can build it from source:
 
 ```sh
 $ go install github.com/zu1k/nali@latest
@@ -193,16 +194,43 @@ A database is defined as follows:
   - IPv6
 ```
 
-### Use IPinfo Lite MMDB
+Configuration files written by older versions keep working: databases missing from the config fall back to the built-in defaults.
 
-IPinfo flat MMDB records support both IPv4 and IPv6. Keep `format: mmdb`; the database type is detected automatically. Put `ipinfo_lite.mmdb` in the data directory shown by `nali info`, then run:
+### Databases
 
-```sh
-NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali 8.8.8.8 2001:4860:4860::8888
-NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali --json 8.8.8.8
+| Database | Name / aliases | Query type | Default file | Auto download |
+| --- | --- | --- | --- | --- |
+| Chunzhen IPv4 | `qqwry`, `chunzhen` | IPv4 (default) | `qqwry.dat` | ✓ |
+| ZX IPv6 | `zxipv6wry`, `zxipv6`, `zx` | IPv6 (default) | `zxipv6wry.db` | ✓ |
+| ip2region IPv4 | `ip2region`, `i2r` | IPv4 | `ip2region.xdb` | ✓ |
+| ip2region IPv6 | `ip2region-ipv6`, `i2r-ipv6` | IPv6 | `ip2region_v6.xdb` | ✓ |
+| IPinfo Lite | `ipinfo` | IPv4, IPv6 | `ipinfo_lite.mmdb` | ✓ |
+| GeoIP2 / GeoLite2 City | `geoip`, `geoip2`, `geolite`, `geolite2` | IPv4, IPv6 | `GeoLite2-City.mmdb` | manual |
+| DB-IP | `dbip`, `db-ip` | IPv4, IPv6 | `dbip.mmdb` | manual |
+| IPIP | `ipip` | IPv4, IPv6 | `ipipfree.ipdb` | manual |
+| IP2Location DB3 LITE | `ip2location` | IPv4, IPv6 | `IP2LOCATION-LITE-DB3.IPV6.BIN` | manual |
+| CDN | `cdn` | domain (default) | `cdn.yml` | ✓ |
+
+Databases with automatic download are fetched on first use when the file is missing. For the others, put the file in the data directory shown by `nali info`, or set an absolute `file` path in the config.
+
+### Use IPinfo Lite
+
+[IPinfo Lite](https://ipinfo.io/lite) provides free country and ASN data for both IPv4 and IPv6. It is downloaded on first use:
+
+```
+$ NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali 8.8.8.8 2001:4860:4860::8888
+8.8.8.8 [United States AS15169 Google LLC]
+2001:4860:4860::8888 [United States AS15169 Google LLC]
+
+$ NALI_DB_IP4=ipinfo nali --json 8.8.8.8
+{"type":0,"ip":"8.8.8.8","text":"United States AS15169 Google LLC","source":"ipinfo","info":{"network":"8.8.8.0/24","country":"United States","country_code":"US","continent":"North America","continent_code":"NA","asn":"AS15169","as_name":"Google LLC","as_domain":"google.com"}}
 ```
 
-For existing configurations, add this entry to `databases` and set `selected.ipv4` and `selected.ipv6` to `ipinfo`:
+To use it permanently, set `selected.ipv4` and `selected.ipv6` to `ipinfo` in the config file.
+
+Text output includes country, ASN and AS name. JSON includes `network`, `country`, `country_code`, `continent`, `continent_code`, `asn`, `as_name` and `as_domain`. When a record omits `network`, the matched CIDR is used. Names are the database's English values.
+
+Databases with `format: mmdb` are detected as IPinfo from their metadata, so an `ipinfo_lite.mmdb` downloaded from your [IPinfo account](https://ipinfo.io/dashboard/downloads) works as well. The default download URL is the community mirror [NetworkCats/IPinfoLite-Download](https://github.com/NetworkCats/IPinfoLite-Download); change `download-urls` in the config to use another source:
 
 ```yaml
 - name: ipinfo
@@ -214,10 +242,19 @@ For existing configurations, add this entry to `databases` and set `selected.ipv
   types: [IPv4, IPv6]
 ```
 
-An absolute `file` path also works. Text output includes country, ASN and AS name. JSON includes `network`, `country`, `country_code`, `continent`, `continent_code`, `asn`, `as_name` and `as_domain`. When the record omits `network`, the matched CIDR is used. Names retain the database's English values.
+IPinfo Lite data is licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/); please attribute IPinfo when you publish data derived from it.
 
-`nali update` updates IPinfo by default; use `nali update --db ipinfo` to update it alone.
+### Use ip2region IPv6
 
+ip2region ships separate IPv4 (`ip2region`) and IPv6 (`ip2region-ipv6`) database files, both downloaded on first use:
+
+```
+$ NALI_DB_IP4=ip2region NALI_DB_IP6=ip2region-ipv6 nali 223.5.5.5 240e::1
+223.5.5.5 [中国|浙江省|杭州市|阿里|CN]
+240e::1 [中国|北京市|北京市|电信|CN]
+```
+
+An existing `ip2region.xdb` from older versions keeps working, and the outdated download URL in old config files is migrated to `ip2region_v4.xdb` automatically.
 
 ### Help
 
@@ -228,47 +265,44 @@ Usage:
   nali [command]
 
 Available Commands:
-  completion  generate the autocompletion script for the specified shell
+  completion  Generate the autocompletion script for the specified shell
   help        Help about any command
-  update      update chunzhen ip database
+  info        get the necessary information of nali
+  update      update ip databases and cdn, update nali to latest version if -v
 
 Flags:
-      --gbk    Use GBK decoder
-  -h, --help   help for nali
+      --gbk       Use GBK decoder
+  -h, --help      help for nali
+  -j, --json      Output in JSON format
+  -v, --version   version for nali
 
 Use "nali [command] --help" for more information about a command.
 ```
 
 ### Update database
 
-Update all databases if available:
+Without arguments, `nali update` updates the Chunzhen, ZX IPv6, ip2region (IPv4) and CDN databases. The larger optional databases `ip2region-ipv6` (~37 MB) and `ipinfo` (~24 MB) are only updated when they are selected (config `selected` or the `NALI_DB_*` environment variables) or already downloaded.
 
 ```
 $ nali update
-2020/07/17 12:53:46 正在下载最新纯真 IP 库...
-2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
+2026/09/30 09:51:48 正在下载最新 qqwry 数据库...
+2026/09/30 09:51:49 qqwry 数据库下载成功: qqwry.dat
+2026/09/30 09:51:49 正在下载最新 cdn 数据库...
+2026/09/30 09:51:50 cdn 数据库下载成功: cdn.yml
+...
 ```
 
-Update specified databases:
+Update specific databases (comma separated, aliases allowed); these are always updated:
 
 ```
-$ nali update --db qqwry,cdn
-2020/07/17 12:53:46 正在下载最新纯真 IP 库...
-2020/07/17 12:54:05 已将最新的纯真 IP 库保存到本地 /root/.nali/qqwry.dat
+$ nali update --db qqwry,cdn,ipinfo
 ```
+
+Downloads are validated before they replace the local file, so a failed or invalid download keeps the existing database. Add `-v` to also update nali itself to the latest version.
 
 ### Specify database
 
-Users can specify which database to use，set environment variables `NALI_DB_IP4`, `NALI_DB_IP6` or both.
-
-Supported database:
-
-- Geoip2 `['geoip', 'geoip2']`
-- Chunzhen `['chunzhen', 'qqwry']`
-- IPIP `['ipip']`
-- Ip2Region `['ip2region', 'i2r']`
-- DBIP `['dbip', 'db-ip']`
-- IP2Location `['ip2location']`
+Users can specify which database to use by setting the environment variables `NALI_DB_IP4`, `NALI_DB_IP6` and `NALI_DB_CDN`, or `selected` in the config file. Any name or alias from [Databases](#databases) can be used.
 
 #### Windows
 
@@ -308,12 +342,10 @@ export NALI_DB_IP6=ipip
 
 ### Multilingual support
 
-Specify the language to be used by modifying the environment variable `NALI_LANG`, when using a non-Chinese language only the GeoIP2 database is supported
-
-The values that can be set for this parameter can be found in the list of supported databases for GeoIP2
+Set the environment variable `NALI_LANG` to choose the output language of the GeoIP2 / GeoLite2 / DB-IP databases; English is used when the database has no names in that language. The supported values are listed by the GeoIP2 database. Other databases provide a single language (IPinfo Lite is English).
 
 ```
-# NALI_LANG=en nali 1.1.1.1
+# NALI_LANG=en NALI_DB_IP4=geoip nali 1.1.1.1
 1.1.1.1 [Australia]
 ```
 
@@ -333,6 +365,22 @@ or
 export NALI_HOME=/home/nali
 ```
 
+## Development
+
+Requires Go >= 1.26.
+
+```sh
+make test      # go test -race ./...
+make lint      # go vet + golangci-lint
+make all-arch  # cross-compile every release platform
+```
+
+Tests need neither network access nor real databases. The MMDB fixtures in `testdata/mmdb` are produced by the separate module `testdata/mmdb/generate`; regenerate them with:
+
+```sh
+cd testdata/mmdb/generate && go run .
+```
+
 ## Thanks
 
 - [纯真QQIP离线数据库](http://www.cz88.net)
@@ -340,6 +388,8 @@ export NALI_HOME=/home/nali
 - [ZX公网ipv6数据库](https://ip.zxinc.org/ipquery/)
 - [Geoip2 city数据库](https://www.maxmind.com/en/geoip2-precision-city-service)
 - [geoip2-golang解析器](https://github.com/oschwald/geoip2-golang)
+- [maxminddb-golang](https://github.com/oschwald/maxminddb-golang)
+- [IPinfo Lite](https://ipinfo.io/lite)
 - [CDN provider数据库](https://github.com/SukkaLab/cdn)
 - [IPIP数据库](https://www.ipip.net/product/ip.html)
 - [IPIP数据库解析](https://github.com/ipipdotnet/ipdb-go)
