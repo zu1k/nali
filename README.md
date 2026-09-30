@@ -201,6 +201,27 @@ Address: 2001:428:6402:21b::6 [美国Louisiana州Monroe Qwest Communications Com
 
 其中，`languages` 和 `types` 表示该数据库支持的语言和查询类型。 如果你需要增加数据库，需小心修改配置文件，如果有任何问题，欢迎提 issue 询问。
 
+### 使用 IPinfo Lite MMDB
+
+支持 IPinfo 的平铺 MMDB 字段及 IPv4、IPv6，`format` 仍为 `mmdb`，程序会自动识别数据库类型。将 `ipinfo_lite.mmdb` 放入 `nali info` 显示的数据目录，然后运行：
+
+```sh
+NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali 8.8.8.8 2001:4860:4860::8888
+NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali --json 8.8.8.8
+```
+
+已有配置可在 `databases` 中加入以下条目，并将 `selected.ipv4`、`selected.ipv6` 设为 `ipinfo`：
+
+```yaml
+- name: ipinfo
+  format: mmdb
+  file: ipinfo_lite.mmdb
+  languages: [en]
+  types: [IPv4, IPv6]
+```
+
+`file` 也可使用绝对路径。文本输出包含国家、ASN 和 AS 名称；JSON 输出包含 `network`、`country`、`country_code`、`continent`、`continent_code`、`asn`、`as_name`、`as_domain`。数据库未提供 `network` 字段时，使用命中的 CIDR 网段。IPinfo Lite 的名称使用数据库原有英文值。
+
 ### 查看帮助
 
 ```
