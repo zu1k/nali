@@ -9,8 +9,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
-	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/transform"
 
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/pkg/common"
@@ -59,20 +57,31 @@ Find document on: https://github.com/zu1k/nali
 `,
 	Version: constant.Version,
 	Args:    cobra.MinimumNArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		gbk, _ := cmd.Flags().GetBool("gbk")
 		isJson, _ := cmd.Flags().GetBool("json")
+		colorMode, _ := cmd.Flags().GetString("color")
+
+		switch colorMode {
+		case "always":
+			color.NoColor = false
+		case "never":
+			color.NoColor = true
+		case "auto":
+			// fatih/color already disables colors when stdout is not a
+			// terminal, NO_COLOR is set or TERM=dumb
+		default:
+			return fmt.Errorf("invalid --color value %q: must be auto, always or never", colorMode)
+		}
 
 		if len(args) == 0 {
+			autoGBK := common.ConsoleUsesGBK()
 			stdin := bufio.NewScanner(os.Stdin)
 			stdin.Split(common.ScanLines)
 			for stdin.Scan() {
-				line := stdin.Text()
-				if gbk {
-					line, _, _ = transform.String(simplifiedchinese.GBK.NewDecoder(), line)
-				}
+				line := common.DecodeInput(stdin.Text(), gbk, autoGBK)
 				if line := strings.TrimSpace(line); line == "quit" || line == "exit" {
-					return
+					return nil
 				}
 				if isJson {
 					_, _ = fmt.Fprintf(color.Output, "%s", entity.ParseLine(line).Json())
@@ -89,6 +98,7 @@ Find document on: https://github.com/zu1k/nali
 				}
 			}
 		}
+		return nil
 	},
 }
 
@@ -100,6 +110,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().Bool("gbk", false, "Use GBK decoder")
+	rootCmd.Flags().Bool("gbk", false, "Decode input as GBK (detected automatically on Chinese Windows)")
 	rootCmd.Flags().BoolP("json", "j", false, "Output in JSON format")
+	rootCmd.Flags().String("color", "auto", "Colorize output: auto, always or never (NO_COLOR is honored in auto mode)")
 }

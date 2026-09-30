@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
 func TestGetFallsBackToNextURL(t *testing.T) {
@@ -116,5 +118,32 @@ func TestReadFileMapped(t *testing.T) {
 
 	if _, err := ReadFileMapped(filepath.Join(dir, "missing.dat")); err == nil {
 		t.Fatal("missing file should fail")
+	}
+}
+
+func TestDecodeInput(t *testing.T) {
+	gbk, err := simplifiedchinese.GBK.NewEncoder().String("跟踪路由 8.8.8.8 中国")
+	if err != nil {
+		t.Fatal(err)
+	}
+	const utf8Line = "跟踪路由 8.8.8.8 中国"
+
+	tests := []struct {
+		name              string
+		in                string
+		forceGBK, autoGBK bool
+		want              string
+	}{
+		{"utf8 untouched", utf8Line, false, false, utf8Line},
+		{"gbk untouched without auto detection", gbk, false, false, gbk},
+		{"gbk decoded when auto detected", gbk, false, true, utf8Line},
+		{"valid utf8 kept when auto detected", utf8Line, false, true, utf8Line},
+		{"ascii kept when auto detected", "1.1.1.1\n", false, true, "1.1.1.1\n"},
+		{"forced gbk", gbk, true, false, utf8Line},
+	}
+	for _, tt := range tests {
+		if got := DecodeInput(tt.in, tt.forceGBK, tt.autoGBK); got != tt.want {
+			t.Errorf("%s: got %q, want %q", tt.name, got, tt.want)
+		}
 	}
 }
