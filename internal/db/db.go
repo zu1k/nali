@@ -58,7 +58,8 @@ func GetDBs(typ dbif.QueryType) (dbs []dbif.DB) {
 		default:
 			db, err = zxipv6wry.NewZXwry(getDbByName("zxipv6wry").File)
 		}
-		if err != nil || db == nil {
+		// the constructors return a non-nil error whenever the database is nil
+		if err != nil {
 			log.Fatalln("Database init failed:", err)
 		}
 		dbs = []dbif.DB{db}
