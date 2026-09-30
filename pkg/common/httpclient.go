@@ -1,6 +1,7 @@
 package common
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -37,6 +38,7 @@ func (c *HttpClient) Get(urls ...string) (body []byte, err error) {
 	var req *http.Request
 	var resp *http.Response
 
+	err = errors.New("no download url")
 	for _, url := range urls {
 		req, err = http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {

@@ -76,10 +76,13 @@ func CheckFile(data []byte) bool {
 	if err != nil {
 		return false
 	}
-	if _, err := xdb.VersionFromHeader(header); err != nil {
+	version, err := xdb.VersionFromHeader(header)
+	if err != nil {
 		return false
 	}
-	return header.StartIndexPtr <= header.EndIndexPtr && int(header.EndIndexPtr) < len(data)
+	return header.StartIndexPtr >= xdb.HeaderInfoLength &&
+		header.StartIndexPtr <= header.EndIndexPtr &&
+		int(header.EndIndexPtr)+version.SegmentIndexSize <= len(data)
 }
 
 func detectVersion(data []byte) (*xdb.Version, error) {
@@ -97,7 +100,7 @@ func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, e
 			return nil, err
 		} else {
 			return wry.Result{
-				Country: strings.ReplaceAll(res, "|0", ""),
+				Country: formatRegion(res),
 			}, nil
 		}
 	}
@@ -107,4 +110,17 @@ func (db Ip2Region) Find(query string, params ...string) (result fmt.Stringer, e
 
 func (db Ip2Region) Name() string {
 	return "ip2region"
+}
+
+// formatRegion drops the "0" placeholders ip2region uses for unknown fields,
+// e.g. "中国|0|浙江省|杭州市|阿里" -> "中国|浙江省|杭州市|阿里".
+func formatRegion(region string) string {
+	fields := strings.Split(region, "|")
+	kept := fields[:0]
+	for _, f := range fields {
+		if f != "0" && f != "" {
+			kept = append(kept, f)
+		}
+	}
+	return strings.Join(kept, "|")
 }

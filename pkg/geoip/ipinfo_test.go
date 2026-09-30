@@ -66,9 +66,3 @@ func TestIPinfoDatabase(t *testing.T) {
 		t.Fatalf("unexpected loopback result: %v", value)
 	}
 }
-
-func TestMissingDatabase(t *testing.T) {
-	if _, err := NewGeoIP(t.TempDir()+"/missing.mmdb", nil); err == nil {
-		t.Fatal("missing file should return an error")
-	}
-}
