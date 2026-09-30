@@ -7,8 +7,10 @@ import (
 	"path/filepath"
 	"slices"
 	"sort"
+	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/spf13/viper"
 )
@@ -254,5 +256,68 @@ func TestDefaultDBList(t *testing.T) {
 			t.Errorf("%s and %s share the file %s", db.Name, other, db.File)
 		}
 		files[db.File] = db.Name
+	}
+}
+
+func TestUpdateDBSkipsUnchangedDatabase(t *testing.T) {
+	serverModTime := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
+	content := "database v1"
+
+	tests := []struct {
+		name       string
+		handler    http.HandlerFunc
+		wantUpdate bool
+	}{
+		{
+			// honors If-Modified-Since: the local file is newer, so 304
+			name: "not modified",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				http.ServeContent(w, r, "db", serverModTime, strings.NewReader("database v2"))
+			},
+		},
+		{
+			// ignores If-Modified-Since and sends the same content again
+			name: "identical content",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				_, _ = w.Write([]byte(content))
+			},
+		},
+		{
+			// newer than the local file: must be downloaded
+			name: "modified",
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				http.ServeContent(w, r, "db", time.Now().Add(time.Hour), strings.NewReader("database v2"))
+			},
+			wantUpdate: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			srv := newFakeServer(t, tt.handler)
+			file := filepath.Join(t.TempDir(), "db")
+			if err := os.WriteFile(file, []byte(content), 0644); err != nil {
+				t.Fatal(err)
+			}
+			old := time.Now().Add(-time.Minute).Truncate(time.Second)
+			if err := os.Chtimes(file, old, old); err != nil {
+				t.Fatal(err)
+			}
+			withNameDBMap(t, &DB{Name: "x", Format: formatRaw, File: file, DownloadUrls: []string{srv.URL + "/x"}})
+
+			update, _ := getUpdateFuncByName("x")
+			if err := update(); err != nil {
+				t.Fatal(err)
+			}
+
+			data, _ := os.ReadFile(file)
+			info, _ := os.Stat(file)
+			if tt.wantUpdate {
+				if string(data) != "database v2" {
+					t.Fatalf("database not updated: %q", data)
+				}
+			} else if string(data) != content || !info.ModTime().Equal(old) {
+				t.Fatalf("unchanged database was rewritten: %q, mtime %v", data, info.ModTime())
+			}
+		})
 	}
 }

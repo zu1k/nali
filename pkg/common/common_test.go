@@ -5,7 +5,9 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
+	"time"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -145,5 +147,28 @@ func TestDecodeInput(t *testing.T) {
 		if got := DecodeInput(tt.in, tt.forceGBK, tt.autoGBK); got != tt.want {
 			t.Errorf("%s: got %q, want %q", tt.name, got, tt.want)
 		}
+	}
+}
+
+func TestGetIfModified(t *testing.T) {
+	modTime := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeContent(w, r, "db", modTime, strings.NewReader("data"))
+	}))
+	defer srv.Close()
+
+	body, notModified, err := GetHttpClient().GetIfModified(modTime.Add(time.Hour), srv.URL)
+	if err != nil || !notModified || body != nil {
+		t.Fatalf("newer local copy: got %q, %v, %v", body, notModified, err)
+	}
+
+	body, notModified, err = GetHttpClient().GetIfModified(modTime.Add(-time.Hour), srv.URL)
+	if err != nil || notModified || string(body) != "data" {
+		t.Fatalf("older local copy: got %q, %v, %v", body, notModified, err)
+	}
+
+	body, notModified, err = GetHttpClient().GetIfModified(time.Time{}, srv.URL)
+	if err != nil || notModified || string(body) != "data" {
+		t.Fatalf("no local copy: got %q, %v, %v", body, notModified, err)
 	}
 }

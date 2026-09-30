@@ -1,6 +1,7 @@
 package db
 
 import (
+	"bytes"
 	"errors"
 	"log"
 	"os"
@@ -87,7 +88,16 @@ func getUpdateFuncByName(name string) (func() error, string) {
 		if len(db.DownloadUrls) > 0 {
 			return func() error {
 				log.Printf("正在下载最新 %s 数据库...\n", db.Name)
-				data, err := common.GetHttpClient().Get(db.DownloadUrls...)
+				// ask the server to skip the download when the local file is current
+				var since time.Time
+				if info, err := os.Stat(db.File); err == nil {
+					since = info.ModTime()
+				}
+				data, notModified, err := common.GetHttpClient().GetIfModified(since, db.DownloadUrls...)
+				if err == nil && (notModified || sameContent(db.File, data)) {
+					log.Printf("%s 数据库已是最新版本: %s\n", db.Name, db.File)
+					return nil
+				}
 				if err == nil {
 					// validate before saving so a bad download never replaces a working database
 					if check, ok := DbCheckFunc[db.Format]; ok && !check(data) {
@@ -132,4 +142,14 @@ func getUpdateFuncByName(name string) (func() error, string) {
 			return nil
 		}, time.Now().String()
 	}
+}
+
+// sameContent reports whether the file at path holds exactly data.
+func sameContent(path string, data []byte) bool {
+	info, err := os.Stat(path)
+	if err != nil || info.Size() != int64(len(data)) {
+		return false
+	}
+	old, err := os.ReadFile(path)
+	return err == nil && bytes.Equal(old, data)
 }
