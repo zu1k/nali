@@ -107,7 +107,7 @@ func (db CDN) Find(query string, params ...string) (result fmt.Stringer, err err
 		}
 
 		for _, entry := range db.ReMap {
-			if entry.Regexp.MatchString(domain) {
+			if entry.MatchString(domain) {
 				return entry.CDNResult, nil
 			}
 		}

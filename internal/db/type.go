@@ -65,13 +65,13 @@ type Format string
 
 const (
 	FormatMMDB        Format = "mmdb"
-	FormatQQWry              = "qqwry"
-	FormatZXIPv6Wry          = "zxipv6wry"
-	FormatIPIP               = "ipip"
-	FormatIP2Region          = "ip2region"
-	FormatIP2Location        = "ip2location"
+	FormatQQWry       Format = "qqwry"
+	FormatZXIPv6Wry   Format = "zxipv6wry"
+	FormatIPIP        Format = "ipip"
+	FormatIP2Region   Format = "ip2region"
+	FormatIP2Location Format = "ip2location"
 
-	FormatCDNYml = "cdn-yml"
+	FormatCDNYml Format = "cdn-yml"
 )
 
 var (
@@ -84,8 +84,8 @@ type Type string
 
 const (
 	TypeIPv4 Type = "IPv4"
-	TypeIPv6      = "IPv6"
-	TypeCDN       = "CDN"
+	TypeIPv6 Type = "IPv6"
+	TypeCDN  Type = "CDN"
 )
 
 var (

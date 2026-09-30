@@ -75,7 +75,7 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 	}
 	ip := net.ParseIP(query)
 	if ip == nil {
-		return nil, errors.New("Query should be valid IP")
+		return nil, errors.New("query should be valid IP")
 	}
 	record, err := g.db.City(ip)
 	if err != nil {
@@ -93,6 +93,14 @@ func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err er
 		Area:        getMapLang(record.City.Names, lang),
 	}
 	return
+}
+
+// Close releases the underlying database file.
+func (g GeoIP) Close() error {
+	if g.ipinfo != nil {
+		return g.ipinfo.Reader.Close()
+	}
+	return g.db.Close()
 }
 
 func (db GeoIP) Name() string {

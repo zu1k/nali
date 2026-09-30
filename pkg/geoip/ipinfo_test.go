@@ -21,7 +21,7 @@ func TestIPinfoDatabase(t *testing.T) {
 	if db.ipinfo == nil || db.Name() != "ipinfo" {
 		t.Fatal("IPinfo database was not detected")
 	}
-	defer db.ipinfo.Reader.Close()
+	defer db.Close()
 	for _, query := range []string{"8.8.8.8", "2001:4860:4860::8888"} {
 		t.Run(query, func(t *testing.T) {
 			value, err := db.Find(query)

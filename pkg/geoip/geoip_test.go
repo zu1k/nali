@@ -29,6 +29,7 @@ func TestGeoLite2Find(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer db.Close()
 	if db.Name() != "geoip" || db.ipinfo != nil {
 		t.Fatalf("GeoLite2 database detected as %q", db.Name())
 	}
@@ -78,6 +79,7 @@ func TestIPinfoDetection(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer db.Close()
 	if db.Name() != "ipinfo" || db.ipinfo == nil {
 		t.Fatalf("IPinfo database detected as %q", db.Name())
 	}
@@ -131,6 +133,8 @@ func TestNewGeoIPDownloadsMissingFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// Windows cannot delete the temp dir while the file is memory mapped
+	defer db.Close()
 	if db.Name() != "ipinfo" {
 		t.Fatalf("downloaded database detected as %q", db.Name())
 	}
