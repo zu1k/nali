@@ -69,8 +69,9 @@ func GetDBs(typ dbif.QueryType) (dbs []dbif.DB) {
 	return
 }
 
-// Find queries every database selected for typ and returns the successful
-// results in selection order, or nil when no database has a result.
+// Find queries every database selected for typ and returns one result per
+// database in selection order; a failed lookup has a nil Result. It returns
+// nil when every lookup failed.
 func Find(typ dbif.QueryType, query string) []*Result {
 	if results, found := queryCache.Load(query); found {
 		return results.([]*Result)
@@ -90,14 +91,17 @@ func Find(typ dbif.QueryType, query string) []*Result {
 	}
 
 	var results []*Result
+	found := false
 	for _, db := range GetDBs(typ) {
 		result, err := db.Find(query)
 		if err != nil {
-			continue
+			result = nil
+		} else {
+			found = true
 		}
 		results = append(results, &Result{db.Name(), result})
 	}
-	if len(results) == 0 {
+	if !found {
 		return nil
 	}
 	queryCache.Store(query, results)

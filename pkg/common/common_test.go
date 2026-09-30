@@ -5,9 +5,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
-	"time"
 
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
@@ -129,6 +127,10 @@ func TestDecodeInput(t *testing.T) {
 		t.Fatal(err)
 	}
 	const utf8Line = "跟踪路由 8.8.8.8 中国"
+	gb18030, err := simplifiedchinese.GB18030.NewEncoder().String("𠀀 1.1.1.1")
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	tests := []struct {
 		name              string
@@ -142,6 +144,8 @@ func TestDecodeInput(t *testing.T) {
 		{"valid utf8 kept when auto detected", utf8Line, false, true, utf8Line},
 		{"ascii kept when auto detected", "1.1.1.1\n", false, true, "1.1.1.1\n"},
 		{"forced gbk", gbk, true, false, utf8Line},
+		// four-byte GB18030 sequences (code page 54936) are decoded too
+		{"gb18030 four-byte character", gb18030, false, true, "𠀀 1.1.1.1"},
 	}
 	for _, tt := range tests {
 		if got := DecodeInput(tt.in, tt.forceGBK, tt.autoGBK); got != tt.want {
@@ -150,25 +154,14 @@ func TestDecodeInput(t *testing.T) {
 	}
 }
 
-func TestGetIfModified(t *testing.T) {
-	modTime := time.Date(2026, 1, 1, 0, 0, 0, 0, time.UTC)
+func TestGetRejectsNotModified(t *testing.T) {
+	// a 304 to an unconditional request must not be taken as an empty body
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeContent(w, r, "db", modTime, strings.NewReader("data"))
+		w.WriteHeader(http.StatusNotModified)
 	}))
 	defer srv.Close()
 
-	body, notModified, err := GetHttpClient().GetIfModified(modTime.Add(time.Hour), srv.URL)
-	if err != nil || !notModified || body != nil {
-		t.Fatalf("newer local copy: got %q, %v, %v", body, notModified, err)
-	}
-
-	body, notModified, err = GetHttpClient().GetIfModified(modTime.Add(-time.Hour), srv.URL)
-	if err != nil || notModified || string(body) != "data" {
-		t.Fatalf("older local copy: got %q, %v, %v", body, notModified, err)
-	}
-
-	body, notModified, err = GetHttpClient().GetIfModified(time.Time{}, srv.URL)
-	if err != nil || notModified || string(body) != "data" {
-		t.Fatalf("no local copy: got %q, %v, %v", body, notModified, err)
+	if body, err := GetHttpClient().Get(srv.URL); err == nil {
+		t.Fatalf("expected an error, got body %q", body)
 	}
 }

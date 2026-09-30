@@ -36,14 +36,6 @@ func GetHttpClient() *HttpClient {
 
 // Get downloads the first of urls that answers 200 OK.
 func (c *HttpClient) Get(urls ...string) (body []byte, err error) {
-	body, _, err = c.GetIfModified(time.Time{}, urls...)
-	return body, err
-}
-
-// GetIfModified is like Get, but when since is not zero it sends an
-// If-Modified-Since header and reports notModified when a server answers
-// 304 Not Modified.
-func (c *HttpClient) GetIfModified(since time.Time, urls ...string) (body []byte, notModified bool, err error) {
 	var req *http.Request
 	var resp *http.Response
 
@@ -55,18 +47,11 @@ func (c *HttpClient) GetIfModified(since time.Time, urls ...string) (body []byte
 			continue
 		}
 		req.Header.Set("User-Agent", UserAgent)
-		if !since.IsZero() {
-			req.Header.Set("If-Modified-Since", since.UTC().Format(http.TimeFormat))
-		}
 		resp, err = c.Do(req)
 		if err != nil {
 			continue
 		}
 
-		if resp.StatusCode == http.StatusNotModified {
-			_ = resp.Body.Close()
-			return nil, true, nil
-		}
 		if resp.StatusCode != http.StatusOK {
 			_ = resp.Body.Close()
 			err = fmt.Errorf("%s: unexpected HTTP status %s", url, resp.Status)
@@ -78,8 +63,8 @@ func (c *HttpClient) GetIfModified(since time.Time, urls ...string) (body []byte
 		if err != nil {
 			continue
 		}
-		return body, false, nil
+		return body, nil
 	}
 
-	return nil, false, err
+	return nil, err
 }

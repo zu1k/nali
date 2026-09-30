@@ -1,6 +1,7 @@
 package db
 
 import (
+	"os"
 	"path/filepath"
 	"sync"
 	"testing"
@@ -57,9 +58,34 @@ func TestFindMultipleDatabases(t *testing.T) {
 		t.Fatalf("unexpected IPv6 results %+v", results)
 	}
 
-	// failing lookups (here: an invalid address) yield no results
+	// when every lookup fails (here: an invalid address) there are no results
 	if results := Find(dbif.TypeIPv4, "not-an-ip"); results != nil {
 		t.Fatalf("expected no results, got %+v", results)
+	}
+}
+
+func TestFindKeepsFailedLookups(t *testing.T) {
+	resetCaches(t)
+	cdnFile := filepath.Join(t.TempDir(), "cdn.yml")
+	if err := os.WriteFile(cdnFile, []byte("example.net:\n  name: Example\n"), 0644); err != nil {
+		t.Fatal(err)
+	}
+	withNameDBMap(t,
+		// the CDN database cannot answer IP queries: its lookup fails
+		&DB{Name: "test-cdn", Format: FormatCDNYml, File: cdnFile, Types: TypesCDN},
+		&DB{Name: "test-geolite", Format: FormatMMDB, File: fixture(t, "geolite2-city-test.mmdb"), Types: TypesIP},
+	)
+	withViper(t, map[string]string{"selected.ipv4": "test-cdn,test-geolite", "selected.lang": "en"})
+
+	results := Find(dbif.TypeIPv4, "81.2.69.160")
+	if len(results) != 2 {
+		t.Fatalf("got %d results, want one per selected database", len(results))
+	}
+	if results[0].Source != "cdn" || results[0].Found() || results[0].Text() != "" {
+		t.Errorf("failed lookup: %+v", results[0])
+	}
+	if !results[1].Found() || results[1].Text() != "United Kingdom London" {
+		t.Errorf("successful lookup: %+v", results[1])
 	}
 }
 

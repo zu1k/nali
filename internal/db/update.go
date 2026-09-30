@@ -90,13 +90,8 @@ func getUpdateFuncByName(name string) (func() error, string) {
 		if len(db.DownloadUrls) > 0 {
 			return func() error {
 				log.Printf("正在下载最新 %s 数据库...\n", db.Name)
-				// ask the server to skip the download when the local file is current
-				var since time.Time
-				if info, err := os.Stat(db.File); err == nil {
-					since = info.ModTime()
-				}
-				data, notModified, err := common.GetHttpClient().GetIfModified(since, db.DownloadUrls...)
-				if err == nil && (notModified || sameContent(db.File, data)) {
+				data, err := common.GetHttpClient().Get(db.DownloadUrls...)
+				if err == nil && sameContent(db.File, data) {
 					log.Printf("%s 数据库已是最新版本: %s\n", db.Name, db.File)
 					return nil
 				}
@@ -125,11 +120,22 @@ func getUpdateFuncByName(name string) (func() error, string) {
 		case FormatZXIPv6Wry:
 			return func() error {
 				log.Println("正在下载最新 ZX IPv6数据库...")
-				_, err := zxipv6wry.Download(getDbByName("zxipv6wry").File)
+				// download and validate without saving, so an unchanged
+				// database is not rewritten
+				data, err := zxipv6wry.Download()
+				if err == nil && sameContent(db.File, data) {
+					log.Printf("%s 数据库已是最新版本: %s\n", db.Name, db.File)
+					return nil
+				}
+				if err == nil {
+					err = common.SaveFile(db.File, data)
+				}
 				if err != nil {
 					log.Println("数据库 ZXIPv6Wry 下载失败:", err)
+					return err
 				}
-				return err
+				log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
+				return nil
 			}, db.Name
 		default:
 			return func() error {

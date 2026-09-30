@@ -7,12 +7,17 @@ NAME=${NAME:-nali}
 BINDIR=${BINDIR:-bin}
 VERSION=${1:?version required}
 
-# v0.8.1 -> 0.8.1, v0.8.1-14-gabc123 -> 0.8.1+14.gabc123
-DEB_VERSION=$(echo "$VERSION" | sed 's/^v//; s/-/+/; s/-/./g')
+# v0.8.1               -> 0.8.1
+# v0.8.1-14-gabc123    -> 0.8.1+14.gabc123   (commits after a tag sort later)
+# v0.8.1-rc.1          -> 0.8.1~rc.1         (prereleases sort before 0.8.1)
+# no tag / "unknown version" -> 0.0.0+unknown
+DEB_VERSION=$(echo "$VERSION" | sed -E 's/^v//; s/-([0-9]+)-g([0-9a-f]+)$/+\1.g\2/; s/-/~/g')
 case "$DEB_VERSION" in
 	[0-9]*) ;;
-	*) DEB_VERSION="0.0.0+$DEB_VERSION" ;;
+	*) DEB_VERSION="0.0.0+unknown" ;;
 esac
+# replace anything dpkg does not accept in a version
+DEB_VERSION=$(printf '%s' "$DEB_VERSION" | tr -c 'A-Za-z0-9.+~' '.')
 
 # debian architecture : Makefile target
 for pair in amd64:linux-amd64 i386:linux-386 armhf:linux-armv7 arm64:linux-armv8; do

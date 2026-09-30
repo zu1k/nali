@@ -307,7 +307,7 @@ Update specific databases (comma separated, aliases allowed); these are always u
 $ nali update --db qqwry,cdn,ipinfo
 ```
 
-Databases that are already up to date are not downloaded again. Downloads are validated before they replace the local file, so a failed or invalid download keeps the existing database. Add `-v` to also update nali itself to the latest version.
+When the download is identical to the local database it is not written again and nali reports it as up to date. Downloads are validated before they replace the local file, so a failed or invalid download keeps the existing database. Add `-v` to also update nali itself to the latest version.
 
 ### Specify database
 
@@ -322,7 +322,7 @@ $ NALI_DB_IP4=qqwry,ipinfo nali 8.8.8.8
 8.8.8.8 [美国–加利福尼亚州–圣克拉拉–山景城 谷歌公司DNS服务器] [United States AS15169 Google LLC]
 ```
 
-In JSON output `source`, `text` and `info` still hold the first database's result, and a `results` array (present only when several databases are selected) holds every database's result.
+In JSON output `source`, `text` and `info` hold the result of the first database that has one. When several databases are selected, a `results` array lists every database's result in order; databases without a result have an empty `text` and a `null` `info`.
 
 #### Windows
 
