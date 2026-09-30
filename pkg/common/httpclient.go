@@ -1,6 +1,7 @@
 package common
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -44,15 +45,22 @@ func (c *HttpClient) Get(urls ...string) (body []byte, err error) {
 		}
 		req.Header.Set("User-Agent", UserAgent)
 		resp, err = c.Do(req)
-
-		if err == nil && resp != nil && resp.StatusCode == 200 {
-			body, err = io.ReadAll(resp.Body)
-			_ = resp.Body.Close()
-			if err != nil {
-				continue
-			}
-			return
+		if err != nil {
+			continue
 		}
+
+		if resp.StatusCode != http.StatusOK {
+			_ = resp.Body.Close()
+			err = fmt.Errorf("%s: unexpected HTTP status %s", url, resp.Status)
+			continue
+		}
+
+		body, err = io.ReadAll(resp.Body)
+		_ = resp.Body.Close()
+		if err != nil {
+			continue
+		}
+		return
 	}
 
 	return nil, err

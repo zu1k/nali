@@ -39,6 +39,15 @@ func (r CDNResult) String() string {
 	return r.Name
 }
 
+// CheckFile reports whether data is a non-empty CDN yaml database.
+func CheckFile(data []byte) bool {
+	cdnMap := make(map[string]CDNResult)
+	if err := yaml.Unmarshal(data, &cdnMap); err != nil {
+		return false
+	}
+	return len(cdnMap) > 0
+}
+
 func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
 	if len(downloadUrls) == 0 {
 		downloadUrls = DownloadUrls
@@ -75,6 +84,7 @@ func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
 			rex, err := regexp.Compile(k)
 			if err != nil {
 				log.Printf("[CDN Database] entry %s not a valid regexp", k)
+				continue
 			}
 			cdnReMap = append(cdnReMap, CDNReTuple{
 				Regexp:    rex,

@@ -35,7 +35,7 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 		if lang == "zh-CN" {
 			db, err = qqwry.NewQQwry(getDbByName("qqwry").File, getDbByName("qqwry").DownloadUrls)
 		} else {
-			db, err = geoip.NewGeoIP(getDbByName("geoip").File)
+			db, err = geoip.NewGeoIP(getDbByName("geoip").File, getDbByName("geoip").DownloadUrls)
 		}
 	case dbif.TypeIPv6:
 		selected := viper.GetString("selected.ipv6")
@@ -47,7 +47,7 @@ func GetDB(typ dbif.QueryType) (db dbif.DB) {
 		if lang == "zh-CN" {
 			db, err = zxipv6wry.NewZXwry(getDbByName("zxipv6wry").File)
 		} else {
-			db, err = geoip.NewGeoIP(getDbByName("geoip").File)
+			db, err = geoip.NewGeoIP(getDbByName("geoip").File, getDbByName("geoip").DownloadUrls)
 		}
 	case dbif.TypeDomain:
 		selected := viper.GetString("selected.cdn")

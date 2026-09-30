@@ -14,7 +14,7 @@ func TestIPinfoDatabase(t *testing.T) {
 	if path == "" {
 		t.Skip("set IPINFO_TEST_DB to run against an IPinfo Lite MMDB")
 	}
-	db, err := NewGeoIP(path)
+	db, err := NewGeoIP(path, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -68,7 +68,7 @@ func TestIPinfoDatabase(t *testing.T) {
 }
 
 func TestMissingDatabase(t *testing.T) {
-	if _, err := NewGeoIP(t.TempDir() + "/missing.mmdb"); err == nil {
+	if _, err := NewGeoIP(t.TempDir()+"/missing.mmdb", nil); err == nil {
 		t.Fatal("missing file should return an error")
 	}
 }

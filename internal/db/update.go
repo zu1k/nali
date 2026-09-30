@@ -3,17 +3,23 @@ package db
 import (
 	"errors"
 	"log"
+	"os"
 	"strings"
 	"time"
 
-	"github.com/zu1k/nali/pkg/download"
+	"github.com/spf13/viper"
+
+	"github.com/zu1k/nali/pkg/cdn"
+	"github.com/zu1k/nali/pkg/common"
+	"github.com/zu1k/nali/pkg/geoip"
+	"github.com/zu1k/nali/pkg/ip2region"
 	"github.com/zu1k/nali/pkg/qqwry"
 	"github.com/zu1k/nali/pkg/zxipv6wry"
 )
 
 func UpdateDB(dbNames ...string) {
 	if len(dbNames) == 0 {
-		dbNames = DbNameListForUpdate
+		dbNames = defaultUpdateList()
 	}
 
 	done := make(map[string]struct{})
@@ -28,18 +34,50 @@ func UpdateDB(dbNames ...string) {
 	}
 }
 
+// DbNameListForUpdate is always refreshed by a plain `nali update`.
 var DbNameListForUpdate = []string{
 	"qqwry",
 	"zxipv6wry",
 	"ip2region",
-	"ip2region-ipv6",
 	"cdn",
+}
+
+// DbNameListForUpdateIfUsed holds large optional databases. A plain
+// `nali update` only refreshes them when they are selected or already
+// downloaded; `nali update --db <name>` always updates them.
+var DbNameListForUpdateIfUsed = []string{
+	"ip2region-ipv6",
 	"ipinfo",
+}
+
+func defaultUpdateList() []string {
+	names := append([]string{}, DbNameListForUpdate...)
+
+	selected := make(map[string]bool)
+	for _, key := range []string{"selected.ipv4", "selected.ipv6", "selected.cdn"} {
+		if db, found := lookupDb(viper.GetString(key)); found {
+			selected[db.Name] = true
+		}
+	}
+
+	for _, name := range DbNameListForUpdateIfUsed {
+		db, found := lookupDb(name)
+		if !found {
+			continue
+		}
+		if _, err := os.Stat(db.File); selected[db.Name] || err == nil {
+			names = append(names, name)
+		}
+	}
+	return names
 }
 
 var DbCheckFunc = map[Format]func([]byte) bool{
 	FormatQQWry:     qqwry.CheckFile,
 	FormatZXIPv6Wry: zxipv6wry.CheckFile,
+	FormatMMDB:      geoip.CheckFile,
+	FormatIP2Region: ip2region.CheckFile,
+	FormatCDNYml:    cdn.CheckFile,
 }
 
 func getUpdateFuncByName(name string) (func() error, string) {
@@ -49,23 +87,24 @@ func getUpdateFuncByName(name string) (func() error, string) {
 		if len(db.DownloadUrls) > 0 {
 			return func() error {
 				log.Printf("正在下载最新 %s 数据库...\n", db.Name)
-				data, err := download.Download(db.File, db.DownloadUrls...)
+				data, err := common.GetHttpClient().Get(db.DownloadUrls...)
+				if err == nil {
+					// validate before saving so a bad download never replaces a working database
+					if check, ok := DbCheckFunc[db.Format]; ok && !check(data) {
+						err = errors.New("数据库内容出错")
+					}
+				}
+				if err == nil {
+					err = common.SaveFile(db.File, data)
+				}
 				if err != nil {
 					log.Printf("%s 数据库下载失败，请手动下载解压后保存到本地: %s \n", db.Name, db.File)
 					log.Println("下载链接：", db.DownloadUrls)
 					log.Println("error:", err)
 					return err
-				} else {
-					if check, ok := DbCheckFunc[db.Format]; ok {
-						if !check(data) {
-							log.Printf("%s 数据库下载失败，请手动下载解压后保存到本地: %s \n", db.Name, db.File)
-							log.Println("下载链接：", db.DownloadUrls)
-							return errors.New("数据库内容出错")
-						}
-					}
-					log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
-					return nil
 				}
+				log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
+				return nil
 			}, db.Name
 		}
 

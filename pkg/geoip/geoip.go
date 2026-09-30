@@ -3,13 +3,16 @@ package geoip
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net"
+	"os"
 	"strings"
 
-	"github.com/oschwald/maxminddb-golang"
+	"github.com/zu1k/nali/pkg/download"
 	"github.com/zu1k/nali/pkg/ipinfo"
 
 	"github.com/oschwald/geoip2-golang"
+	"github.com/oschwald/maxminddb-golang"
 	"github.com/spf13/viper"
 )
 
@@ -19,8 +22,27 @@ type GeoIP struct {
 	ipinfo *ipinfo.DB
 }
 
-// new geoip from database file
-func NewGeoIP(filePath string) (*GeoIP, error) {
+// NewGeoIP opens a MaxMind DB file. IPinfo MMDB files are detected by their
+// metadata and served by the ipinfo reader; everything else is read as a
+// GeoIP2/GeoLite2 City compatible database. If the file does not exist and
+// downloadUrls is not empty, the database is downloaded first.
+func NewGeoIP(filePath string, downloadUrls []string) (*GeoIP, error) {
+	if _, err := os.Stat(filePath); err != nil && os.IsNotExist(err) {
+		if len(downloadUrls) == 0 {
+			log.Println("文件不存在，请自行下载 MMDB 数据库（如 GeoLite2-City），并保存在", filePath)
+			return nil, err
+		}
+		log.Println("文件不存在，尝试从网络获取最新 MMDB 数据库")
+		data, err := download.Download(filePath, downloadUrls...)
+		if err != nil {
+			return nil, err
+		}
+		if !CheckFile(data) {
+			_ = os.Remove(filePath)
+			return nil, errors.New("下载的 MMDB 数据库无效")
+		}
+	}
+
 	reader, err := maxminddb.Open(filePath)
 	if err != nil {
 		return nil, err
@@ -35,6 +57,16 @@ func NewGeoIP(filePath string) (*GeoIP, error) {
 		return nil, err
 	}
 	return &GeoIP{db: db}, nil
+}
+
+// CheckFile reports whether data is a readable MaxMind DB file.
+func CheckFile(data []byte) bool {
+	reader, err := maxminddb.FromBytes(data)
+	if err != nil {
+		return false
+	}
+	_ = reader.Close()
+	return true
 }
 
 func (g GeoIP) Find(query string, params ...string) (result fmt.Stringer, err error) {

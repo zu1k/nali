@@ -67,6 +67,21 @@ func NewIp2Region(filePath string, downloadUrls []string) (*Ip2Region, error) {
 	}, nil
 }
 
+// CheckFile reports whether data looks like a valid ip2region xdb database.
+func CheckFile(data []byte) bool {
+	if len(data) < xdb.HeaderInfoLength {
+		return false
+	}
+	header, err := xdb.NewHeader(data)
+	if err != nil {
+		return false
+	}
+	if _, err := xdb.VersionFromHeader(header); err != nil {
+		return false
+	}
+	return header.StartIndexPtr <= header.EndIndexPtr && int(header.EndIndexPtr) < len(data)
+}
+
 func detectVersion(data []byte) (*xdb.Version, error) {
 	header, err := xdb.NewHeader(data)
 	if err != nil {
