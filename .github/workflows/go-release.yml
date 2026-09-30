@@ -33,7 +33,8 @@ jobs:
         env:
           NAME: nali
           BINDIR: bin
-        run: make -j"$(nproc)" releases && make sha256sum
+        # deb packages are built from the plain binaries before `releases` compresses them
+        run: make -j"$(nproc)" deb && make -j"$(nproc)" releases && make sha256sum
 
       - name: Upload Release
         uses: softprops/action-gh-release@v3
