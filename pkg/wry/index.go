@@ -38,8 +38,9 @@ func (db *IPDB[uint64]) SearchIndexV6(ip uint64) uint32 {
 	ipLen := db.IPLen
 	entryLen := uint64(db.OffLen + db.IPLen)
 
-	buf := make([]byte, entryLen)
-	l, r, mid, ipc := db.IdxStart, db.IdxEnd, uint64(0), uint64(0)
+	l, r := db.IdxStart, db.IdxEnd
+	var ipc, mid uint64
+	var buf []byte
 
 	for {
 		mid = (r-l)/entryLen/2*entryLen + l

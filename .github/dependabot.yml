@@ -3,18 +3,23 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
+      interval: "monthly"
+    groups:
+      github-actions:
+        patterns: ["*"]
 
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
+      interval: "monthly"
+    groups:
+      docker:
+        patterns: ["*"]
 
   - package-ecosystem: "gomod"
     directory: "/"
     schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 0
-
+      interval: "monthly"
+    groups:
+      go-dependencies:
+        patterns: ["*"]

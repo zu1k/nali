@@ -39,6 +39,27 @@ func (r CDNResult) String() string {
 	return r.Name
 }
 
+// CheckFile reports whether data is a CDN yaml database with at least one
+// usable entry: a named literal domain or a named, valid regexp.
+func CheckFile(data []byte) bool {
+	cdnMap := make(map[string]CDNResult)
+	if err := yaml.Unmarshal(data, &cdnMap); err != nil {
+		return false
+	}
+	for k, v := range cdnMap {
+		if k == "" || v.Name == "" {
+			continue
+		}
+		if !re.MaybeRegexp(k) {
+			return true
+		}
+		if _, err := regexp.Compile(k); err == nil {
+			return true
+		}
+	}
+	return false
+}
+
 func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
 	if len(downloadUrls) == 0 {
 		downloadUrls = DownloadUrls
@@ -75,6 +96,7 @@ func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
 			rex, err := regexp.Compile(k)
 			if err != nil {
 				log.Printf("[CDN Database] entry %s not a valid regexp", k)
+				continue
 			}
 			cdnReMap = append(cdnReMap, CDNReTuple{
 				Regexp:    rex,
@@ -97,7 +119,7 @@ func (db CDN) Find(query string, params ...string) (result fmt.Stringer, err err
 		}
 
 		for _, entry := range db.ReMap {
-			if entry.Regexp.MatchString(domain) {
+			if entry.MatchString(domain) {
 				return entry.CDNResult, nil
 			}
 		}

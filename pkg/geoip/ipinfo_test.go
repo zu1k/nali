@@ -14,14 +14,14 @@ func TestIPinfoDatabase(t *testing.T) {
 	if path == "" {
 		t.Skip("set IPINFO_TEST_DB to run against an IPinfo Lite MMDB")
 	}
-	db, err := NewGeoIP(path)
+	db, err := NewGeoIP(path, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if db.ipinfo == nil || db.Name() != "ipinfo" {
 		t.Fatal("IPinfo database was not detected")
 	}
-	defer db.ipinfo.Reader.Close()
+	defer db.Close()
 	for _, query := range []string{"8.8.8.8", "2001:4860:4860::8888"} {
 		t.Run(query, func(t *testing.T) {
 			value, err := db.Find(query)
@@ -64,11 +64,5 @@ func TestIPinfoDatabase(t *testing.T) {
 	}
 	if value.String() != "" {
 		t.Fatalf("unexpected loopback result: %v", value)
-	}
-}
-
-func TestMissingDatabase(t *testing.T) {
-	if _, err := NewGeoIP(t.TempDir() + "/missing.mmdb"); err == nil {
-		t.Fatal("missing file should return an error")
 	}
 }

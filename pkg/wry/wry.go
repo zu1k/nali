@@ -39,11 +39,6 @@ func (r *Reader) seekAbs(offset uint32) {
 	r.i = offset
 }
 
-func (r *Reader) seek(offset int64) {
-	r.l = r.i
-	r.i = uint32(int64(r.i) + offset)
-}
-
 // seekBack: seek to last index, can only call once
 func (r *Reader) seekBack() {
 	r.i = r.l

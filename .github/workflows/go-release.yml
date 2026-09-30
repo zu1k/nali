@@ -1,59 +1,54 @@
 name: Go Release
+
 on:
   push:
     tags:
       - 'v*'
+
+permissions:
+  contents: read
+
 jobs:
   release-binary:
     name: Release Binary
     runs-on: ubuntu-latest
     environment: s3
+    permissions:
+      contents: write
     steps:
+      - name: Check out code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v7
         with:
-          go-version: '^1.21'
+          go-version: stable
 
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
-
-      - name: Cache go module
-        uses: actions/cache@v3
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-
-      - name: Get dependencies and run test
-        run: |
-          go test ./...
+      - name: Test
+        run: go test ./...
 
       - name: Build
-        if: startsWith(github.ref, 'refs/tags/')
         env:
           NAME: nali
           BINDIR: bin
-        run: make -j releases && make sha256sum
+        run: make -j"$(nproc)" releases && make sha256sum
 
       - name: Upload Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v3
         with:
           files: bin/*
           draft: true
           prerelease: true
+          generate_release_notes: true
 
-      - uses: actions/upload-artifact@v3
-        if: startsWith(github.ref, 'refs/tags/')
+      - uses: actions/upload-artifact@v7
         with:
           name: build
           path: bin
 
       - name: Upload to s3
-        if: startsWith(github.ref, 'refs/tags/')
         run: sh .github/scripts/upload_s3.sh
         env:
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
@@ -68,7 +63,7 @@ jobs:
     steps:
       - name: Get version
         id: version
-        run: echo ::set-output name=version::${GITHUB_REF##*/v}
+        run: echo "version=${GITHUB_REF##*/v}" >> "$GITHUB_OUTPUT"
 
       - name: Publish AUR package nali-go-bin
         uses: zu1k/aur-publish-action@master
@@ -85,7 +80,7 @@ jobs:
     steps:
       - name: Get version
         id: version
-        run: echo ::set-output name=version::${GITHUB_REF##*/v}
+        run: echo "version=${GITHUB_REF##*/v}" >> "$GITHUB_OUTPUT"
 
       - name: Publish AUR package nali-go
         uses: zu1k/aur-publish-action@master

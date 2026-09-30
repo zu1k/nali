@@ -26,7 +26,7 @@ type Result struct {
 func (d *DB) Find(query string, params ...string) (fmt.Stringer, error) {
 	ip := net.ParseIP(query)
 	if ip == nil {
-		return nil, errors.New("Query should be valid IP")
+		return nil, errors.New("query should be valid IP")
 	}
 	var result Result
 	network, found, err := d.Reader.LookupNetwork(ip, &result)

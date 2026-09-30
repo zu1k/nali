@@ -1,44 +1,125 @@
 name: Go
-on: [push, pull_request]
-jobs:
 
-  test-build:
-    name: Test and Build
+on:
+  push:
+    branches: [master]
+    tags-ignore: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Go
-        uses: actions/setup-go@v3
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
         with:
-          go-version: '^1.21'
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v3
-      - name: Cache go module
-        uses: actions/cache@v3
+          go-version-file: go.mod
+
+      - name: Check go.mod and go.sum are tidy
+        run: go mod tidy -diff
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v9
         with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-      - name: Get dependencies and run test
+          version: v2.14
+
+  test:
+    name: Test (${{ matrix.os }}, Go ${{ matrix.go }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        go: [stable]
+        include:
+          # the minimum Go version declared in go.mod
+          - os: ubuntu-latest
+            go: go.mod
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: ${{ matrix.go != 'go.mod' && matrix.go || '' }}
+          go-version-file: ${{ matrix.go == 'go.mod' && 'go.mod' || '' }}
+
+      - name: Test
+        if: runner.os != 'Linux'
+        run: go test ./...
+
+      - name: Test with race detector and coverage
+        if: runner.os == 'Linux'
+        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
+
+      - name: Coverage summary
+        if: runner.os == 'Linux' && matrix.go == 'stable'
         run: |
-          go test ./...
-      - name: Build
-        run: go build
+          echo '### Test coverage' >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          go tool cover -func=coverage.out | tail -n 1 >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: Cross-compile release targets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-go@v7
+        with:
+          go-version: stable
+
+      - name: Build all release platforms
+        run: make -j"$(nproc)" all-arch
+
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: false
+          load: true
+          tags: nali:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test
+        run: docker run --rm nali:ci --version
 
   release-aur-git:
     name: Release Aur Git
-    needs: [test-build]
-    if: github.event_name == 'push'
+    needs: [lint, test, build]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && github.repository == 'zu1k/nali'
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Get version
         id: version
-        run: echo ::set-output name=version::$(git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g')
+        run: echo "version=$(git describe --long --tags | sed 's/^v//;s/\([^-]*-g\)/r\1/;s/-/./g')" >> "$GITHUB_OUTPUT"
 
       - name: Publish AUR package nali-go-git
         uses: zu1k/aur-publish-action@master

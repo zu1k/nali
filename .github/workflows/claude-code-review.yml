@@ -12,6 +12,9 @@ on:
 
 jobs:
   claude-review:
+    # Repository secrets are not available to pull requests from forks, so the
+    # review would always fail there; skip it instead of reporting a failure.
+    if: github.event.pull_request.head.repo.full_name == github.repository
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
@@ -27,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 

@@ -13,7 +13,7 @@ import (
 
 	"github.com/zu1k/nali/internal/constant"
 
-	"github.com/google/go-github/v55/github"
+	"github.com/google/go-github/v85/github"
 )
 
 var (

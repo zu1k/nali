@@ -1,0 +1,20 @@
+version: "2"
+
+linters:
+  default: standard
+  settings:
+    errcheck:
+      exclude-functions:
+        # closing read-only files and removing temporary files is best effort
+        - (*os.File).Close
+        - (io.ReadCloser).Close
+        - (*github.com/oschwald/maxminddb-golang.Reader).Close
+        - (*github.com/saracen/go7z.ReadCloser).Close
+        - os.Remove
+  exclusions:
+    presets:
+      - std-error-handling
+
+formatters:
+  enable:
+    - gofmt

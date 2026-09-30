@@ -42,7 +42,7 @@ func (d *DB) get() (db dbif.DB) {
 	case FormatIPIP:
 		db, err = ipip.NewIPIP(filePath)
 	case FormatMMDB:
-		db, err = geoip.NewGeoIP(filePath)
+		db, err = geoip.NewGeoIP(filePath, d.DownloadUrls)
 	case FormatIP2Region:
 		db, err = ip2region.NewIp2Region(filePath, d.DownloadUrls)
 	case FormatIP2Location:
@@ -65,13 +65,13 @@ type Format string
 
 const (
 	FormatMMDB        Format = "mmdb"
-	FormatQQWry              = "qqwry"
-	FormatZXIPv6Wry          = "zxipv6wry"
-	FormatIPIP               = "ipip"
-	FormatIP2Region          = "ip2region"
-	FormatIP2Location        = "ip2location"
+	FormatQQWry       Format = "qqwry"
+	FormatZXIPv6Wry   Format = "zxipv6wry"
+	FormatIPIP        Format = "ipip"
+	FormatIP2Region   Format = "ip2region"
+	FormatIP2Location Format = "ip2location"
 
-	FormatCDNYml = "cdn-yml"
+	FormatCDNYml Format = "cdn-yml"
 )
 
 var (
@@ -84,8 +84,8 @@ type Type string
 
 const (
 	TypeIPv4 Type = "IPv4"
-	TypeIPv6      = "IPv6"
-	TypeCDN       = "CDN"
+	TypeIPv6 Type = "IPv6"
+	TypeCDN  Type = "CDN"
 )
 
 var (
@@ -126,14 +126,23 @@ func (m *TypeMap) From(dbs List) {
 	}
 }
 
-func getDbByName(name string) (db *DB) {
+// lookupDb finds a database by name or alias, first in the user config and
+// then in the built-in defaults.
+func lookupDb(name string) (*DB, bool) {
 	if dbInfo, found := NameDBMap[name]; found {
-		return dbInfo
+		return dbInfo, true
 	}
 
 	defaultNameDBMap := NameMap{}
 	defaultNameDBMap.From(GetDefaultDBList())
 	if dbInfo, found := defaultNameDBMap[name]; found {
+		return dbInfo, true
+	}
+	return nil, false
+}
+
+func getDbByName(name string) (db *DB) {
+	if dbInfo, found := lookupDb(name); found {
 		return dbInfo
 	}
 

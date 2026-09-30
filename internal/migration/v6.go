@@ -1,10 +1,10 @@
 package migration
 
 import (
+	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/google/martian/log"
 	"github.com/zu1k/nali/internal/constant"
 )
 
@@ -17,11 +17,11 @@ func migration2v6() {
 
 	oldDefaultWorkPath, err = filepath.Abs(oldDefaultWorkPath)
 	if err != nil {
-		log.Errorf("Get absolute path for oldDefaultWorkPath failed: %s\n", err)
+		log.Printf("Get absolute path for oldDefaultWorkPath failed: %s\n", err)
 	}
 	mewWorkPath, err := filepath.Abs(constant.ConfigDirPath)
 	if err != nil {
-		log.Errorf("Get absolute path for mewWorkPath failed: %s\n", err)
+		log.Printf("Get absolute path for mewWorkPath failed: %s\n", err)
 	}
 	if oldDefaultWorkPath == mewWorkPath {
 		// User chooses to continue using old directory
@@ -51,7 +51,7 @@ func migration2v6() {
 
 		err = os.RemoveAll(oldDefaultWorkPath)
 		if err != nil {
-			log.Errorf("Auto migration failed: %s\n", err)
+			log.Printf("Auto migration failed: %s\n", err)
 		}
 	}
 }
