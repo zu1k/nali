@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/viper"
 	"github.com/zu1k/nali/internal/constant"
 	"github.com/zu1k/nali/internal/db"
-	"github.com/zu1k/nali/pkg/qqwry"
+	"github.com/zu1k/nali/pkg/ip2region"
 )
 
-func migration2v7() {
+func migration2v8() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(constant.ConfigDirPath)
@@ -28,13 +28,10 @@ func migration2v7() {
 
 	needOverwrite := false
 	for _, adb := range dbList {
-		if adb.Name == "qqwry" {
-			if len(adb.DownloadUrls) == 0 ||
-				adb.DownloadUrls[0] == "https://99wry.cf/qqwry.dat" ||
-				strings.Contains(adb.DownloadUrls[0], "sspanel-uim") ||
-				strings.Contains(adb.DownloadUrls[0], "gh-release.zu1k.com") {
+		if adb.Name == "ip2region" {
+			if len(adb.DownloadUrls) > 0 && strings.Contains(adb.DownloadUrls[0], "ip2region.xdb") {
 				needOverwrite = true
-				adb.DownloadUrls = qqwry.DownloadUrls
+				adb.DownloadUrls = ip2region.DownloadUrls
 			}
 		}
 	}

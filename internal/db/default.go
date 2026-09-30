@@ -71,6 +71,17 @@ func GetDefaultDBList() List {
 			DownloadUrls: ip2region.DownloadUrls,
 		},
 		&DB{
+			Name: "ip2region-ipv6",
+			NameAlias: []string{
+				"i2r-ipv6",
+			},
+			Format:       FormatIP2Region,
+			File:         "ip2region_v6.xdb",
+			Languages:    LanguagesZH,
+			Types:        TypesIPv6,
+			DownloadUrls: ip2region.DownloadUrlsV6,
+		},
+		&DB{
 			Name:      "ip2location",
 			Format:    FormatIP2Location,
 			File:      "IP2LOCATION-LITE-DB3.IPV6.BIN",

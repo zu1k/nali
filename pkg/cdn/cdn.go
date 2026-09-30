@@ -39,12 +39,15 @@ func (r CDNResult) String() string {
 	return r.Name
 }
 
-func NewCDN(filePath string) (*CDN, error) {
+func NewCDN(filePath string, downloadUrls []string) (*CDN, error) {
+	if len(downloadUrls) == 0 {
+		downloadUrls = DownloadUrls
+	}
 	var fileData []byte
 	_, err := os.Stat(filePath)
 	if err != nil && os.IsNotExist(err) {
 		log.Println("文件不存在，尝试从网络获取最新CDN数据库")
-		fileData, err = download.Download(filePath, DownloadUrls...)
+		fileData, err = download.Download(filePath, downloadUrls...)
 		if err != nil {
 			return nil, err
 		}
