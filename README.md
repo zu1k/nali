@@ -216,11 +216,16 @@ NALI_DB_IP4=ipinfo NALI_DB_IP6=ipinfo nali --json 8.8.8.8
 - name: ipinfo
   format: mmdb
   file: ipinfo_lite.mmdb
+  download-urls:
+  - https://github.com/NetworkCats/IPinfoLite-Download/releases/latest/download/ipinfo_lite.mmdb
   languages: [en]
   types: [IPv4, IPv6]
 ```
 
 `file` 也可使用绝对路径。文本输出包含国家、ASN 和 AS 名称；JSON 输出包含 `network`、`country`、`country_code`、`continent`、`continent_code`、`asn`、`as_name`、`as_domain`。数据库未提供 `network` 字段时，使用命中的 CIDR 网段。IPinfo Lite 的名称使用数据库原有英文值。
+
+运行 `nali update` 会默认更新 IPinfo；也可用 `nali update --db ipinfo` 单独更新。
+
 
 ### 查看帮助
 

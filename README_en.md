@@ -208,11 +208,16 @@ For existing configurations, add this entry to `databases` and set `selected.ipv
 - name: ipinfo
   format: mmdb
   file: ipinfo_lite.mmdb
+  download-urls:
+  - https://github.com/NetworkCats/IPinfoLite-Download/releases/latest/download/ipinfo_lite.mmdb
   languages: [en]
   types: [IPv4, IPv6]
 ```
 
 An absolute `file` path also works. Text output includes country, ASN and AS name. JSON includes `network`, `country`, `country_code`, `continent`, `continent_code`, `asn`, `as_name` and `as_domain`. When the record omits `network`, the matched CIDR is used. Names retain the database's English values.
+
+`nali update` updates IPinfo by default; use `nali update --db ipinfo` to update it alone.
+
 
 ### Help
 

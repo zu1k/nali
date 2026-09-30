@@ -33,6 +33,7 @@ var DbNameListForUpdate = []string{
 	"zxipv6wry",
 	"ip2region",
 	"cdn",
+	"ipinfo",
 }
 
 var DbCheckFunc = map[Format]func([]byte) bool{
@@ -64,7 +65,7 @@ func getUpdateFuncByName(name string) (func() error, string) {
 					log.Printf("%s 数据库下载成功: %s\n", db.Name, db.File)
 					return nil
 				}
-			}, string(db.Format)
+			}, db.Name
 		}
 
 		// intenel download func
@@ -77,7 +78,7 @@ func getUpdateFuncByName(name string) (func() error, string) {
 					log.Println("数据库 ZXIPv6Wry 下载失败:", err)
 				}
 				return err
-			}, FormatZXIPv6Wry
+			}, db.Name
 		default:
 			return func() error {
 				log.Println("暂不支持该类型数据库的自动更新")
